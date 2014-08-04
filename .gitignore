@@ -1,0 +1,6 @@
+KSP
+*.dll
+References/.*
+VS_Solution/HaystackContinued/obj
+VS_Solution/HaystackContinued/bin
+*.suo
