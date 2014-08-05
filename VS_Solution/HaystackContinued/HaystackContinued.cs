@@ -28,6 +28,8 @@ namespace HaystackContinued
 
     public class HaystackContinued : MonoBehaviour
     {
+        private static int MainWindowID = 1823748;
+
         // Game object that keeps us running
         public static GameObject gameObjectInstance;
 
@@ -215,16 +217,20 @@ namespace HaystackContinued
             }
 
             _winRect.y = (winHidden) ? Screen.height - 1 : Screen.height - _winRect.height;
-            _winRect = GUILayout.Window(1823748, _winRect, MainWindowConstructor,
+            
+            _winRect = GUILayout.Window(MainWindowID, _winRect, MainWindowConstructor,
                 string.Format("Haystack {0}", HSSettings.version), HSResources.winStyle, GUILayout.MinWidth(120),
-                GUILayout.Height(300));
+                GUILayout.MinHeight(300));
+            
             if (GUI.Button(new Rect(_winRect.x + (_winRect.width/2 - 24), _winRect.y - 9, 48, 10), "",
                 HSResources.buttonFoldStyle))
             {
-                winHidden ^= true; // toggle window state
+                winHidden = !winHidden; // toggle window state
                 RefetchVesselList();
                 MainHSActivity();
             }
+
+           
         }
 
         /// <summary>
@@ -342,7 +348,7 @@ namespace HaystackContinued
                 }
 
                 // celestial bodies
-                if (showCelestialBodies == true)
+                if (showCelestialBodies)
                 {
                     foreach (CelestialBody body in filteredBodyList)
                     {
@@ -352,19 +358,18 @@ namespace HaystackContinued
                         GUILayout.Label(body.name, HSResources.textListHeaderStyle);
                         GUILayout.EndVertical();
 
-                        if (Event.current != null && Event.current.type == EventType.Repaint &&
-                            Input.GetMouseButtonDown(0))
-                        {
-                            Rect tmpRect = GUILayoutUtility.GetLastRect();
+                        if (Event.current == null || Event.current.type != EventType.Repaint ||
+                            !Input.GetMouseButtonDown(0))
+                            continue;
 
-                            if (tmpRect.Contains(Event.current.mousePosition))
-                            {
-                                btnclicked = true;
-                                tmpBodyPreSelected = body;
-                                tmpVesselPreSelected = null;
-                                typeSelected = "body"; // TODO: this should probably be an enum
-                            }
-                        }
+                        Rect tmpRect = GUILayoutUtility.GetLastRect();
+
+                        if (!tmpRect.Contains(Event.current.mousePosition)) continue;
+
+                        btnclicked = true;
+                        tmpBodyPreSelected = body;
+                        tmpVesselPreSelected = null;
+                        typeSelected = "body"; // TODO: this should probably be an enum
                     }
                 }
 
@@ -471,7 +476,22 @@ namespace HaystackContinued
 
             GUILayout.EndVertical();
 
-            // If user input detected, force data refresh
+            //resize controls
+            var resizeRect = new Rect(_winRect.width - 24f - 2f, 2f, 24f, 24f);
+            GUI.Box(resizeRect, "//", GUI.skin.box);
+
+            if (Event.current.isMouse)
+            {
+                if (Event.current.type == EventType.MouseDrag && Event.current.button == 0 && resizeRect.Contains(Event.current.mousePosition))
+                {
+                    _winRect.xMax += Event.current.delta.x;
+                    _winRect.yMin += Event.current.delta.y;
+                    Event.current.Use();
+                }
+            }
+
+
+        // If user input detected, force data refresh
             if (GUI.changed)
             {
                 MainHSActivity();
