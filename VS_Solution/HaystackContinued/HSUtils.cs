@@ -1,6 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Reflection;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace HaystackContinued
 {
@@ -35,8 +38,72 @@ namespace HaystackContinued
 		/// <param name="message">Message to be logged</param>
 		public static void Log(string message)
 		{
-			Debug.Log(string.Format("Haystack: {0}", message));
+			Debug.Log(String.Format("Haystack: {0}", message));
 		}
+
+	    internal static void RequestCameraFocus(Vessel vessel)
+	    {
+	        var spaceTracking = (SpaceTracking) Object.FindObjectOfType(typeof (SpaceTracking));
+
+	        var method = spaceTracking.GetType()
+	            .GetMethod("RequestVessel", BindingFlags.NonPublic | BindingFlags.Instance);
+
+	        method.Invoke(spaceTracking, new object[] {vessel});
+	    }
+
+	    /// <summary>
+	    /// Focuses the map object matching the intanceID passed in
+	    /// if the scene is map mode.
+	    /// Searches both vessels and bodies.
+	    /// Assumes the instance ID is valid.
+	    /// </summary>
+	    /// <param name="instanceID"></param>
+	    internal static void FocusMapObject(int instanceID)
+	    {
+	        // focus on the object
+	        PlanetariumCamera cam;
+	        if (IsTrackingCenterActive)
+	        {
+	            var spaceTracking = (SpaceTracking)Object.FindObjectOfType(typeof (SpaceTracking));
+	            cam = spaceTracking.mainCamera;
+	        }
+	        else if (IsMapActive)
+	        {
+	            cam = MapView.MapCamera;
+	        }
+	        else
+	        {
+	            Log("FocusMapObject: invalid scene");
+	            return;
+	        }
+
+	        foreach (var mapObject in cam.targets)
+	        {
+	            if (mapObject.vessel != null && mapObject.vessel.GetInstanceID() == instanceID)
+	            {
+	                cam.SetTarget(mapObject);
+	                break;
+	            }
+	            if (mapObject.celestialBody != null && mapObject.celestialBody.GetInstanceID() == instanceID)
+	            {
+	                cam.SetTarget(mapObject);
+	                break;
+	            }
+	        }
+	    }
+
+	    /// <summary>
+	    /// Check if the user is currently viewing the map
+	    /// </summary>
+	    internal static bool IsMapActive
+	    {
+	        get { return (HighLogic.LoadedScene == GameScenes.FLIGHT) && MapView.MapIsEnabled; }
+	    }
+
+	    internal static bool IsTrackingCenterActive
+	    {
+	        get { return HighLogic.LoadedScene == GameScenes.TRACKSTATION; }
+	    }
 	}
 
     public static class Extensions
