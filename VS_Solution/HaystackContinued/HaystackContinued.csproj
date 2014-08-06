@@ -40,6 +40,7 @@
     <Compile Include="HSUtils.cs" />
     <Compile Include="HaystackContinued.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Resources.cs" />
     <Compile Include="StartPoints.cs" />
   </ItemGroup>
   <ItemGroup>

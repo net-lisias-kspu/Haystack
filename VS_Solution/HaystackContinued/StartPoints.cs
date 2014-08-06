@@ -8,7 +8,7 @@ namespace HaystackContinued
         //Awake Event - when the DLL is loaded
         public void Awake()
         {
-            HSResources.LoadTextures();
+            Resources.LoadTextures();
         }
     }
 

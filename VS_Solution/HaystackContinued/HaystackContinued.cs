@@ -62,9 +62,9 @@ namespace HaystackContinued
 #endif
 
             // Populate list of vessel types and load textures - should happen once
-            HSResources.LoadTextures();
+            Resources.LoadTextures();
 
-            HSResources.PopulateVesselTypes(ref vesselTypesList);
+            Resources.PopulateVesselTypes(ref vesselTypesList);
             vesselTypesList.Sort(new HSUtils.SortByWeight());
 
             celestialBodyList = new List<CelestialBody>();
@@ -124,18 +124,13 @@ namespace HaystackContinued
                             if (currentInvisibleType.visible == false)
                             {
                                 //filter out type
-                                filteredVesselList = filteredVesselList.FindAll(
-                                    delegate(Vessel sr)
-                                    {
-                                        return sr.vesselType.ToString() != currentInvisibleType.name;
-                                    }
-                                    );
+                                filteredVesselList = filteredVesselList.FindAll(sr => sr.vesselType.ToString() != currentInvisibleType.name);
                             }
                         }
                     }
 
                     // And then filter by the search string
-                    if (filterVar != null && filterVar != "")
+                    if (!string.IsNullOrEmpty(filterVar))
                     {
                         //filteredVesselList = hsVesselList.FindAll(delegate(Vessel v) { return -1 != v.vesselName.IndexOf(filterVar, StringComparison.OrdinalIgnoreCase); });
                         filteredVesselList =
@@ -232,26 +227,32 @@ namespace HaystackContinued
         {
             GUI.skin = HighLogic.Skin;
 
-            if (HSResources.winStyle == null)
+            if (Resources.winStyle == null)
             {
-                HSResources.LoadStyles();
+                Resources.LoadStyles();
             }
 
-            _winRect.y = (winHidden) ? Screen.height - 1 : Screen.height - _winRect.height;
+            if (winHidden)
+            {
+                _winRect.y = Screen.height - 1;
+            }
+            else
+            {
+                _winRect.y = Screen.height - _winRect.height;
+                _winRect = _winRect.ClampToScreen();
+            }
             
             _winRect = GUILayout.Window(MainWindowID, _winRect, MainWindowConstructor,
-                string.Format("Haystack {0}", HSSettings.version), HSResources.winStyle, GUILayout.MinWidth(120),
+                string.Format("Haystack {0}", HSSettings.version), Resources.winStyle, GUILayout.MinWidth(120),
                 GUILayout.MinHeight(300));
-            
+
             if (GUI.Button(new Rect(_winRect.x + (_winRect.width/2 - 24), _winRect.y - 9, 48, 10), "",
-                HSResources.buttonFoldStyle))
+                Resources.buttonFoldStyle))
             {
                 winHidden = !winHidden; // toggle window state
                 RefetchVesselList();
                 MainHSActivity();
             }
-
-           
         }
 
         /// <summary>
@@ -287,7 +288,8 @@ namespace HaystackContinued
         private CelestialBody tmpBodySelected;
         private CelestialBody tmpBodyPreSelected;
         private string typeSelected;
-        private bool groupByOrbitingBody = false;
+        private bool groupByOrbitingBody;
+        private readonly ResizeHandler resizeHandler = new ResizeHandler();
 
         private void MainWindowConstructor(int windowID)
         {
@@ -306,12 +308,12 @@ namespace HaystackContinued
                     typeString += String.Format(" ({0})", typeCount[typeString]);
 
                 vesselTypesList[i].visible = GUILayout.Toggle(vesselTypesList[i].visible,
-                    new GUIContent(vesselTypesList[i].icon, typeString), HSResources.buttonVesselTypeStyle);
+                    new GUIContent(vesselTypesList[i].icon, typeString), Resources.buttonVesselTypeStyle);
             }
 
             // Bodies
-            showCelestialBodies = GUILayout.Toggle(showCelestialBodies, new GUIContent(HSResources.btnBodies, "Bodies"),
-                HSResources.buttonVesselTypeStyle);
+            showCelestialBodies = GUILayout.Toggle(showCelestialBodies, new GUIContent(Resources.btnBodies, "Bodies"),
+                Resources.buttonVesselTypeStyle);
 
             GUILayout.EndHorizontal();
 
@@ -348,7 +350,7 @@ namespace HaystackContinued
             //group by toggle
             var previous = this.groupByOrbitingBody;
             this.groupByOrbitingBody = GUILayout.Toggle(this.groupByOrbitingBody, new GUIContent("GB", "Group by orbit"),
-                HSResources.buttonVesselTypeStyle);
+                Resources.buttonVesselTypeStyle);
 
             if (previous != this.groupByOrbitingBody)
             {
@@ -364,7 +366,7 @@ namespace HaystackContinued
             }
 
             // target button
-            if (GUILayout.Button(HSResources.btnTarg, HSResources.buttonTargStyle))
+            if (GUILayout.Button(Resources.btnTarg, Resources.buttonTargStyle))
             {
                 if (typeSelected == "vessel")
                 {
@@ -387,11 +389,10 @@ namespace HaystackContinued
             }
 
             // fly button
-            if (GUILayout.Button(HSResources.btnGoHover, HSResources.buttonGoStyle))
+            if (GUILayout.Button(Resources.btnGoHover, Resources.buttonGoStyle))
             {
                 if (typeSelected == "vessel")
                 {
-                    //HSUtils.Log(string.Format("about to switch to vessel: {0} {1}", tmpVesselSelected.GetInstanceID(), tmpVesselSelected.vesselName));
                     // Delayed switch to vessel
                     switchToMe = tmpVesselSelected;
                 }
@@ -409,18 +410,10 @@ namespace HaystackContinued
             var resizeRect = new Rect(_winRect.width - 24f - 2f, 2f, 24f, 24f);
             GUI.Box(resizeRect, "//", GUI.skin.box);
 
-            if (Event.current.isMouse)
-            {
-                if (Event.current.type == EventType.MouseDrag && Event.current.button == 0 && resizeRect.Contains(Event.current.mousePosition))
-                {
-                    _winRect.xMax += Event.current.delta.x;
-                    _winRect.yMin += Event.current.delta.y;
-                    Event.current.Use();
-                }
-            }
+            this.resizeHandler.Run(resizeRect);
 
 
-        // If user input detected, force data refresh
+            // If user input detected, force data refresh
             if (GUI.changed)
             {
                 MainHSActivity();
@@ -451,18 +444,18 @@ namespace HaystackContinued
             {
                 var body = kv.Key;
                 var vessels = kv.Value;
-                GUILayout.Label(body.name, HSResources.textListHeaderStyle);
+                GUILayout.Label(body.name, Resources.textListHeaderStyle);
 
                 foreach (var vessel in vessels)
                 {
                     GUILayout.BeginVertical(vessel == tmpVesselSelected
-                        ? HSResources.buttonVesselListPressed
+                        ? Resources.buttonVesselListPressed
                         : GUI.skin.button);
-                    GUILayout.Label(vessel.vesselName, HSResources.textListHeaderStyle);
+                    GUILayout.Label(vessel.vesselName, Resources.textListHeaderStyle);
                     GUILayout.Label(
                         string.Format("{0}. {1}{2}", vessel.vesselType.ToString(), Vessel.GetSituationString(vessel),
                             (FlightGlobals.ActiveVessel == vessel && vessel != null) ? ". Currently active" : ""),
-                        HSResources.textSituationStyle);
+                        Resources.textSituationStyle);
                     GUILayout.EndVertical();
 
                     // First, determine which button was clicked within ScrollView and preselect vessel
@@ -501,13 +494,13 @@ namespace HaystackContinued
                 foreach (Vessel vessel in filteredVesselList)
                 {
                     GUILayout.BeginVertical(vessel == tmpVesselSelected
-                        ? HSResources.buttonVesselListPressed
+                        ? Resources.buttonVesselListPressed
                         : GUI.skin.button);
-                    GUILayout.Label(vessel.vesselName, HSResources.textListHeaderStyle);
+                    GUILayout.Label(vessel.vesselName, Resources.textListHeaderStyle);
                     GUILayout.Label(
                         string.Format("{0}. {1}{2}", vessel.vesselType.ToString(), Vessel.GetSituationString(vessel),
                             (FlightGlobals.ActiveVessel == vessel && vessel != null) ? ". Currently active" : ""),
-                        HSResources.textSituationStyle);
+                        Resources.textSituationStyle);
                     GUILayout.EndVertical();
 
                     // First, determine which button was clicked within ScrollView and preselect vessel
@@ -531,9 +524,9 @@ namespace HaystackContinued
                     foreach (CelestialBody body in filteredBodyList)
                     {
                         GUILayout.BeginVertical(body == tmpBodySelected
-                            ? HSResources.buttonVesselListPressed
+                            ? Resources.buttonVesselListPressed
                             : GUI.skin.button);
-                        GUILayout.Label(body.name, HSResources.textListHeaderStyle);
+                        GUILayout.Label(body.name, Resources.textListHeaderStyle);
                         GUILayout.EndVertical();
 
                         if (Event.current == null || Event.current.type != EventType.Repaint ||
@@ -691,7 +684,55 @@ namespace HaystackContinued
                     break;
                 }
             }
-            
+        }
+
+        private class ResizeHandler
+        {
+            private bool resizing;
+            private Vector2 lastPosition = new Vector2(0,0);
+
+            internal void Run(Rect resizer)
+            {
+                if (!Event.current.isMouse)
+                {
+                    return;
+                }
+
+                if (Event.current.type == EventType.MouseDown && Event.current.button == 0 &&
+                    resizer.Contains(Event.current.mousePosition))
+                {
+                    this.resizing = true;
+                    this.lastPosition.x = Input.mousePosition.x;
+                    this.lastPosition.y = Input.mousePosition.y;
+                    
+                    Event.current.Use();
+                }
+
+                if (this.resizing && Input.GetMouseButton(0))
+                {
+                    var deltaX = Input.mousePosition.x - this.lastPosition.x;
+                    var deltaY = Input.mousePosition.y - this.lastPosition.y;
+
+                    //Event.current.delta does not make resizing very smooth.
+
+                    this.lastPosition.x = Input.mousePosition.x;
+                    this.lastPosition.y = Input.mousePosition.y;
+
+                    _winRect.xMax += deltaX;
+                    _winRect.yMin -= deltaY;
+                    
+                    Event.current.Use();
+                }
+
+                if (this.resizing && Event.current.type == EventType.MouseUp && Event.current.button == 0)
+                {
+                    this.resizing = false;
+
+                    Event.current.Use();
+                }
+
+                
+            }
         }
     }
 }
