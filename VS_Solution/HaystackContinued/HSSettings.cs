@@ -29,9 +29,9 @@ namespace HaystackContinued
 			HSUtils.Log(string.Format("rectangle success: {0} {1} {2} {3}", HaystackContinued.WinRect.x, HaystackContinued.WinRect.y, HaystackContinued.WinRect.width, HaystackContinued.WinRect.height));
 #endif
 
-			for (ushort iter = 0; iter < HaystackContinued.vesselTypesList.Count(); iter++)
+			for (ushort iter = 0; iter < Resources.vesselTypesList.Count(); iter++)
 			{
-				HaystackContinued.vesselTypesList[iter].visible = cfg.GetValue("type_visible_" + HaystackContinued.vesselTypesList[iter].name, true);
+				Resources.vesselTypesList[iter].visible = cfg.GetValue("type_visible_" + Resources.vesselTypesList[iter].name, true);
 			}
 		}
 
@@ -43,7 +43,7 @@ namespace HaystackContinued
 			PluginConfiguration cfg = PluginConfiguration.CreateForType<HaystackContinued>();
 			cfg.SetValue("winPos", HaystackContinued.WinRect);
 
-			foreach(HSVesselType type in HaystackContinued.vesselTypesList)
+			foreach(HSVesselType type in Resources.vesselTypesList)
 			{
 				cfg.SetValue("type_visible_" + type.name, type.visible);
 			}

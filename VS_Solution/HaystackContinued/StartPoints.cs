@@ -9,6 +9,11 @@ namespace HaystackContinued
         public void Awake()
         {
             Resources.LoadTextures();
+
+            Resources.PopulateVesselTypes(ref Resources.vesselTypesList);
+            Resources.vesselTypesList.Sort(new HSUtils.SortByWeight());
+
+            HSSettings.Load();
         }
     }
 

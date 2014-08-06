@@ -31,18 +31,10 @@ namespace HaystackContinued
 
     public class HaystackContinued : MonoBehaviour
     {
-        private const int MainWindowID = 1823748;
-
-        // Game object that keeps us running
-        public static GameObject gameObjectInstance;
-
-        public static List<HSVesselType> vesselTypesList = new List<HSVesselType>();
-
         private static Vessel switchToMe;
         private static List<Vessel> hsVesselList = new List<Vessel>(); 
         private static List<Vessel> filteredVesselList = new List<Vessel>();
 
-        private static List<CelestialBody> celestialBodyList = new List<CelestialBody>();
         private static List<CelestialBody> filteredBodyList = new List<CelestialBody>();
         private static Dictionary<CelestialBody, List<Vessel>> groupedBodyVessel = new Dictionary<CelestialBody, List<Vessel>>();
         public static bool showCelestialBodies = true;
@@ -56,26 +48,19 @@ namespace HaystackContinued
 
         // Search text
         private string filterVar = "";
+        private int windowId;
 
         public void Awake()
         {
 #if DEBUG
             HSUtils.Log("awake Behaviour, DLL loaded");
 #endif
-
-            // Populate list of vessel types and load textures - should happen once
-            Resources.LoadTextures();
-
-            Resources.PopulateVesselTypes(ref vesselTypesList);
-            vesselTypesList.Sort(new HSUtils.SortByWeight());
-
-            celestialBodyList = new List<CelestialBody>();
             typeCount = new Dictionary<string, int>();
-
-            HSSettings.Load();
 
             DontDestroyOnLoad(this);
             CancelInvoke();
+
+            windowId = Resources.rnd.Next(1000, 2000000);
 
             GameEvents.onPlanetariumTargetChanged.Add(OnMapTargetChange);
 
@@ -95,18 +80,18 @@ namespace HaystackContinued
                 return;
             }
 
-            if (mapObject.type == MapObject.MapObjectType.VESSEL)
+            switch (mapObject.type)
             {
-                this.defaultScrollerView.SelectedVessel = mapObject.vessel;
-                HSUtils.Log("OnMapTargetChange: vessel: " + mapObject.vessel.name);
-            } else if (mapObject.type == MapObject.MapObjectType.CELESTIALBODY)
-            {
-                this.defaultScrollerView.SelectedBody = mapObject.celestialBody;
-            }
-            else
-            {
-                this.defaultScrollerView.SelectedBody = null;
-                this.defaultScrollerView.SelectedVessel = null;
+                case MapObject.MapObjectType.VESSEL:
+                    this.defaultScrollerView.SelectedVessel = mapObject.vessel;
+                    break;
+                case MapObject.MapObjectType.CELESTIALBODY:
+                    this.defaultScrollerView.SelectedBody = mapObject.celestialBody;
+                    break;
+                default:
+                    this.defaultScrollerView.SelectedBody = null;
+                    this.defaultScrollerView.SelectedVessel = null;
+                    break;
             }
         }
 
@@ -134,23 +119,19 @@ namespace HaystackContinued
         /// </summary>
         public void MainHSActivity()
         {
-            // populate the list of bodies if empty
-            if (celestialBodyList.Count < 1)
-                celestialBodyList = FlightGlobals.fetch.bodies;
-
-            if (IsGuiScene)
+           if (IsGuiScene)
             {
                 // refresh filter lists
                 filteredVesselList = new List<Vessel>(hsVesselList);
-                filteredBodyList = new List<CelestialBody>(celestialBodyList);
+                filteredBodyList = new List<CelestialBody>(Resources.CelestialBodies);
 
                 if (hsVesselList != null)
                 {
-                    if (vesselTypesList != null)
+                    if (Resources.vesselTypesList != null)
                     {
                         // For each hidden type remove it from the list
                         // FIXME: must be optimized
-                        foreach (HSVesselType currentInvisibleType in vesselTypesList)
+                        foreach (HSVesselType currentInvisibleType in Resources.vesselTypesList)
                         {
                             if (currentInvisibleType.visible == false)
                             {
@@ -163,21 +144,16 @@ namespace HaystackContinued
                     // And then filter by the search string
                     if (!string.IsNullOrEmpty(filterVar))
                     {
-                        //filteredVesselList = hsVesselList.FindAll(delegate(Vessel v) { return -1 != v.vesselName.IndexOf(filterVar, StringComparison.OrdinalIgnoreCase); });
-                        filteredVesselList =
-                            filteredVesselList.FindAll(
-                                delegate(Vessel v)
-                                {
-                                    return -1 != v.vesselName.IndexOf(filterVar, StringComparison.OrdinalIgnoreCase);
-                                });
+                            filteredVesselList.RemoveAll(
+                                v => -1 == v.vesselName.IndexOf(this.filterVar, StringComparison.OrdinalIgnoreCase)
+                            );
 
-                        if (showCelestialBodies == true)
-                            filteredBodyList =
-                                celestialBodyList.FindAll(
-                                    delegate(CelestialBody cb)
-                                    {
-                                        return -1 != cb.bodyName.IndexOf(filterVar, StringComparison.OrdinalIgnoreCase);
-                                    });
+                        if (showCelestialBodies)
+                        {
+                            filteredBodyList.RemoveAll(
+                                cb => -1 == cb.bodyName.IndexOf(filterVar, StringComparison.OrdinalIgnoreCase)
+                            );
+                        }
                     }
                 }
 
@@ -273,7 +249,7 @@ namespace HaystackContinued
                 _winRect = _winRect.ClampToScreen();
             }
             
-            _winRect = GUILayout.Window(MainWindowID, _winRect, MainWindowConstructor,
+            _winRect = GUILayout.Window(windowId, _winRect, MainWindowConstructor,
                 string.Format("Haystack {0}", HSSettings.version), Resources.winStyle, GUILayout.MinWidth(120),
                 GUILayout.MinHeight(300));
 
@@ -317,15 +293,15 @@ namespace HaystackContinued
             GUILayout.BeginHorizontal();
 
             // Vessels
-            for (int i = 0; i < vesselTypesList.Count(); i++)
+            for (int i = 0; i < Resources.vesselTypesList.Count(); i++)
             {
-                var typeString = vesselTypesList[i].name;
+                var typeString = Resources.vesselTypesList[i].name;
 
                 if (typeCount.ContainsKey(typeString))
                     typeString += String.Format(" ({0})", typeCount[typeString]);
 
-                vesselTypesList[i].visible = GUILayout.Toggle(vesselTypesList[i].visible,
-                    new GUIContent(vesselTypesList[i].icon, typeString), Resources.buttonVesselTypeStyle);
+                Resources.vesselTypesList[i].visible = GUILayout.Toggle(Resources.vesselTypesList[i].visible,
+                    new GUIContent(Resources.vesselTypesList[i].icon, typeString), Resources.buttonVesselTypeStyle);
             }
 
             // Bodies
@@ -578,6 +554,9 @@ namespace HaystackContinued
                     return;
                 }
 
+                Vessel preSelectedVessel = null;
+                CelestialBody preSelecedBody = null;
+
                 this.scrollPos = GUILayout.BeginScrollView(this.scrollPos);
 
                 GUILayout.BeginVertical();
@@ -604,7 +583,7 @@ namespace HaystackContinued
                             continue;
                         }
 
-                        this.SelectedVessel = vessel;
+                        preSelectedVessel = vessel;
                         clicked = true;
                     }
                 }
@@ -629,7 +608,7 @@ namespace HaystackContinued
                                 continue;
                             }
 
-                            this.SelectedBody = body;
+                            preSelecedBody = body;
                             clicked = true;
                         }
                     }
@@ -638,11 +617,26 @@ namespace HaystackContinued
                 GUILayout.EndVertical();
                 GUILayout.EndScrollView();
 
-                if (clicked)
+                var checkInScrollClick = GUILayoutUtility.GetLastRect();
+
+                //clicks to items in scroll view can happen outside of the scroll view
+                if (!this.clicked || Event.current == null || !checkInScrollClick.Contains(Event.current.mousePosition))
                 {
-                    handleSelected();
-                    clicked = false;
+                    return;
                 }
+                
+                
+                if (preSelecedBody != null)
+                {
+                    this.SelectedBody = preSelecedBody;
+                }
+                if (preSelectedVessel != null)
+                {
+                    this.SelectedVessel = preSelectedVessel;
+                }
+
+                this.handleSelected();
+                this.clicked = false;
             }
 
             private void handleSelected()

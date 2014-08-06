@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Reflection;
 using UnityEngine;
 
 namespace HaystackContinued
@@ -10,16 +12,18 @@ namespace HaystackContinued
     public static class Resources
     {
 
-        public static String PathPlugin = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
-        public static String PathImages = string.Format("{0}/icons", PathPlugin);
+        public static System.Random rnd = new System.Random();
 
-        public static string btnGoFilePath = string.Format("{0}/button_go.png", PathImages);
-        public static string btnGoHoverFilePath = string.Format("{0}/button_go_hover.png", PathImages);
-        public static string btnGoTargFilePath = string.Format("{0}/button_targ.png", PathImages);
-        public static string btnGoTargHoverFilePth = string.Format("{0}/button_targ.png", PathImages);
-        public static string btnFoldFilePath = string.Format("{0}/button_fold.png", PathImages);
-        public static string btnFoldHoverFilePath = string.Format("{0}/button_fold_hover.png", PathImages);
-        public static string btnBodiesFilePath = string.Format("{0}/button_bodies.png", PathImages);
+        public static String PathPlugin = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+        public static String PathImages = String.Format("{0}/icons", PathPlugin);
+
+        public static string btnGoFilePath = String.Format("{0}/button_go.png", PathImages);
+        public static string btnGoHoverFilePath = String.Format("{0}/button_go_hover.png", PathImages);
+        public static string btnGoTargFilePath = String.Format("{0}/button_targ.png", PathImages);
+        public static string btnGoTargHoverFilePth = String.Format("{0}/button_targ.png", PathImages);
+        public static string btnFoldFilePath = String.Format("{0}/button_fold.png", PathImages);
+        public static string btnFoldHoverFilePath = String.Format("{0}/button_fold_hover.png", PathImages);
+        public static string btnBodiesFilePath = String.Format("{0}/button_bodies.png", PathImages);
 
         public static Texture2D btnGo = new Texture2D(32, 32, TextureFormat.ARGB32, false);
         public static Texture2D btnGoHover = new Texture2D(32, 32, TextureFormat.ARGB32, false);
@@ -53,6 +57,23 @@ namespace HaystackContinued
             }
         }
 
+        private static List<CelestialBody> celestialBodies = new List<CelestialBody>();
+
+        public static List<CelestialBody> CelestialBodies
+        {
+            get
+            {
+                if (celestialBodies.Count < 1)
+                {
+                    celestialBodies = FlightGlobals.fetch.bodies;
+                }
+
+                return celestialBodies;
+            }
+        }
+
+
+        public static List<HSVesselType> vesselTypesList = new List<HSVesselType>();
         /// <summary>
         ///  Function that populates haystack vessel type list with images
         /// </summary>
@@ -81,7 +102,7 @@ namespace HaystackContinued
                 Texture2D icon = new Texture2D(32, 32, TextureFormat.ARGB32, false);
                 try
                 {
-                    Resources.LoadImage(ref icon, string.Format("{0}/button_vessel_{1}.png", PathImages, type.ToLower()));
+                    LoadImage(ref icon, String.Format("{0}/button_vessel_{1}.png", PathImages, type.ToLower()));
                 }
                 catch (Exception e)
                 {
@@ -99,7 +120,7 @@ namespace HaystackContinued
         /// <param name="filename">File name in images directory. Path is hardcoded: PluginData/HrmHaystack/images/</param>
         private static void LoadImage(ref Texture2D targ, string filename)
         {
-            targ.LoadImage(System.IO.File.ReadAllBytes(filename));
+            targ.LoadImage(File.ReadAllBytes(filename));
         }
 
         public static GUIStyle winStyle;
@@ -176,5 +197,7 @@ namespace HaystackContinued
             textSituationStyle.padding = new RectOffset(0, 0, 0, 0);
             //textSituationStyle.stretchWidth = true;
         }
+
+        
     }
 }
