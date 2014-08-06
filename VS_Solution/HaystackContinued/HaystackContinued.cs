@@ -438,16 +438,33 @@ namespace HaystackContinued
 
             GUILayout.BeginVertical();
 
-            bool vesselClicked = false;
-
             foreach (var kv in groupedBodyVessel)
             {
                 var body = kv.Key;
                 var vessels = kv.Value;
-                GUILayout.Label(body.name, Resources.textListHeaderStyle);
+
+                var selected = body == tmpBodySelected;
+
+                selected = GUILayout.Toggle(selected, new GUIContent(body.name), GUI.skin.button);
+
+                if (selected)
+                {
+                    this.tmpBodySelected = body;
+                }
+                else
+                {
+                    if (tmpBodySelected == body)
+                    {
+                        tmpBodySelected = null;
+                    }
+                    continue;
+                }
 
                 foreach (var vessel in vessels)
                 {
+                    GUILayout.BeginHorizontal();
+                    GUILayout.Space(20f);
+
                     GUILayout.BeginVertical(vessel == tmpVesselSelected
                         ? Resources.buttonVesselListPressed
                         : GUI.skin.button);
@@ -456,16 +473,16 @@ namespace HaystackContinued
                         string.Format("{0}. {1}{2}", vessel.vesselType.ToString(), Vessel.GetSituationString(vessel),
                             (FlightGlobals.ActiveVessel == vessel && vessel != null) ? ". Currently active" : ""),
                         Resources.textSituationStyle);
+                    
                     GUILayout.EndVertical();
+                    GUILayout.EndHorizontal();
 
-                    // First, determine which button was clicked within ScrollView and preselect vessel
                     if (Event.current != null && Event.current.type == EventType.Repaint && Input.GetMouseButtonDown(0))
                     {
                         Rect tmpRect = GUILayoutUtility.GetLastRect();
 
                         if (tmpRect.Contains(Event.current.mousePosition))
                         {
-                            vesselClicked = true;
                             tmpVesselPreSelected = vessel;
                             tmpBodyPreSelected = null;
                             typeSelected = "vessel"; // TODO: this should probably be an enum
@@ -480,7 +497,7 @@ namespace HaystackContinued
 
         private void drawDefaultScroller()
         {
-// If there's anything to display, do it in a loop
+            // If there's anything to display, do it in a loop
             if ((filteredVesselList != null && filteredVesselList.Any()) || showCelestialBodies == true)
             {
                 #region scroller
