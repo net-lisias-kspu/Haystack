@@ -41,6 +41,23 @@ namespace HaystackContinued
 			Debug.Log(String.Format("Haystack: {0}", message));
 		}
 
+	    public static void Log(string format, params object[] objects)
+	    {
+	        Log(string.Format(format, objects));
+	    }
+
+        [System.Diagnostics.Conditional("DEBUG")]
+	    public static void DebugLog(string message)
+	    {
+              Debug.Log(String.Format("Haystack: {0}", message));
+	    }
+
+        [System.Diagnostics.Conditional("DEBUG")]
+        public static void DebugLog(string format, params object[] objects)
+        {
+            DebugLog(string.Format(format, objects));
+        }
+
 	    internal static void RequestCameraFocus(Vessel vessel)
 	    {
 	        var spaceTracking = (SpaceTracking) Object.FindObjectOfType(typeof (SpaceTracking));
@@ -81,6 +98,7 @@ namespace HaystackContinued
 	        {
 	            if (mapObject.vessel != null && mapObject.vessel.GetInstanceID() == instanceID)
 	            {
+                    DebugLog("vessel map object: " + mapObject.vessel.name);
 	                cam.SetTarget(mapObject);
 	                break;
 	            }
@@ -104,6 +122,8 @@ namespace HaystackContinued
 	    {
 	        get { return HighLogic.LoadedScene == GameScenes.TRACKSTATION; }
 	    }
+
+
 	}
 
     public static class Extensions
@@ -114,6 +134,16 @@ namespace HaystackContinued
             rect.y = Mathf.Clamp(rect.y, 0, Screen.height - rect.height);
 
             return rect;
+        }
+
+        public static bool IsEmpty<T>(this List<T> list)
+        {
+            return list.Count == 0;
+        }
+
+        public static string SafeName(this Vessel vessel)
+        {
+            return vessel == null ? "null" : vessel.name;
         }
     }
 }

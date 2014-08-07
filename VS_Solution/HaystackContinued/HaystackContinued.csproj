@@ -36,7 +36,7 @@
     <RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="HSSettings.cs" />
+    <Compile Include="Settings.cs" />
     <Compile Include="HSUtils.cs" />
     <Compile Include="HaystackContinued.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
