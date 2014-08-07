@@ -130,6 +130,8 @@ namespace HaystackContinued
         public static GUIStyle buttonVesselTypeStyle;
         public static GUIStyle buttonVesselListName, buttonVesselListNameAct;
         public static GUIStyle textListHeaderStyle, textSituationStyle, buttonVesselListPressed;
+        public static GUIStyle buttonSearchClearStyle;
+        public static GUIStyle buttonTextOnly;
 
         /// <summary>
         /// Set up styles
@@ -142,6 +144,15 @@ namespace HaystackContinued
             winStyle = new GUIStyle(GUI.skin.window);
             // winStyle.stretchWidth = true;
             // winStyle.stretchHeight = false;
+
+            //search clear button
+            buttonSearchClearStyle = new GUIStyle(GUI.skin.button);
+            buttonSearchClearStyle.padding = new RectOffset(1, 3, 3, 1);
+            buttonSearchClearStyle.margin = new RectOffset(1, 2, 4, 2);
+            buttonSearchClearStyle.fixedWidth = 24f;
+            buttonSearchClearStyle.fixedHeight = 24f;
+            buttonSearchClearStyle.alignment = TextAnchor.MiddleCenter;
+            
 
             // Switch to vessel button
             buttonGoStyle = new GUIStyle(GUI.skin.button);
@@ -172,6 +183,14 @@ namespace HaystackContinued
             buttonVesselListPressed.normal = GUI.skin.button.active;
             buttonVesselListPressed.hover = GUI.skin.button.active;
             buttonVesselListPressed.active = GUI.skin.button.normal;
+            buttonVesselListPressed.padding.top += 2;
+            buttonVesselListPressed.padding.bottom -= 2;
+
+
+            buttonTextOnly = new GUIStyle(GUI.skin.button);
+            buttonTextOnly.padding.top += 2;
+            buttonTextOnly.padding.bottom -= 2;
+
 
             // Each list item is actually a button
             buttonVesselListName = new GUIStyle(GUI.skin.button);

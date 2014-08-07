@@ -331,9 +331,18 @@ namespace HaystackContinued
 
             #endregion vessel types
 
+            //Search area
+
             GUILayout.BeginHorizontal();
-            GUILayout.Label("Find:");
+            GUILayout.Label("Search:");
             filterVar = GUILayout.TextField(filterVar, GUILayout.MinWidth(50.0F), GUILayout.ExpandWidth(true));
+
+            // clear search text
+            if (GUILayout.Button("x", Resources.buttonSearchClearStyle))
+            {
+                filterVar = "";
+            }
+
             GUILayout.EndHorizontal();
 
             // handle tooltips here so it paints over the find entry
@@ -362,7 +371,7 @@ namespace HaystackContinued
             //group by toggle
             var previous = this.groupByOrbitingBody;
             this.groupByOrbitingBody = GUILayout.Toggle(this.groupByOrbitingBody, new GUIContent("GB", "Group by orbit"),
-                Resources.buttonVesselTypeStyle);
+                Resources.buttonTextOnly, GUILayout.Width(32f), GUILayout.Height(32f));
 
             if (previous != this.groupByOrbitingBody)
             {
@@ -492,7 +501,7 @@ namespace HaystackContinued
 
                     var selected = body == selectedBody;
 
-                    selected = GUILayout.Toggle(selected, new GUIContent(body.name), GUI.skin.button);
+                    selected = GUILayout.Toggle(selected, new GUIContent(body.name), Resources.buttonTextOnly);
 
                     if (selected)
                     {
@@ -514,7 +523,7 @@ namespace HaystackContinued
 
                         GUILayout.BeginVertical(vessel == this.selectedVessel 
                             ? Resources.buttonVesselListPressed
-                            : GUI.skin.button);
+                            : Resources.buttonTextOnly);
                         
                         GUILayout.Label(vessel.vesselName, Resources.textListHeaderStyle);
                         
@@ -627,7 +636,7 @@ namespace HaystackContinued
 
                 foreach (var vessel in filteredVessels)
                 {
-                    GUILayout.BeginVertical(vessel == this.SelectedVessel ? Resources.buttonVesselListPressed : GUI.skin.button);
+                    GUILayout.BeginVertical(vessel == this.SelectedVessel ? Resources.buttonVesselListPressed : Resources.buttonTextOnly);
                     GUILayout.Label(vessel.vesselName, Resources.textListHeaderStyle);
                     
                     var labelText = string.Format("{0}. {1}{2}", vessel.vesselType, Vessel.GetSituationString(vessel),
@@ -658,7 +667,7 @@ namespace HaystackContinued
                 {
                     foreach (var body in filteredBodies)
                     {
-                        GUILayout.BeginVertical(body == this.SelectedBody ? Resources.buttonVesselListPressed : GUI.skin.button);
+                        GUILayout.BeginVertical(body == this.SelectedBody ? Resources.buttonVesselListPressed : Resources.buttonTextOnly);
                         GUILayout.Label(body.name, Resources.textListHeaderStyle);
                         GUILayout.EndVertical();
 

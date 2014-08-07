@@ -24,12 +24,6 @@ namespace HaystackContinued
 	    private const string Visible = "visible";
 
 	    private readonly Dictionary<string, Rect> windowPositions = new Dictionary<string, Rect>();
-	    
-	    static Settings()
-	    {
-            HSUtils.DebugLog("Settings#staticInit");
-	    
-	    }
 
 	    public Settings()
 	    {
