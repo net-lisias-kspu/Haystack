@@ -17,8 +17,10 @@ namespace HaystackContinued
 
             Resources.PopulateVesselTypes(ref Resources.vesselTypesList);
             Resources.vesselTypesList.Sort(new HSUtils.SortByWeight());
-
+            
             this.Settings = new Settings();
+
+            this.InvokeRepeating("RepeatingTask", 0, 30F);
         }
 
         // seems to be a unity idiom
@@ -29,6 +31,11 @@ namespace HaystackContinued
                        (instance =
                            (HaystackResourceLoader) UnityEngine.Object.FindObjectOfType(typeof (HaystackResourceLoader)));
             }
+        }
+
+        public void RepeatingTask()
+        {
+            this.Settings.Save();
         }
     }
 
@@ -42,6 +49,11 @@ namespace HaystackContinued
                 return HSUtils.IsMapActive;
             }
         }
+
+        protected override string SettingsName
+        {
+            get { return "flight"; }
+        }
     }
 
     [KSPAddon(KSPAddon.Startup.TrackingStation, false)]
@@ -53,6 +65,11 @@ namespace HaystackContinued
             {
                 return HSUtils.IsTrackingCenterActive;
             }
+        }
+
+        protected override string SettingsName
+        {
+            get { return "tracking_center"; }
         }
     }
 }

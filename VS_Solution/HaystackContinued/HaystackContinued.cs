@@ -29,7 +29,7 @@ namespace HaystackContinued
 	};
 
 
-    public class HaystackContinued : MonoBehaviour
+    public abstract class HaystackContinued : MonoBehaviour
     {
         private Vessel switchToMe;
         private List<Vessel> hsVesselList = new List<Vessel>(); 
@@ -54,23 +54,38 @@ namespace HaystackContinued
 
         public void Awake()
         {
-            HSUtils.DebugLog("awake Behaviour, DLL loaded");
+            HSUtils.DebugLog("HaystackContinued#Awake");
 
             typeCount = new Dictionary<string, int>();
-
-            CancelInvoke();
-
             windowId = Resources.rnd.Next(1000, 2000000);
+        }
+
+        public void OnEnable()
+        {
+            HSUtils.DebugLog("HaystackContinued#OnEnable");
 
             GameEvents.onPlanetariumTargetChanged.Add(OnMapTargetChange);
+
+            this.WinRect = HaystackResourceLoader.Instance.Settings.WindowPositions[this.SettingsName];
 
             InvokeRepeating("MainHSActivity", 5.0F, 5.0F); // Refresh from time to time just in case
             InvokeRepeating("RefreshDataSaveSettings", 0, 30.0F);
         }
 
+        public void OnDisable()
+        {
+            HSUtils.DebugLog("HaystackContinued#OnDisable");
+            CancelInvoke();
+
+            GameEvents.onPlanetariumTargetChanged.Remove(this.OnMapTargetChange);
+            HaystackResourceLoader.Instance.Settings.WindowPositions[this.SettingsName] = this.WinRect;
+
+            HaystackResourceLoader.Instance.Settings.Save();
+        }
+
         public void OnDestory()
         {
-            GameEvents.onPlanetariumTargetChanged.Remove(this.OnMapTargetChange);
+            HSUtils.DebugLog("HaystackContinued#OnDestroy");
         }
 
         private void OnMapTargetChange(MapObject mapObject)
@@ -207,6 +222,8 @@ namespace HaystackContinued
             if (!IsGuiScene) return;
             
             this.RefetchVesselList();
+
+            HaystackResourceLoader.Instance.Settings.WindowPositions[this.SettingsName] = this.WinRect;
         }
 
         /// <summary>
@@ -269,6 +286,8 @@ namespace HaystackContinued
                 return false;
             }
         }
+
+        protected abstract string SettingsName { get; }
 
         // For the scrollview
         private Vector2 scrollPos = Vector2.zero;
