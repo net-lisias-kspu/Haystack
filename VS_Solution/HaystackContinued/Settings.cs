@@ -66,6 +66,12 @@ namespace HaystackContinued
 
 		        this.windowPositions[name] = position;
 		    }
+
+		    var nodeTypeVisibility = config.GetNode(NodeVesselTypeVisibility) ?? new ConfigNode();
+		    foreach (var i in Resources.vesselTypesList)
+		    {
+		        i.visible = nodeTypeVisibility.GetBuiltinValue(i.name, true);
+		    }
 		}
 
 	    public class WindowPositionsIndexer
@@ -116,8 +122,7 @@ namespace HaystackContinued
 	        var typeList = Resources.vesselTypesList;
 	        foreach (var type in typeList)
 	        {
-	            var node = nodeVesselTypeVisibility.AddNode(type.name);
-                node.AddValue(Visible, type.visible);
+	            nodeVesselTypeVisibility.AddValue(type.name, type.visible);
 	        }
 
             t.Save(SettingsFile);
