@@ -31,7 +31,6 @@ namespace HaystackContinued
 			}
 		}
 
-
 		/// <summary>
 		/// Standard debug log with plugin name attached
 		/// </summary>

@@ -32,12 +32,11 @@ namespace HaystackContinued
 
     public abstract class HaystackContinued : MonoBehaviour
     {
-        private Vessel switchToMe;
         private List<Vessel> hsVesselList = new List<Vessel>(); 
         private List<Vessel> filteredVesselList = new List<Vessel>();
 
         private List<CelestialBody> filteredBodyList = new List<CelestialBody>();
-        private Dictionary<CelestialBody, List<Vessel>> groupedBodyVessel = new Dictionary<CelestialBody, List<Vessel>>();
+        private readonly Dictionary<CelestialBody, List<Vessel>> groupedBodyVessel = new Dictionary<CelestialBody, List<Vessel>>();
         private bool showCelestialBodies = true;
 
         // number of vessles per type
@@ -272,7 +271,7 @@ namespace HaystackContinued
                 this.winRect = this.winRect.ClampToScreen();
             }
             
-            this.winRect = GUILayout.Window(windowId, this.winRect, MainWindowConstructor,
+            this.winRect = GUILayout.Window(windowId, this.winRect, this.mainWindowConstructor,
                 string.Format("Haystack {0}", Settings.version), Resources.winStyle, GUILayout.MinWidth(120),
                 GUILayout.MinHeight(300));
 
@@ -298,18 +297,9 @@ namespace HaystackContinued
 
         protected abstract string SettingsName { get; }
 
-        // For the scrollview
-        private Vector2 scrollPos = Vector2.zero;
-
-        // Keep track of selections in GUILayouts
-        private Vessel tmpVesselSelected;
-        private CelestialBody tmpBodySelected;
-        private string typeSelected;
-        private bool groupByOrbitingBody;
-
         private bool isGUISetup;
 
-        private void MainWindowConstructor(int windowID)
+        private void mainWindowConstructor(int windowID)
         {
             GUILayout.BeginVertical();
 

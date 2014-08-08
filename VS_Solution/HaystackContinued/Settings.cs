@@ -16,12 +16,10 @@ namespace HaystackContinued
 	    private static readonly string SettingsFile = Resources.PathPlugin + Path.DirectorySeparatorChar + "settings.cfg";
 
         
-
 	    private const string NodeSettings = "settings";
 	    private const string NodeWindowPositions = "window_positions";
 	    private const string NodeVesselTypeVisibility = "type_visibility";
 	    private const string WindowPosition = "position";
-	    private const string Visible = "visible";
 
 	    private readonly Dictionary<string, Rect> windowPositions = new Dictionary<string, Rect>();
 
