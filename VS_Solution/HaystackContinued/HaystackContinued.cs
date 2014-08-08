@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -52,6 +53,12 @@ namespace HaystackContinued
         // Search text
         private string filterVar = "";
 
+        //controls
+        private readonly ResizeHandle resizeHandle = new ResizeHandle();
+        private readonly DefaultScrollerView defaultScrollerView = new DefaultScrollerView();
+        private readonly GroupedScrollerView groupedScrollerView = new GroupedScrollerView();
+        private readonly BottomButtons bottomButtons = new BottomButtons();
+
         public void Awake()
         {
             HSUtils.DebugLog("HaystackContinued#Awake");
@@ -99,6 +106,7 @@ namespace HaystackContinued
             {
                 case MapObject.MapObjectType.VESSEL:
                     this.defaultScrollerView.SelectedVessel = mapObject.vessel;
+                    this.groupedScrollerView.SelectedVessel = mapObject.vessel;
                     break;
                 case MapObject.MapObjectType.CELESTIALBODY:
                     this.defaultScrollerView.SelectedBody = mapObject.celestialBody;
@@ -172,7 +180,7 @@ namespace HaystackContinued
                     }
                 }
 
-                if (groupByOrbitingBody)
+                if (this.bottomButtons.GroupByOrbitingBody)
                 {
                     groupedBodyVessel.Clear();
 
@@ -190,27 +198,6 @@ namespace HaystackContinued
                         list.Add(vessel);
                     }
                 }
-            }
-
-            // Detect if there's a request to switch vessel
-            if (switchToMe != null)
-            {
-                FlightGlobals.SetActiveVessel(switchToMe);
-                switchToMe = null;
-                winHidden = true;
-                filterVar = "";
-                /*
-				if (!switchToMe.loaded)
-				{
-					switchToMe.Load();
-				}
-
-				if (!HighLogic.LoadedSceneIsFlight)
-				{
-					HighLogic.LoadScene(GameScenes.FLIGHT);
-					CameraManager.Instance.SetCameraFlight();
-				}
-				*/
             }
         }
 
@@ -234,6 +221,13 @@ namespace HaystackContinued
             if (!this.isGUISetup)
             {
                 Resources.LoadStyles();
+
+                this.groupedScrollerView.GUISetup(this.bottomButtons);
+                this.defaultScrollerView.GUISetup(this.bottomButtons);
+                this.bottomButtons.GUISetup(this.groupedScrollerView, this.defaultScrollerView);
+
+                this.bottomButtons.OnSwitchVessel += vessel => this.StartCoroutine(SwitchToVessel(vessel));
+
                 this.isGUISetup = true;
             }
 
@@ -241,6 +235,21 @@ namespace HaystackContinued
             {
                 DrawGUI();
             }
+        }
+
+        private static IEnumerator SwitchToVessel(Vessel vessel)
+        {
+            yield return new WaitForFixedUpdate();
+
+            if (HSUtils.IsTrackingCenterActive)
+            {
+                HSUtils.TrackingSwitchToVessel(vessel);
+            }
+            else
+            {
+                FlightGlobals.SetActiveVessel(vessel);
+            }
+            
         }
 
         public Rect WinRect
@@ -297,9 +306,7 @@ namespace HaystackContinued
         private CelestialBody tmpBodySelected;
         private string typeSelected;
         private bool groupByOrbitingBody;
-        private readonly ResizeHandle resizeHandle = new ResizeHandle();
-        private readonly DefaultScrollerView defaultScrollerView = new DefaultScrollerView();
-        private readonly GroupedScrollerView groupedScrollerView = new GroupedScrollerView();
+
         private bool isGUISetup;
 
         private void MainWindowConstructor(int windowID)
@@ -354,7 +361,7 @@ namespace HaystackContinued
                 GUI.Box(new Rect(mousePosition.x - 30, mousePosition.y - 30, width, 25), GUI.tooltip);
             }
 
-            if (groupByOrbitingBody)
+            if (this.bottomButtons.GroupByOrbitingBody)
             {
                 this.groupedScrollerView.Draw(filteredVesselList, groupedBodyVessel);
             }   
@@ -363,66 +370,7 @@ namespace HaystackContinued
                 this.defaultScrollerView.Draw(filteredVesselList, filteredBodyList);
             }
 
-
-            #region bottom buttons - horizontal
-
-            GUILayout.BeginHorizontal();
-
-            //group by toggle
-            var previous = this.groupByOrbitingBody;
-            this.groupByOrbitingBody = GUILayout.Toggle(this.groupByOrbitingBody, new GUIContent("GB", "Group by orbit"),
-                Resources.buttonTextOnly, GUILayout.Width(32f), GUILayout.Height(32f));
-
-            if (previous != this.groupByOrbitingBody)
-            {
-                this.defaultScrollerView.Reset();
-            }
-
-            GUILayout.FlexibleSpace();
-
-            // Disable buttons for current vessel or nothing selected
-            if (IsTargetButtonDisabled())
-            {
-                GUI.enabled = false;
-            }
-
-            //TODO: fix these
-            // target button
-            if (GUILayout.Button(Resources.btnTarg, Resources.buttonTargStyle))
-            {
-                if (typeSelected == "vessel")
-                {
-                    FlightGlobals.fetch.SetVesselTarget(tmpVesselSelected);
-                }
-                else if (typeSelected == "body")
-                {
-                    FlightGlobals.fetch.SetVesselTarget(tmpBodySelected);
-                }
-            }
-
-            GUI.enabled = true;
-
-            // Disable fly button if we selected a body, have no selection, or selected the current vessel
-            if (IsFlyButtonDisabled())
-            {
-                GUI.enabled = false;
-            }
-
-            // fly button
-            if (GUILayout.Button(Resources.btnGoHover, Resources.buttonGoStyle))
-            {
-                if (typeSelected == "vessel")
-                {
-                    // Delayed switch to vessel
-                    switchToMe = tmpVesselSelected;
-                }
-            }
-
-            GUI.enabled = true;
-
-            GUILayout.EndHorizontal();
-
-            #endregion bottom buttons
+            this.bottomButtons.Draw();
 
             GUILayout.EndVertical();
 
@@ -438,42 +386,19 @@ namespace HaystackContinued
             GUI.DragWindow();
         }
 
-        private bool IsTargetButtonDisabled()
-        {
-            bool returnVal = true;
-
-            if (typeSelected == "vessel")
-            {
-                returnVal = (tmpVesselSelected == null || FlightGlobals.ActiveVessel == tmpVesselSelected);
-                //HSUtils.Log(string.Format("IsTargetButtonDisabled: {0} {1} {2} {3}", returnVal, typeSelected, tmpVesselSelected, FlightGlobals.ActiveVessel));
-            }
-            else if (typeSelected == "body")
-            {
-                returnVal = (tmpBodySelected == null || FlightGlobals.currentMainBody == tmpBodySelected);
-                //HSUtils.Log(string.Format("IsTargetButtonDisabled: {0} {1} {2} {3}", returnVal, typeSelected, tmpBodySelected, FlightGlobals.currentMainBody));
-            }
-
-            return returnVal;
-        }
-
-        private bool IsFlyButtonDisabled()
-        {
-            bool returnVal = true;
-
-            if (typeSelected == "vessel")
-            {
-                returnVal = (tmpVesselSelected == null || FlightGlobals.ActiveVessel == tmpVesselSelected);
-                //HSUtils.Log(string.Format("IsFlyButtonDisabled: {0} {1} {2} {3}", typeSelected, returnVal, tmpVesselSelected, FlightGlobals.ActiveVessel));
-            }
-
-            return returnVal;
-        }
+        
 
         private class GroupedScrollerView
         {
             private Vector2 scrollPos = Vector2.zero;
             private Vessel selectedVessel;
             private CelestialBody selectedBody;
+
+            public Vessel SelectedVessel
+            {
+                get { return this.selectedVessel; } 
+                set { this.selectedVessel = value; }
+            }
 
 
             internal void Draw(List<Vessel> filteredVessels, Dictionary<CelestialBody, List<Vessel>> groupedBodyVessel)
@@ -579,6 +504,18 @@ namespace HaystackContinued
                     HSUtils.FocusMapObject(this.selectedVessel.GetInstanceID());
                 }
             }
+
+            internal void GUISetup(BottomButtons bottomButtons)
+            {
+                bottomButtons.OnGroupByChanged += view => this.reset();
+            }
+
+            private void reset()
+            {
+                this.scrollPos = Vector2.zero;
+                this.selectedVessel = null;
+                this.selectedBody = null;
+            }
         }
 
         private class DefaultScrollerView
@@ -609,7 +546,7 @@ namespace HaystackContinued
                 }
             }
 
-            internal void Reset()
+            private void reset()
             {
                 this.scrollPos = Vector2.zero;
                 this.selectedVessel = null;
@@ -742,6 +679,11 @@ namespace HaystackContinued
                 OnSelectionChangedHandler handler = this.OnSelectionChanged;
                 if (handler != null) handler(scrollerview);
             }
+
+            internal void GUISetup(BottomButtons bottomButtons)
+            {
+                bottomButtons.OnGroupByChanged += view => this.reset();
+            }
         }
 
         private class ResizeHandle
@@ -793,5 +735,144 @@ namespace HaystackContinued
                 }
             }
         } // ResizeHandle
+
+
+        private class BottomButtons
+        {
+            private GroupedScrollerView groupedScrollerView;
+            private DefaultScrollerView defaultScrollerView;
+
+            internal bool GroupByOrbitingBody { get; set; }
+
+            private void groupByButton()
+            {
+                //group by toggle
+                var previous = this.GroupByOrbitingBody;
+                this.GroupByOrbitingBody = GUILayout.Toggle(this.GroupByOrbitingBody, new GUIContent("GB", "Group by orbit"),
+                    Resources.buttonTextOnly, GUILayout.Width(32f), GUILayout.Height(32f));
+
+                if (previous != this.GroupByOrbitingBody)
+                {
+                    this.fireOnGroupByChanged(this);
+                }
+            }
+
+            private void targetButton()
+            {
+                // Disable buttons for current vessel or nothing selected
+                if (this.isTargetButtonDisabled())
+                {
+                    GUI.enabled = false;
+                }
+
+                // target button
+                if (GUILayout.Button(Resources.btnTarg, Resources.buttonTargStyle))
+                {
+                    ITargetable selected = null;
+
+                    if (this.GroupByOrbitingBody)
+                    {
+                        selected = this.groupedScrollerView.SelectedVessel;
+                    }
+                    else
+                    {
+                        selected = (ITargetable)this.defaultScrollerView.SelectedVessel ?? this.defaultScrollerView.SelectedBody;
+                    }
+
+                    if (selected != null)
+                    {
+                        FlightGlobals.fetch.SetVesselTarget(selected);
+                    }
+                }
+
+                GUI.enabled = true;
+            }
+
+            private void flyButton()
+            {
+                // Disable fly button if we selected a body, have no selection, or selected the current vessel
+                if (this.isFlyButtonDisabled())
+                {
+                    GUI.enabled = false;
+                }
+
+                // fly button
+                if (GUILayout.Button(Resources.btnGoHover, Resources.buttonGoStyle))
+                {
+                    this.fireOnSwitchVessel(this.getSelectedVessel());
+                }
+
+                GUI.enabled = true;
+            }
+
+            internal void Draw()
+            {
+                GUILayout.BeginHorizontal();
+                
+                this.groupByButton();
+                
+                GUILayout.FlexibleSpace();
+
+                this.targetButton();
+                this.flyButton();
+
+                GUILayout.EndHorizontal();
+            }
+
+            private bool isTargetButtonDisabled()
+            {
+                if (HSUtils.IsTrackingCenterActive)
+                {
+                    return true;
+                }
+
+                if (this.GroupByOrbitingBody)
+                {
+                    return this.groupedScrollerView.SelectedVessel == null ||
+                           this.groupedScrollerView.SelectedVessel == FlightGlobals.ActiveVessel;
+                }
+
+                return this.defaultScrollerView.SelectedVessel == null ||
+                       FlightGlobals.ActiveVessel == this.defaultScrollerView.SelectedVessel;
+            }
+
+            private bool isFlyButtonDisabled()
+            {
+                var vessel = this.GroupByOrbitingBody ? this.groupedScrollerView.SelectedVessel : this.defaultScrollerView.SelectedVessel;
+
+                return vessel == null || FlightGlobals.ActiveVessel == vessel;
+            }
+
+            private Vessel getSelectedVessel()
+            {
+                return this.GroupByOrbitingBody
+                    ? this.groupedScrollerView.SelectedVessel
+                    : this.defaultScrollerView.SelectedVessel;
+            }
+
+            internal delegate void OnGroupByChangedHandler(BottomButtons view);
+            internal event OnGroupByChangedHandler OnGroupByChanged;
+            protected virtual void fireOnGroupByChanged(BottomButtons view)
+            {
+                var handler = this.OnGroupByChanged;
+                if (handler != null) handler(view);
+            }
+
+            internal delegate void OnSwitchVesselHandler(Vessel vessel);
+            internal event OnSwitchVesselHandler OnSwitchVessel;
+            protected virtual void fireOnSwitchVessel(Vessel vessel)
+            {
+                var handler = this.OnSwitchVessel;
+                if (handler != null) handler(vessel);
+            }
+
+            internal void GUISetup(GroupedScrollerView groupedScrollerView, DefaultScrollerView defaultScrollerView)
+            {
+                this.groupedScrollerView = groupedScrollerView;
+                this.defaultScrollerView = defaultScrollerView;
+            }
+
+            
+        }
     } // HaystackContinued
 }

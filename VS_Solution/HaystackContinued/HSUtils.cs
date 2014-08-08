@@ -68,6 +68,15 @@ namespace HaystackContinued
 	        method.Invoke(spaceTracking, new object[] {vessel});
 	    }
 
+	    internal static void TrackingSwitchToVessel(Vessel vessel)
+	    {
+	        var spaceTracking = (SpaceTracking) Object.FindObjectOfType(typeof (SpaceTracking));
+
+	        var method = spaceTracking.GetType().GetMethod("BoardVessel", BindingFlags.NonPublic | BindingFlags.Instance);
+
+	        method.Invoke(spaceTracking, new object[] {vessel});
+	    }
+
 	    /// <summary>
 	    /// Focuses the map object matching the intanceID passed in
 	    /// if the scene is map mode.
