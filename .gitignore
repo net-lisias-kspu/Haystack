@@ -1,0 +1,18 @@
+KSP
+*.dll
+References/
+VS_Solution/HaystackContinued/obj
+VS_Solution/HaystackContinued/bin
+*.suo
+
+# ReSharper is a .NET coding add-in
+_ReSharper*/
+*.[Rr]e[Ss]harper
+
+# Windows image file caches
+Thumbs.db
+thumbs.db
+
+# Mac desktop service store files
+.DS_Store
+*.zip
