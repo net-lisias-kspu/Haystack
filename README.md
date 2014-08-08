@@ -36,6 +36,8 @@ If you wish to test and report errors with this plugin please make sure you have
 6. Please keep in mind that a bug / error is not the same as a feature request. 
 
 
-##Licence
 
-This code is licensed under The MIT License (MIT).
+##Licence
+The source code is licensed under MIT Licence.
+
+All other materials is licensed under a [Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License](http://creativecommons.org/licenses/by-nc-sa/4.0/).

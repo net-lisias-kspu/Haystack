@@ -272,7 +272,7 @@ namespace HaystackContinued
             }
             
             this.winRect = GUILayout.Window(windowId, this.winRect, this.mainWindowConstructor,
-                string.Format("Haystack {0}", Settings.version), Resources.winStyle, GUILayout.MinWidth(120),
+                string.Format("Haystack Continued {0}", Settings.version), Resources.winStyle, GUILayout.MinWidth(120),
                 GUILayout.MinHeight(300));
 
             if (GUI.Button(new Rect(this.winRect.x + (this.winRect.width/2 - 24), this.winRect.y - 9, 48, 10), "",
