@@ -54,9 +54,15 @@ namespace HaystackContinued
 
         //controls
         private readonly ResizeHandle resizeHandle = new ResizeHandle();
-        private readonly DefaultScrollerView defaultScrollerView = new DefaultScrollerView();
-        private readonly GroupedScrollerView groupedScrollerView = new GroupedScrollerView();
+        private readonly DefaultScrollerView defaultScrollerView;
+        private readonly GroupedScrollerView groupedScrollerView;
         private readonly BottomButtons bottomButtons = new BottomButtons();
+
+        protected HaystackContinued()
+        {
+            this.defaultScrollerView = new DefaultScrollerView(this);
+            this.groupedScrollerView = new GroupedScrollerView(this);
+        }
 
         public void Awake()
         {
@@ -306,7 +312,8 @@ namespace HaystackContinued
             #region vessel types - horizontal
 
             GUILayout.BeginHorizontal();
-
+            GUILayout.FlexibleSpace();
+            
             // Vessels
             for (int i = 0; i < Resources.vesselTypesList.Count(); i++)
             {
@@ -324,6 +331,8 @@ namespace HaystackContinued
                 Resources.buttonVesselTypeStyle);
             defaultScrollerView.showCelestialBodies = showCelestialBodies;
 
+            GUILayout.FlexibleSpace();
+
             GUILayout.EndHorizontal();
 
             #endregion vessel types
@@ -331,7 +340,7 @@ namespace HaystackContinued
             //Search area
 
             GUILayout.BeginHorizontal();
-            GUILayout.Label("Search:");
+            GUILayout.Label("Search:", Resources.textSearchStyle);
             filterVar = GUILayout.TextField(filterVar, GUILayout.MinWidth(50.0F), GUILayout.ExpandWidth(true));
 
             // clear search text
@@ -340,16 +349,17 @@ namespace HaystackContinued
                 filterVar = "";
             }
 
-            GUILayout.EndHorizontal();
-
             // handle tooltips here so it paints over the find entry
+            // TODO: clamp to window position.
             if (GUI.tooltip != "")
             {
                 // get mouse position
                 var mousePosition = Event.current.mousePosition;
-                var width = GUI.tooltip.Length*11;
+                var width = GUI.tooltip.Length * 11;
                 GUI.Box(new Rect(mousePosition.x - 30, mousePosition.y - 30, width, 25), GUI.tooltip);
             }
+
+            GUILayout.EndHorizontal();
 
             if (this.bottomButtons.GroupByOrbitingBody)
             {
@@ -365,7 +375,6 @@ namespace HaystackContinued
             GUILayout.EndVertical();
 
             this.resizeHandle.Draw(ref this.winRect);
-
 
             // If user input detected, force mapObject refresh
             if (GUI.changed)
@@ -383,6 +392,13 @@ namespace HaystackContinued
             private Vector2 scrollPos = Vector2.zero;
             private Vessel selectedVessel;
             private CelestialBody selectedBody;
+            private readonly VesselInfoView vesselInfoView;
+
+
+            internal GroupedScrollerView(HaystackContinued haystackContinued)
+            {
+                this.vesselInfoView = new VesselInfoView(haystackContinued);
+            }
 
             public Vessel SelectedVessel
             {
@@ -433,28 +449,9 @@ namespace HaystackContinued
 
                     foreach (var vessel in vessels)
                     {
-                        GUILayout.BeginHorizontal();
-                        GUILayout.Space(20f);
+                        this.vesselInfoView.Draw(vessel, vessel == this.selectedVessel);
 
-                        GUILayout.BeginVertical(vessel == this.selectedVessel 
-                            ? Resources.buttonVesselListPressed
-                            : Resources.buttonTextOnly);
-                        
-                        GUILayout.Label(vessel.vesselName, Resources.textListHeaderStyle);
-                        
-                        GUILayout.Label(
-                            string.Format("{0}. {1}{2}", vessel.vesselType.ToString(), Vessel.GetSituationString(vessel),
-                                (FlightGlobals.ActiveVessel == vessel) ? ". Currently active" : ""),
-                            Resources.textSituationStyle);
-
-                        GUILayout.EndVertical();
-
-                        var check = GUILayoutUtility.GetLastRect();
-                        
-                        GUILayout.EndHorizontal();
-
-                        if (Event.current == null || Event.current.type != EventType.Repaint ||
-                            !Input.GetMouseButtonDown(0) || !check.Contains(Event.current.mousePosition) || this.selectedVessel == vessel) 
+                        if (!this.vesselInfoView.Clicked)
                         {
                             continue;
                         }
@@ -474,6 +471,7 @@ namespace HaystackContinued
                 }
 
                 this.selectedVessel = preSelectedVessel;
+                this.vesselInfoView.Reset();
 
                 this.changeCameraTarget();
             }
@@ -510,10 +508,17 @@ namespace HaystackContinued
 
         private class DefaultScrollerView
         {
-
             private Vector2 scrollPos = Vector2.zero;
             private Vessel selectedVessel;
             private CelestialBody selectedBody;
+
+            private VesselInfoView vesselInfoView;
+
+            internal DefaultScrollerView(HaystackContinued haystackContinued)
+            {
+                this.vesselInfoView = new VesselInfoView(haystackContinued);
+            }
+
             internal bool showCelestialBodies;
 
             internal Vessel SelectedVessel
@@ -563,28 +568,13 @@ namespace HaystackContinued
 
                 foreach (var vessel in filteredVessels)
                 {
-                    GUILayout.BeginVertical(vessel == this.SelectedVessel ? Resources.buttonVesselListPressed : Resources.buttonTextOnly);
-                    GUILayout.Label(vessel.vesselName, Resources.textListHeaderStyle);
-                    
-                    var labelText = string.Format("{0}. {1}{2}", vessel.vesselType, Vessel.GetSituationString(vessel),
-                        (FlightGlobals.ActiveVessel == vessel) ? ". Currently active" : "");
+                    this.vesselInfoView.Draw(vessel, vessel == this.selectedVessel);
 
-                    GUILayout.Label(labelText, Resources.textSituationStyle);
-                    GUILayout.EndVertical();
-
-                    var check = GUILayoutUtility.GetLastRect();
-
-                    if (Event.current == null || Event.current.type != EventType.Repaint || !Input.GetMouseButtonDown(0) ||
-                        !check.Contains(Event.current.mousePosition))
+                    if (!this.vesselInfoView.Clicked)
                     {
                         continue;
                     }
                     
-                    if (this.SelectedVessel == vessel)
-                    {
-                        continue;
-                    }
-
                     preSelectedVessel = vessel;
                     clicked = true;
                 }
@@ -635,6 +625,8 @@ namespace HaystackContinued
                 {
                     this.SelectedVessel = preSelectedVessel;
                 }
+
+                this.vesselInfoView.Reset();
 
                 this.changeCameraTarget();
                 this.fireOnSelectionChanged(this);
@@ -738,7 +730,7 @@ namespace HaystackContinued
             {
                 //group by toggle
                 var previous = this.GroupByOrbitingBody;
-                this.GroupByOrbitingBody = GUILayout.Toggle(this.GroupByOrbitingBody, new GUIContent("GB", "Group by orbit"),
+                this.GroupByOrbitingBody = GUILayout.Toggle(this.GroupByOrbitingBody, new GUIContent("GB", "Group by orbiting body"),
                     Resources.buttonTextOnly, GUILayout.Width(32f), GUILayout.Height(32f));
 
                 if (previous != this.GroupByOrbitingBody)
@@ -861,8 +853,358 @@ namespace HaystackContinued
                 this.groupedScrollerView = groupedScrollerView;
                 this.defaultScrollerView = defaultScrollerView;
             }
+        }
 
+        internal class VesselInfoView
+        {
+            internal bool Clicked { get; set; }
+            private Vessel expandedVessel = null;
+            private bool selected;
+            private DockingPortListView dockingPortListView;
+
+            private HaystackContinued haystackContinued;
+
+            internal VesselInfoView(HaystackContinued haystackContinued)
+            {
+                this.haystackContinued = haystackContinued;
+                this.dockingPortListView = new DockingPortListView(haystackContinued);
+            }
+
+            internal void Reset()
+            {
+                this.Clicked = false;
+                this.expandedVessel = null;
+                this.selected = false;
+                this.dockingPortListView.CurrentVessel = null;
+            }
+
+            internal void Draw(Vessel vessel, bool selected)
+            {
+                this.Clicked = false;
+                this.selected = selected;
+
+                GUILayout.BeginVertical(selected ? Resources.buttonVesselListPressed : Resources.buttonTextOnly);
+
+                GUILayout.BeginHorizontal();
+                GUILayout.Label(vessel.vesselName, Resources.textListHeaderStyle);
+                GUILayout.FlexibleSpace();
+                this.drawDistance(vessel);
+                GUILayout.EndHorizontal();
+
+                drawVesselInfoText(vessel);
+
+                GUILayout.EndVertical();
+
+                var check = GUILayoutUtility.GetLastRect();
+
+                if (!this.selected && Event.current != null && Event.current.type == EventType.Repaint && Input.GetMouseButtonDown(0) &&
+                    check.Contains(Event.current.mousePosition))
+                {
+                    this.Clicked = true;
+                }
+            }
+
+            private void drawDistance(Vessel vessel)
+            {
+                string distance = "";
+                var activeVessel = FlightGlobals.ActiveVessel;
+                if (!HSUtils.IsTrackingCenterActive && vessel != activeVessel)
+                {
+                    var t = activeVessel.transform;
+                    var calcDistance = Vector3.Distance(activeVessel.transform.position, vessel.transform.position);
+                    distance = HSUtils.ToSI(calcDistance) + "m";
+                }
+
+                GUILayout.Label(distance, Resources.textSituationStyle);
+            }
+
+
+            private void drawVesselInfoText(Vessel vessel)
+            {
+
+                var activeVessel = FlightGlobals.ActiveVessel;
+                var status = "";
+                if (activeVessel == vessel)
+                {
+                    status = ". Currently active";
+                }
+                else if (vessel.loaded)
+                {
+                    status = ". Loaded";
+                }
+
+                var situation = string.Format("{0}. {1}{2}",
+                    vessel.vesselType,
+                    Vessel.GetSituationString(vessel),
+                    status);
+
+                GUILayout.BeginHorizontal();
+
+                GUILayout.Label(situation, Resources.textSituationStyle);
+                if (this.selected)
+                { 
+                    GUILayout.FlexibleSpace();
+
+                    drawDockingExpandButton(vessel);
+                }
+                GUILayout.EndHorizontal();
+
+
+                this.dockingPortListView.Draw(vessel);
+            }
+
+            private void drawDockingExpandButton(Vessel vessel)
+            {
+                //can't show docking ports in the tracking center
+                if (HSUtils.IsTrackingCenterActive)
+                {
+                    return;
+                }
+
+                var enabled = vessel == this.expandedVessel;
+                var icon = enabled ? Resources.btnDownArrow : Resources.btnUpArrow;
+
+                var result = GUILayout.Toggle(enabled, new GUIContent(icon, "Show Docking Ports"), Resources.buttonExpandStyle);
+
+                if (result != enabled)
+                {
+                    this.expandedVessel = result ? vessel : null;
+                    this.dockingPortListView.CurrentVessel = this.expandedVessel;
+                }
+            }
+        }
+
+        internal class DockingPortListView
+        {
+            private Vessel currentVessel;
+            private readonly List<PortInfo> portList = new List<PortInfo>();
+            private readonly HaystackContinued haystackContinued;
+            private bool runUpdate;
+
+            private static readonly Type moduleDockingNodeNamedType;
+            private static readonly FieldInfo modulePortName;
+            private static bool namedDockingPortSupport;
+
+            static DockingPortListView()
+            {
+                try
+                {
+                   moduleDockingNodeNamedType =  AssemblyLoader.loadedAssemblies.SelectMany(a => a.assembly.GetExportedTypes())
+                        .SingleOrDefault(t => t.FullName == "DockingPortAlignment.ModuleDockingNodeNamed");
+
+                    modulePortName = moduleDockingNodeNamedType.GetField("portName",
+                        BindingFlags.Instance | BindingFlags.Public);
+
+                }
+                catch (Exception e)
+                {
+                    moduleDockingNodeNamedType = null;
+                    modulePortName = null;
+                    HSUtils.DebugLog("exception getting docking port alignment indicator type");
+                    HSUtils.DebugLog("{0}", e.Message);
+                }
+
+                if (moduleDockingNodeNamedType != null || modulePortName != null)
+                {
+                    namedDockingPortSupport = true;
+
+                    HSUtils.Log("Docking Port Alignment Indicator mod detected: using named docking node support.");
+                    HSUtils.DebugLog("{0} {1}", moduleDockingNodeNamedType.FullName, moduleDockingNodeNamedType.AssemblyQualifiedName);
+                }
+                else
+                {
+                    HSUtils.DebugLog("Docking Port Alignment Indicator mod was not detected");
+                }
+
+                if (!namedDockingPortSupport)
+                {
+                    return;
+                }
+            }
+
+            internal DockingPortListView(HaystackContinued haystackContinued)
+            {
+                this.haystackContinued = haystackContinued;
+            }
+
+            internal Vessel CurrentVessel
+            {
+                get { return this.currentVessel; }
+                set
+                {
+                    this.currentVessel = value;
+                    this.handleVesselChange();
+                }
+            }
+
+            private void handleVesselChange()
+            {
+                if (this.currentVessel == null)
+                {
+                    this.portList.Clear();
+                    this.runUpdate = false;
+                    return;
+                }
+
+                this.runUpdate = true;
+                this.haystackContinued.StartCoroutine(this.updatePortList());
+            }
+
+            public IEnumerator updatePortList()
+            {
+                while (this.runUpdate)
+                {
+                    yield return new WaitForEndOfFrame();
+
+                    this.populatePortList();
+
+                    yield return new WaitForSeconds(30f);
+                }
+            }
+
+            public void populatePortList()
+            {
+                this.portList.Clear();
+
+                var targetables = this.currentVessel.FindPartModulesImplementing<ITargetable>();
+                foreach (var targetable in targetables)
+                {
+                    var port = targetable as ModuleDockingNode;
+                    if (port == null)
+                    {
+                        continue;
+                    }
+
+                    if (port.state.StartsWith("Docked", StringComparison.OrdinalIgnoreCase))
+                    {
+                        continue;
+                    }
+
+                    var info = new PortInfo
+                    {
+                        Name = getPortName(port),
+                        PortNode = port,
+                    };
+
+                    this.portList.Add(info);
+                }
+
+                portList.Sort((a, b) => a.Name.CompareTo(b.Name));
+            }
+
+            private string getPortName(ModuleDockingNode port)
+            {
+                HSUtils.DebugLog("DockingPortListView#getPortName: start");
+
+                if (!namedDockingPortSupport)
+                {
+                    return port.part.partInfo.title;
+                }
             
+                PartModule found = null;
+                for (int i = 0; i < port.part.Modules.Count; i++)
+                {
+                    var module = port.part.Modules[i];
+                    if (module.GetType() == moduleDockingNodeNamedType)
+                    {
+                        found = module;
+                        break;
+                    }
+                }
+
+                if (found == null)
+                {
+                    HSUtils.DebugLog("DockingPortListView#getPortName: named docking port support enabled but could not find the part module");
+                    return port.part.partInfo.title;
+                }
+
+                var portName = (string) modulePortName.GetValue(found);
+
+                HSUtils.DebugLog("DockingPortListView#getPortName: found name: {0}", portName);
+
+                return portName;
+            }
+
+            internal void Draw(Vessel vessel)
+            {
+                if (this.CurrentVessel == null || vessel != this.CurrentVessel)
+                {
+                    return;
+                }
+
+                if (this.CurrentVessel.packed)
+                {
+                    GUILayout.BeginVertical();
+                    GUILayout.Label("The vessel is out of range: cannot list docking ports", Resources.textSituationStyle);
+                    GUILayout.EndVertical();
+                    return;
+                }
+
+                if (this.portList.IsEmpty())
+                {
+                    GUILayout.BeginVertical();
+                    GUILayout.Label("This vessel does not have any docking ports", Resources.textSituationStyle);
+                    GUILayout.EndVertical();
+                    return;
+                }
+
+                GUILayout.BeginVertical();
+
+                GUILayout.Label("Docking Ports", Resources.textDockingPortHeaderStyle);
+
+                foreach (var i in portList)
+                {
+                    GUILayout.Box((Texture)null, Resources.hrSepLineStyle, GUILayout.ExpandWidth(true), GUILayout.ExpandHeight(false));
+
+                    GUILayout.BeginHorizontal();
+
+                    GUILayout.Label(i.Name, Resources.textDockingPortStyle, GUILayout.ExpandHeight(true));
+                    GUILayout.FlexibleSpace();
+                    var distance = this.getDistanceText(i.PortNode);
+                    GUILayout.Label(distance, Resources.textDockingPortDistanceStyle, GUILayout.ExpandHeight(true));
+                    GUILayout.Space(10f);
+
+                    if (GUILayout.Button((string) null, Resources.buttonDockingPortTarget, GUILayout.Width(14f),
+                        GUILayout.Height(14f)))
+                    {
+                        setDockingPortTarget(i.PortNode);
+                    }
+
+                    GUILayout.Space(10f);
+
+                    GUILayout.EndHorizontal();
+                }
+
+                GUILayout.EndVertical();
+            }
+
+            private void setDockingPortTarget(ModuleDockingNode portNode)
+            {
+                var vessel = portNode.GetVessel();
+
+                //can't set target if the vessel is not loaded or is the active vessel
+                if (vessel.packed || vessel.isActiveVessel)
+                {
+                    return;
+                }
+
+                FlightGlobals.fetch.SetVesselTarget(portNode);
+            }
+
+            private string getDistanceText(ModuleDockingNode port)
+            {
+                var activeVessel = FlightGlobals.ActiveVessel;
+                var distance = Vector3.Distance(activeVessel.transform.position, port.GetTransform().position);
+
+                return string.Format("{0}m", HSUtils.ToSI(distance));
+            }
+
+            private struct PortInfo
+            {
+                internal string Name;
+                internal ModuleDockingNode PortNode;
+            }
+
         }
     } // HaystackContinued
 }
