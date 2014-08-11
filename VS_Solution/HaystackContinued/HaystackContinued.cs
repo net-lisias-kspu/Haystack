@@ -107,7 +107,6 @@ namespace HaystackContinued
                 return;
             }
 
-            
             if (mapObject == null)
             {
                 return;
@@ -1170,10 +1169,17 @@ namespace HaystackContinued
                     GUILayout.Label(distance, Resources.textDockingPortDistanceStyle, GUILayout.ExpandHeight(true));
                     GUILayout.Space(10f);
 
-                    if (GUILayout.Button((string) null, Resources.buttonDockingPortTarget, GUILayout.Width(14f),
-                        GUILayout.Height(14f)))
+                    if (FlightGlobals.ActiveVessel == this.currentVessel) 
                     {
-                        setDockingPortTarget(i.PortNode);
+                        GUILayout.Space(14f); //don't display target button for docking ports on the active vessel
+                    } 
+                    else
+                    {
+                        if (GUILayout.Button((string)null, Resources.buttonDockingPortTarget, GUILayout.Width(14f),
+                              GUILayout.Height(14f)))
+                        {
+                            setDockingPortTarget(i.PortNode);
+                        }
                     }
 
                     GUILayout.Space(10f);

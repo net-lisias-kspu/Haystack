@@ -32,10 +32,8 @@ namespace HaystackContinued
         public static string imgOutlineFilePath = String.Format("{0}/outline.png", PathImages);
         public static string imgDockingPortButtonNormalFilePath = String.Format("{0}/docking_port_button_normal.png",
             PathImages);
-
         public static string imgDockingPortButtonPressedFilePath = String.Format("{0}/docking_port_button_pressed.png",
             PathImages);
-
 
         public static Texture2D btnGo = new Texture2D(32, 32, TextureFormat.ARGB32, false);
         public static Texture2D btnGoHover = new Texture2D(32, 32, TextureFormat.ARGB32, false);
@@ -59,7 +57,6 @@ namespace HaystackContinued
         /// </summary>
         public static void LoadTextures()
         {
-            
             try
             {
                 LoadImage(ref btnGo, btnGoFilePath);
@@ -193,7 +190,6 @@ namespace HaystackContinued
             buttonSearchClearStyle.fixedHeight = 24f;
             buttonSearchClearStyle.alignment = TextAnchor.MiddleCenter;
             
-
             // Switch to vessel button
             buttonGoStyle = new GUIStyle(GUI.skin.button);
             buttonGoStyle.fixedWidth = 32.0F;
@@ -225,7 +221,6 @@ namespace HaystackContinued
             buttonVesselListPressed.active = GUI.skin.button.normal;
             buttonVesselListPressed.padding.top += 2;
             buttonVesselListPressed.padding.bottom -= 2;
-
 
             buttonTextOnly = new GUIStyle(GUI.skin.button);
             buttonTextOnly.padding.top += 2;
