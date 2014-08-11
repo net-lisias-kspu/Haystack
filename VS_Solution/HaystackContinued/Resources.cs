@@ -19,21 +19,22 @@ namespace HaystackContinued
         public static String PathPlugin = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
         public static String PathImages = String.Format("{0}/icons", PathPlugin);
 
-        public static string btnGoFilePath = String.Format("{0}/button_go.png", PathImages);
-        public static string btnGoHoverFilePath = String.Format("{0}/button_go_hover.png", PathImages);
-        public static string btnGoTargFilePath = String.Format("{0}/button_targ.png", PathImages);
-        public static string btnGoTargHoverFilePth = String.Format("{0}/button_targ.png", PathImages);
-        public static string btnFoldFilePath = String.Format("{0}/button_fold.png", PathImages);
-        public static string btnFoldHoverFilePath = String.Format("{0}/button_fold_hover.png", PathImages);
-        public static string btnBodiesFilePath = String.Format("{0}/button_bodies.png", PathImages);
-        public static string btnDownArrowFilePath = String.Format("{0}/down_arrow.png", PathImages);
-        public static string btnUpArrowFilePath = String.Format("{0}/up_arrow.png", PathImages);
-        public static string imgLineFilePath = String.Format("{0}/line.png", PathImages);
-        public static string imgOutlineFilePath = String.Format("{0}/outline.png", PathImages);
-        public static string imgDockingPortButtonNormalFilePath = String.Format("{0}/docking_port_button_normal.png",
+        private static string btnGoFilePath = String.Format("{0}/button_go.png", PathImages);
+        private static string btnGoHoverFilePath = String.Format("{0}/button_go_hover.png", PathImages);
+        private static string btnGoTargFilePath = String.Format("{0}/button_targ.png", PathImages);
+        private static string btnGoTargHoverFilePth = String.Format("{0}/button_targ.png", PathImages);
+        private static string btnFoldFilePath = String.Format("{0}/button_fold.png", PathImages);
+        private static string btnFoldHoverFilePath = String.Format("{0}/button_fold_hover.png", PathImages);
+        private static string btnBodiesFilePath = String.Format("{0}/button_bodies.png", PathImages);
+        private static string btnDownArrowFilePath = String.Format("{0}/down_arrow.png", PathImages);
+        private static string btnUpArrowFilePath = String.Format("{0}/up_arrow.png", PathImages);
+        private static string imgLineFilePath = String.Format("{0}/line.png", PathImages);
+        private static string imgOutlineFilePath = String.Format("{0}/outline.png", PathImages);
+        private static string imgDockingPortButtonNormalFilePath = String.Format("{0}/docking_port_button_normal.png",
             PathImages);
-        public static string imgDockingPortButtonPressedFilePath = String.Format("{0}/docking_port_button_pressed.png",
+        private static string imgDockingPortButtonPressedFilePath = String.Format("{0}/docking_port_button_pressed.png",
             PathImages);
+        private static string btnOrbitIconFilePath = string.Format("{0}/orbit_icon.png", PathImages);
 
         public static Texture2D btnGo = new Texture2D(32, 32, TextureFormat.ARGB32, false);
         public static Texture2D btnGoHover = new Texture2D(32, 32, TextureFormat.ARGB32, false);
@@ -48,6 +49,7 @@ namespace HaystackContinued
         public static Texture2D imgOutline = new Texture2D(18, 18, TextureFormat.ARGB32, false);
         public static Texture2D imgDockingPortButtonNormal = new Texture2D(14, 14, TextureFormat.ARGB32, false);
         public static Texture2D imgDockingPortButtonPressed = new Texture2D(14, 14, TextureFormat.ARGB32, false);
+        public static Texture2D btnOrbitIcon = new Texture2D(20, 20, TextureFormat.ARGB32, false);
 
         public static RectOffset imgOutlineBorder = new RectOffset(2, 2, 2, 2);
         public static RectOffset imgDockingPortButtonBorder = new RectOffset(2, 2, 2, 2);
@@ -70,6 +72,7 @@ namespace HaystackContinued
 
                 LoadImage(ref btnDownArrow, btnDownArrowFilePath);
                 LoadImage(ref btnUpArrow, btnUpArrowFilePath);
+                LoadImage(ref btnOrbitIcon, btnOrbitIconFilePath);
 
                 LoadImage(ref imgLine, imgLineFilePath);
                 LoadImage(ref imgOutline, imgOutlineFilePath);

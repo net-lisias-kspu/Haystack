@@ -735,8 +735,8 @@ namespace HaystackContinued
             {
                 //group by toggle
                 var previous = this.GroupByOrbitingBody;
-                this.GroupByOrbitingBody = GUILayout.Toggle(this.GroupByOrbitingBody, new GUIContent("GB", "Group by orbiting body"),
-                    Resources.buttonTextOnly, GUILayout.Width(32f), GUILayout.Height(32f));
+                this.GroupByOrbitingBody = GUILayout.Toggle(this.GroupByOrbitingBody, new GUIContent(Resources.btnOrbitIcon, "Group by orbiting body"),
+                    GUI.skin.button, GUILayout.Width(32f), GUILayout.Height(32f));
 
                 if (previous != this.GroupByOrbitingBody)
                 {
