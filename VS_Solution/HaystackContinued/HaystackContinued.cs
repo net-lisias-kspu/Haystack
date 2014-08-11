@@ -102,6 +102,12 @@ namespace HaystackContinued
 
         private void OnMapTargetChange(MapObject mapObject)
         {
+            if (!HSUtils.IsTrackingCenterActive)
+            {
+                return;
+            }
+
+            
             if (mapObject == null)
             {
                 return;
