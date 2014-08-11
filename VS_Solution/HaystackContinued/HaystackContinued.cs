@@ -1086,6 +1086,13 @@ namespace HaystackContinued
                         continue;
                     }
 
+                    // don't display docking ports that have all their attach nodes used.
+                    var usedNodeCount = port.part.attachNodes.Count(node => node.attachedPart != null);
+                    if (usedNodeCount == port.part.attachNodes.Count)
+                    {
+                        continue;
+                    }
+
                     var info = new PortInfo
                     {
                         Name = getPortName(port),
