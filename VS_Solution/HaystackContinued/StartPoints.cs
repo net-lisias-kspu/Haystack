@@ -46,7 +46,7 @@ namespace HaystackContinued
         {
             get
             {
-                return HSUtils.IsMapActive;
+                return HighLogic.LoadedScene == GameScenes.FLIGHT;
             }
         }
 
