@@ -232,9 +232,6 @@ namespace HaystackContinued
             buttonTextOnly.padding.bottom -= 2;
 
             buttonExpandStyle = new GUIStyle(GUI.skin.label);
-            buttonExpandStyle.normal.background = imgOutline;
-            buttonExpandStyle.onNormal.background = imgOutline;
-            buttonExpandStyle.border = imgOutlineBorder;
             buttonExpandStyle.imagePosition = ImagePosition.ImageOnly;
             buttonExpandStyle.alignment = TextAnchor.MiddleCenter;
             buttonExpandStyle.fixedHeight = 16;
