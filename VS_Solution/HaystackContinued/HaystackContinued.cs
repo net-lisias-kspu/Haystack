@@ -508,6 +508,7 @@ namespace HaystackContinued
                 this.scrollPos = Vector2.zero;
                 this.selectedVessel = null;
                 this.selectedBody = null;
+                this.vesselInfoView.Reset();
             }
         }
 
@@ -551,7 +552,7 @@ namespace HaystackContinued
                 this.scrollPos = Vector2.zero;
                 this.selectedVessel = null;
                 this.selectedBody = null;
-                
+                this.vesselInfoView.Reset();
             }
 
             internal void Draw(List<Vessel> filteredVessels, List<CelestialBody> filteredBodies)
@@ -1163,26 +1164,22 @@ namespace HaystackContinued
 
                     GUILayout.BeginHorizontal();
 
-                    GUILayout.Label(i.Name, Resources.textDockingPortStyle, GUILayout.ExpandHeight(true));
+                    GUILayout.Label(i.Name, Resources.textDockingPortStyle, GUILayout.ExpandHeight(false));
                     GUILayout.FlexibleSpace();
-                    var distance = this.getDistanceText(i.PortNode);
-                    GUILayout.Label(distance, Resources.textDockingPortDistanceStyle, GUILayout.ExpandHeight(true));
-                    GUILayout.Space(10f);
 
-                    if (FlightGlobals.ActiveVessel == this.currentVessel) 
+                    if (FlightGlobals.ActiveVessel != this.currentVessel) 
                     {
-                        GUILayout.Space(18f); //don't display target button for docking ports on the active vessel
-                    } 
-                    else
-                    {
+                        var distance = this.getDistanceText(i.PortNode);
+                        GUILayout.Label(distance, Resources.textDockingPortDistanceStyle, GUILayout.ExpandHeight(true));
+                        GUILayout.Space(10f);
                         if (GUILayout.Button(Resources.btnTargetAlpha, Resources.buttonDockingPortTarget, GUILayout.Width(18f),
                               GUILayout.Height(18f)))
                         {
                             setDockingPortTarget(i.PortNode);
                         }
-                    }
 
-                    GUILayout.Space(10f);
+                        GUILayout.Space(10f);
+                    }
 
                     GUILayout.EndHorizontal();
                 }
