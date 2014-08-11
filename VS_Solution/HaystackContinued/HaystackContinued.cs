@@ -1171,12 +1171,12 @@ namespace HaystackContinued
 
                     if (FlightGlobals.ActiveVessel == this.currentVessel) 
                     {
-                        GUILayout.Space(14f); //don't display target button for docking ports on the active vessel
+                        GUILayout.Space(18f); //don't display target button for docking ports on the active vessel
                     } 
                     else
                     {
-                        if (GUILayout.Button((string)null, Resources.buttonDockingPortTarget, GUILayout.Width(14f),
-                              GUILayout.Height(14f)))
+                        if (GUILayout.Button(Resources.btnTargetAlpha, Resources.buttonDockingPortTarget, GUILayout.Width(18f),
+                              GUILayout.Height(18f)))
                         {
                             setDockingPortTarget(i.PortNode);
                         }

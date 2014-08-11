@@ -13,7 +13,6 @@ namespace HaystackContinued
     /// </summary>
     public static class Resources
     {
-
         public static System.Random rnd = new System.Random();
 
         public static String PathPlugin = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
@@ -28,10 +27,10 @@ namespace HaystackContinued
         private static string btnBodiesFilePath = String.Format("{0}/button_bodies.png", PathImages);
         private static string btnDownArrowFilePath = String.Format("{0}/down_arrow.png", PathImages);
         private static string btnUpArrowFilePath = String.Format("{0}/up_arrow.png", PathImages);
+        private static string btnTargetAlphaFilePath = string.Format("{0}/button_targ_alpha.png", PathImages);
         private static string imgLineFilePath = String.Format("{0}/line.png", PathImages);
         private static string imgOutlineFilePath = String.Format("{0}/outline.png", PathImages);
-        private static string imgDockingPortButtonNormalFilePath = String.Format("{0}/docking_port_button_normal.png",
-            PathImages);
+        
         private static string imgDockingPortButtonPressedFilePath = String.Format("{0}/docking_port_button_pressed.png",
             PathImages);
         private static string btnOrbitIconFilePath = string.Format("{0}/orbit_icon.png", PathImages);
@@ -45,14 +44,14 @@ namespace HaystackContinued
         public static Texture2D btnBodies = new Texture2D(32, 32, TextureFormat.ARGB32, false);
         public static Texture2D btnDownArrow = new Texture2D(21, 21, TextureFormat.ARGB32, false);
         public static Texture2D btnUpArrow = new Texture2D(21, 21, TextureFormat.ARGB32, false);
+        public static Texture2D btnTargetAlpha = new Texture2D(32, 32, TextureFormat.ARGB32, false);
         public static Texture2D imgLine = new Texture2D(10, 4, TextureFormat.ARGB32, false);
         public static Texture2D imgOutline = new Texture2D(18, 18, TextureFormat.ARGB32, false);
-        public static Texture2D imgDockingPortButtonNormal = new Texture2D(14, 14, TextureFormat.ARGB32, false);
-        public static Texture2D imgDockingPortButtonPressed = new Texture2D(14, 14, TextureFormat.ARGB32, false);
+        public static Texture2D imgVesselListButtonPressed = new Texture2D(14, 14, TextureFormat.ARGB32, false);
         public static Texture2D btnOrbitIcon = new Texture2D(20, 20, TextureFormat.ARGB32, false);
 
         public static RectOffset imgOutlineBorder = new RectOffset(2, 2, 2, 2);
-        public static RectOffset imgDockingPortButtonBorder = new RectOffset(2, 2, 2, 2);
+        public static RectOffset imgVesselListButtonBorder = new RectOffset(2, 2, 2, 2);
 
         /// <summary>
         /// Load images into corresponding textures
@@ -73,12 +72,12 @@ namespace HaystackContinued
                 LoadImage(ref btnDownArrow, btnDownArrowFilePath);
                 LoadImage(ref btnUpArrow, btnUpArrowFilePath);
                 LoadImage(ref btnOrbitIcon, btnOrbitIconFilePath);
+                LoadImage(ref btnTargetAlpha, btnTargetAlphaFilePath);
 
                 LoadImage(ref imgLine, imgLineFilePath);
                 LoadImage(ref imgOutline, imgOutlineFilePath);
 
-                LoadImage(ref imgDockingPortButtonNormal, imgDockingPortButtonNormalFilePath);
-                LoadImage(ref imgDockingPortButtonPressed, imgDockingPortButtonPressedFilePath);
+                LoadImage(ref imgVesselListButtonPressed, imgDockingPortButtonPressedFilePath);
             }
             catch (Exception e)
             {
@@ -182,8 +181,6 @@ namespace HaystackContinued
 
             // Main window
             winStyle = new GUIStyle(GUI.skin.window);
-            // winStyle.stretchWidth = true;
-            // winStyle.stretchHeight = false;
 
             //search clear button
             buttonSearchClearStyle = new GUIStyle(GUI.skin.button);
@@ -232,6 +229,9 @@ namespace HaystackContinued
             buttonExpandStyle = new GUIStyle(GUI.skin.label);
             buttonExpandStyle.imagePosition = ImagePosition.ImageOnly;
             buttonExpandStyle.alignment = TextAnchor.MiddleCenter;
+            buttonExpandStyle.active.background = imgVesselListButtonPressed;
+            buttonExpandStyle.onActive.background = imgVesselListButtonPressed;
+            buttonExpandStyle.border = imgVesselListButtonBorder;
             buttonExpandStyle.fixedHeight = 16;
             buttonExpandStyle.fixedWidth = 16;
             buttonExpandStyle.padding = new RectOffset(2, 2, 2, 2);
@@ -249,17 +249,13 @@ namespace HaystackContinued
             // Each list item is actually a button
             buttonVesselListName = new GUIStyle(GUI.skin.button);
             buttonVesselListName.wordWrap = true;
-            //buttonVesselListName.stretchWidth = true;
-            //buttonVesselListName.active.textColor = XKCDColors.GreenApple;
 
             textListHeaderStyle = new GUIStyle(GUI.skin.label);
-            //textListHeaderStyle.normal.textColor = XKCDColors.YellowTan;
             textListHeaderStyle.normal.textColor = XKCDColors.Yellow;
             textListHeaderStyle.fontSize = 14;
             textListHeaderStyle.fontStyle = FontStyle.Bold;
             textListHeaderStyle.margin = new RectOffset(6, 6, 2, 0);
             textListHeaderStyle.padding = new RectOffset(0, 0, 0, 0);
-            //textListHeaderStyle.stretchWidth = true;
             textListHeaderStyle.wordWrap = true;
 
             textSituationStyle = new GUIStyle(GUI.skin.label);
@@ -268,7 +264,6 @@ namespace HaystackContinued
             textSituationStyle.fontStyle = FontStyle.Normal;
             textSituationStyle.margin = new RectOffset(6, 6, 0, 1);
             textSituationStyle.padding = new RectOffset(0, 0, 0, 0);
-            //textSituationStyle.stretchWidth = true;
 
             textDockingPortHeaderStyle = new GUIStyle(textSituationStyle);
             textDockingPortHeaderStyle.fontSize = 13;
@@ -288,13 +283,13 @@ namespace HaystackContinued
 
             boxOutlineStyle = new GUIStyle(GUI.skin.box);
             boxOutlineStyle.normal.background = imgOutline;
-            //boxOutlineStyle.border = new RectOffset(7, 7, 7, 7);
             boxOutlineStyle.border = imgOutlineBorder;
 
             buttonDockingPortTarget = new GUIStyle(GUI.skin.box);
-            buttonDockingPortTarget.normal.background = imgDockingPortButtonNormal;
-            buttonDockingPortTarget.active.background = imgDockingPortButtonPressed;
-            buttonDockingPortTarget.border = imgDockingPortButtonBorder;
+            buttonDockingPortTarget.normal.background = null;
+            buttonDockingPortTarget.active.background = imgVesselListButtonPressed;
+            buttonDockingPortTarget.border = imgVesselListButtonBorder;
+            buttonDockingPortTarget.margin = new RectOffset(0, 0, 0, 2);
         }
     }
 }
