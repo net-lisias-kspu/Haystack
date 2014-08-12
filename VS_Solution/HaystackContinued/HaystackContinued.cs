@@ -1010,7 +1010,7 @@ namespace HaystackContinued
                     HSUtils.DebugLog("{0}", e.Message);
                 }
 
-                if (moduleDockingNodeNamedType != null || modulePortName != null)
+                if (moduleDockingNodeNamedType != null && modulePortName != null)
                 {
                     namedDockingPortSupport = true;
 
@@ -1020,11 +1020,6 @@ namespace HaystackContinued
                 else
                 {
                     HSUtils.DebugLog("Docking Port Alignment Indicator mod was not detected");
-                }
-
-                if (!namedDockingPortSupport)
-                {
-                    return;
                 }
             }
 
