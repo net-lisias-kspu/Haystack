@@ -456,6 +456,12 @@ namespace HaystackContinued
 
                     foreach (var vessel in vessels)
                     {
+                        //this typically happens when debris is going out of physics range and is deleted by the game
+                        if (vessel == null)
+                        {
+                            continue;
+                        }
+
                         this.vesselInfoView.Draw(vessel, vessel == this.selectedVessel);
 
                         if (!this.vesselInfoView.Clicked)
@@ -576,6 +582,12 @@ namespace HaystackContinued
 
                 foreach (var vessel in filteredVessels)
                 {
+                    //this typically happens when debris is going out of physics range and is deleted by the game
+                    if (vessel == null)
+                    {
+                        continue;
+                    }
+
                     this.vesselInfoView.Draw(vessel, vessel == this.selectedVessel);
 
                     if (!this.vesselInfoView.Clicked)
@@ -929,7 +941,6 @@ namespace HaystackContinued
                 var activeVessel = FlightGlobals.ActiveVessel;
                 if (!HSUtils.IsTrackingCenterActive && vessel != activeVessel)
                 {
-                    var t = activeVessel.transform;
                     var calcDistance = Vector3.Distance(activeVessel.transform.position, vessel.transform.position);
                     distance = HSUtils.ToSI(calcDistance) + "m";
                 }
