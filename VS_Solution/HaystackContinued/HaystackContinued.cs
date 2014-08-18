@@ -259,7 +259,6 @@ namespace HaystackContinued
             {
                 FlightGlobals.SetActiveVessel(vessel);
             }
-            
         }
 
         public Rect WinRect
@@ -285,6 +284,9 @@ namespace HaystackContinued
             this.winRect = GUILayout.Window(windowId, this.winRect, this.mainWindowConstructor,
                 string.Format("Haystack Continued {0}", Settings.version), Resources.winStyle, GUILayout.MinWidth(120),
                 GUILayout.MinHeight(300));
+
+            // do this here since if it's done within the window you only recieve events that are inside of the window
+            this.resizeHandle.DoResize(ref this.winRect);
 
             if (GUI.Button(new Rect(this.winRect.x + (this.winRect.width/2 - 24), this.winRect.y - 9, 48, 10), "",
                 Resources.buttonFoldStyle))
@@ -454,6 +456,12 @@ namespace HaystackContinued
 
                     foreach (var vessel in vessels)
                     {
+                        //this typically happens when debris is going out of physics range and is deleted by the game
+                        if (vessel == null)
+                        {
+                            continue;
+                        }
+
                         this.vesselInfoView.Draw(vessel, vessel == this.selectedVessel);
 
                         if (!this.vesselInfoView.Clicked)
@@ -574,6 +582,12 @@ namespace HaystackContinued
 
                 foreach (var vessel in filteredVessels)
                 {
+                    //this typically happens when debris is going out of physics range and is deleted by the game
+                    if (vessel == null)
+                    {
+                        continue;
+                    }
+
                     this.vesselInfoView.Draw(vessel, vessel == this.selectedVessel);
 
                     if (!this.vesselInfoView.Clicked)
@@ -698,8 +712,16 @@ namespace HaystackContinued
                     
                     Event.current.Use();
                 }
+            }
 
-                if (this.resizing && Input.GetMouseButton(0))
+            internal void DoResize(ref Rect winRect)
+            {
+                if (!this.resizing)
+                {
+                    return;
+                }
+
+                if (Input.GetMouseButton(0))
                 {
                     var deltaX = Input.mousePosition.x - this.lastPosition.x;
                     var deltaY = Input.mousePosition.y - this.lastPosition.y;
@@ -711,11 +733,14 @@ namespace HaystackContinued
 
                     winRect.xMax += deltaX;
                     winRect.yMin -= deltaY;
-                    
-                    Event.current.Use();
+
+                    if (Event.current.isMouse)
+                    {
+                        Event.current.Use();
+                    }
                 }
 
-                if (this.resizing && Event.current.type == EventType.MouseUp && Event.current.button == 0)
+                if (Event.current.type == EventType.MouseUp && Event.current.button == 0)
                 {
                     this.resizing = false;
 
@@ -916,7 +941,6 @@ namespace HaystackContinued
                 var activeVessel = FlightGlobals.ActiveVessel;
                 if (!HSUtils.IsTrackingCenterActive && vessel != activeVessel)
                 {
-                    var t = activeVessel.transform;
                     var calcDistance = Vector3.Distance(activeVessel.transform.position, vessel.transform.position);
                     distance = HSUtils.ToSI(calcDistance) + "m";
                 }
@@ -1010,7 +1034,7 @@ namespace HaystackContinued
                     HSUtils.DebugLog("{0}", e.Message);
                 }
 
-                if (moduleDockingNodeNamedType != null || modulePortName != null)
+                if (moduleDockingNodeNamedType != null && modulePortName != null)
                 {
                     namedDockingPortSupport = true;
 
@@ -1020,11 +1044,6 @@ namespace HaystackContinued
                 else
                 {
                     HSUtils.DebugLog("Docking Port Alignment Indicator mod was not detected");
-                }
-
-                if (!namedDockingPortSupport)
-                {
-                    return;
                 }
             }
 
