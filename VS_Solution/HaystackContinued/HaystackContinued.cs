@@ -29,7 +29,6 @@ namespace HaystackContinued
 		}
 	};
 
-
     public abstract class HaystackContinued : MonoBehaviour
     {
         private List<Vessel> hsVesselList = new List<Vessel>(); 
@@ -95,9 +94,30 @@ namespace HaystackContinued
             HaystackResourceLoader.Instance.Settings.Save();
         }
 
+        public void Start()
+        {
+            GameEvents.onHideUI.Add(onHideUI);
+            GameEvents.onShowUI.Add(onShowUI);
+        }
+
+        private void onShowUI()
+        {
+            this.UIHide = false;
+        }
+
+        private void onHideUI()
+        {
+            this.UIHide = true;
+        }
+
+        protected bool UIHide { get; set; }
+
         public void OnDestory()
         {
             HSUtils.DebugLog("HaystackContinued#OnDestroy");
+
+            GameEvents.onHideUI.Remove(this.onHideUI);
+            GameEvents.onShowUI.Remove(this.onShowUI);
         }
 
         private void OnMapTargetChange(MapObject mapObject)
@@ -391,9 +411,7 @@ namespace HaystackContinued
 
             GUI.DragWindow();
         }
-
         
-
         private class GroupedScrollerView
         {
             private Vector2 scrollPos = Vector2.zero;
@@ -412,7 +430,6 @@ namespace HaystackContinued
                 get { return this.selectedVessel; } 
                 set { this.selectedVessel = value; }
             }
-
 
             internal void Draw(List<Vessel> filteredVessels, Dictionary<CelestialBody, List<Vessel>> groupedBodyVessel)
             {
@@ -1239,7 +1256,6 @@ namespace HaystackContinued
                 internal string Name;
                 internal ModuleDockingNode PortNode;
             }
-
         }
     } // HaystackContinued
 }

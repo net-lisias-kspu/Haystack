@@ -131,7 +131,6 @@ namespace HaystackContinued
 	        get { return HighLogic.LoadedScene == GameScenes.TRACKSTATION; }
 	    }
 
-
         //from mechjeb: figured it'd be better to keep conversion consistant between various plugins
         //Puts numbers into SI format, e.g. 1234 -> "1.234 k", 0.0045678 -> "4.568 m"
         //maxPrecision is the exponent of the smallest place value that will be shown; for example
@@ -173,7 +172,7 @@ namespace HaystackContinued
 
             return rect;
         }
-
+        
         public static bool IsEmpty<T>(this List<T> list)
         {
             return list.Count == 0;

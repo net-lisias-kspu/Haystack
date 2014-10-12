@@ -14,7 +14,6 @@ namespace HaystackContinued
 		public static string version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
 
 	    private static readonly string SettingsFile = Resources.PathPlugin + Path.DirectorySeparatorChar + "settings.cfg";
-
         
 	    private const string NodeSettings = "settings";
 	    private const string NodeWindowPositions = "window_positions";
@@ -94,7 +93,7 @@ namespace HaystackContinued
 
 	    public void Save()
 		{
-			HSUtils.Log("saving settings");
+			HSUtils.DebugLog("saving settings");
 
 	        var t = new ConfigNode();
 	        var config = t.AddNode(NodeSettings);
@@ -131,7 +130,6 @@ namespace HaystackContinued
         {
             converters[typeof(Rect)] = RectFromNode;
         }
-
             
         public static ConfigNode ToNode(this Rect rect)
         {

@@ -46,7 +46,7 @@ namespace HaystackContinued
         {
             get
             {
-                return HighLogic.LoadedScene == GameScenes.FLIGHT;
+                return HighLogic.LoadedScene == GameScenes.FLIGHT && !UIHide;
             }
         }
 
@@ -63,7 +63,7 @@ namespace HaystackContinued
         {
             get
             {
-                return HSUtils.IsTrackingCenterActive;
+                return HSUtils.IsTrackingCenterActive && !UIHide;
             }
         }
 
