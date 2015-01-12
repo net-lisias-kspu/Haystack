@@ -15,8 +15,14 @@ namespace HaystackContinued
     {
         public static System.Random rnd = new System.Random();
 
-        public static String PathPlugin = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-        public static String PathImages = String.Format("{0}/icons", PathPlugin);
+        public static string PathPlugin = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location).Replace("\\", "/");
+        public static string PathImages = String.Format("{0}/icons", PathPlugin);
+
+        //toolbar expects to begin in the "gamedata" directory as the root of the provided path
+        //so we're going use a relative path starting at our plugin's folder in the "gamedata" directory
+        public static string ToolbarIconPath = PathImages.Substring(PathImages.ToLower().IndexOf("/gamedata/") + 10);
+        //for the toolbar do not append the extension
+        public static string ToolbarIcon = String.Format("{0}/toolbar_icon", ToolbarIconPath);
 
         private static string btnGoFilePath = String.Format("{0}/button_go.png", PathImages);
         private static string btnGoHoverFilePath = String.Format("{0}/button_go_hover.png", PathImages);
@@ -219,11 +225,11 @@ namespace HaystackContinued
             buttonVesselListPressed.normal = GUI.skin.button.active;
             buttonVesselListPressed.hover = GUI.skin.button.active;
             buttonVesselListPressed.active = GUI.skin.button.normal;
-            buttonVesselListPressed.padding.top += 2;
+            buttonVesselListPressed.padding.top -= 3;
             buttonVesselListPressed.padding.bottom -= 2;
 
             buttonTextOnly = new GUIStyle(GUI.skin.button);
-            buttonTextOnly.padding.top += 2;
+            buttonTextOnly.padding.top -= 2;
             buttonTextOnly.padding.bottom -= 2;
 
             buttonExpandStyle = new GUIStyle(GUI.skin.label);
@@ -256,7 +262,9 @@ namespace HaystackContinued
             textListHeaderStyle.fontStyle = FontStyle.Bold;
             textListHeaderStyle.margin = new RectOffset(6, 6, 2, 0);
             textListHeaderStyle.padding = new RectOffset(0, 0, 0, 0);
-            textListHeaderStyle.wordWrap = true;
+            textListHeaderStyle.stretchWidth = true;
+            textListHeaderStyle.wordWrap = false;
+            
 
             textSituationStyle = new GUIStyle(GUI.skin.label);
             textSituationStyle.normal.textColor = XKCDColors.LightGrey;
@@ -264,6 +272,7 @@ namespace HaystackContinued
             textSituationStyle.fontStyle = FontStyle.Normal;
             textSituationStyle.margin = new RectOffset(6, 6, 0, 1);
             textSituationStyle.padding = new RectOffset(0, 0, 0, 0);
+            textSituationStyle.stretchWidth = false;
 
             textDockingPortHeaderStyle = new GUIStyle(textSituationStyle);
             textDockingPortHeaderStyle.fontSize = 13;

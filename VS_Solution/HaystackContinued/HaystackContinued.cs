@@ -71,6 +71,7 @@ namespace HaystackContinued
             windowId = Resources.rnd.Next(1000, 2000000);
         }
 
+ 
         public void OnEnable()
         {
             HSUtils.DebugLog("HaystackContinued#OnEnable");
@@ -96,15 +97,18 @@ namespace HaystackContinued
 
         public void Start()
         {
+            // not an anonymous functions because we need to remove them in #OnDestroy
             GameEvents.onHideUI.Add(onHideUI);
             GameEvents.onShowUI.Add(onShowUI);
         }
 
+        //called when the game tells us that the UI is going to be shown again
         private void onShowUI()
         {
             this.UIHide = false;
         }
 
+        //called when the game tells us that the UI is to be hidden; used for screenshots generally
         private void onHideUI()
         {
             this.UIHide = true;
@@ -172,7 +176,7 @@ namespace HaystackContinued
         /// </summary>
         public void MainHSActivity()
         {
-           if (IsGuiScene)
+           if (this.IsGuiDisplay)
             {
                 // refresh filter lists
                 filteredVesselList = new List<Vessel>(hsVesselList);
@@ -236,7 +240,7 @@ namespace HaystackContinued
         /// </summary>
         public void RefreshDataSaveSettings()
         {
-            if (!IsGuiScene) return;
+            if (!this.IsGuiDisplay) return;
             
             this.RefetchVesselList();
 
@@ -257,13 +261,15 @@ namespace HaystackContinued
                 this.bottomButtons.GUISetup(this.groupedScrollerView, this.defaultScrollerView);
 
                 this.bottomButtons.OnSwitchVessel += vessel => this.StartCoroutine(SwitchToVessel(vessel));
+                
+                MainHSActivity();
 
                 this.isGUISetup = true;
             }
 
-            if (IsGuiScene)
+            if (this.IsGuiDisplay)
             {
-                DrawGUI();
+                this.drawGUI();
             }
         }
 
@@ -287,20 +293,29 @@ namespace HaystackContinued
             set { this.winRect = value; }
         }
 
-        public void DrawGUI()
+        private void drawGUI()
         {
             GUI.skin = HighLogic.Skin;
 
-            if (winHidden)
+            if (ToolbarManager.ToolbarAvailable)
             {
-                this.winRect.y = Screen.height - 1;
+                this.winRect = this.winRect.ClampToScreen();
             }
             else
             {
-                this.winRect.y = Screen.height - this.winRect.height;
-                this.winRect = this.winRect.ClampToScreen();
+                if (this.winHidden)
+                {
+                    //just pushing it off the bottom of the screen
+                    this.winRect.y = Screen.height - 1;
+                }
+                else
+                {
+                    //logic without the toolbar; clamps to the bottom of the screen
+                    this.winRect.y = Screen.height - this.winRect.height;
+                    this.winRect = this.winRect.ClampToScreen();
+                }
             }
-            
+
             this.winRect = GUILayout.Window(windowId, this.winRect, this.mainWindowConstructor,
                 string.Format("Haystack Continued {0}", Settings.version), Resources.winStyle, GUILayout.MinWidth(120),
                 GUILayout.MinHeight(300));
@@ -308,19 +323,23 @@ namespace HaystackContinued
             // do this here since if it's done within the window you only recieve events that are inside of the window
             this.resizeHandle.DoResize(ref this.winRect);
 
-            if (GUI.Button(new Rect(this.winRect.x + (this.winRect.width/2 - 24), this.winRect.y - 9, 48, 10), "",
-                Resources.buttonFoldStyle))
+            if (!ToolbarManager.ToolbarAvailable)
             {
-                winHidden = !winHidden; // toggle window state
-                RefetchVesselList();
-                MainHSActivity();
+                // this is the open close button on the bottom of the screen when the toolbar isn't available
+                if (GUI.Button(new Rect(this.winRect.x + (this.winRect.width/2 - 24), this.winRect.y - 9, 48, 10), "",
+                    Resources.buttonFoldStyle))
+                {
+                    this.winHidden = !this.winHidden; // toggle window state
+                    this.RefetchVesselList();
+                    this.MainHSActivity();
+                }
             }
         }
 
         /// <summary>
         /// Checks if the GUI should be drawn in the current scene
         /// </summary>
-        protected virtual bool IsGuiScene
+        protected virtual bool IsGuiDisplay
         {
             get
             {
@@ -331,6 +350,7 @@ namespace HaystackContinued
         protected abstract string SettingsName { get; }
 
         private bool isGUISetup;
+        private IButton toolbarButton;
 
         private void mainWindowConstructor(int windowID)
         {
@@ -435,7 +455,7 @@ namespace HaystackContinued
             {
                 if (filteredVessels == null || filteredVessels.IsEmpty())
                 {
-                    GUILayout.Label("No matched vessels foud");
+                    GUILayout.Label("No matched vessels found");
 
                     GUILayout.FlexibleSpace();
                     return;
@@ -622,6 +642,7 @@ namespace HaystackContinued
                     foreach (var body in filteredBodies)
                     {
                         GUILayout.BeginVertical(body == this.SelectedBody ? Resources.buttonVesselListPressed : Resources.buttonTextOnly);
+
                         GUILayout.Label(body.name, Resources.textListHeaderStyle);
                         GUILayout.EndVertical();
 
