@@ -36,12 +36,14 @@
     <RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="HaystackScenarioModule.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="HSUtils.cs" />
     <Compile Include="HaystackContinued.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Resources.cs" />
     <Compile Include="StartPoints.cs" />
+    <Compile Include="DataManager.cs" />
     <Compile Include="ToolbarWrapper.cs" />
   </ItemGroup>
   <ItemGroup>
