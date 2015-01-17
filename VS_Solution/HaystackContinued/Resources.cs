@@ -40,6 +40,7 @@ namespace HaystackContinued
         private static string imgDockingPortButtonPressedFilePath = String.Format("{0}/docking_port_button_pressed.png",
             PathImages);
         private static string btnOrbitIconFilePath = string.Format("{0}/orbit_icon.png", PathImages);
+        private static string btnHiddenIconFilePath = string.Format("{0}/hidden_icon.png", PathImages);
 
         public static Texture2D btnGo = new Texture2D(32, 32, TextureFormat.ARGB32, false);
         public static Texture2D btnGoHover = new Texture2D(32, 32, TextureFormat.ARGB32, false);
@@ -55,6 +56,7 @@ namespace HaystackContinued
         public static Texture2D imgOutline = new Texture2D(18, 18, TextureFormat.ARGB32, false);
         public static Texture2D imgVesselListButtonPressed = new Texture2D(14, 14, TextureFormat.ARGB32, false);
         public static Texture2D btnOrbitIcon = new Texture2D(20, 20, TextureFormat.ARGB32, false);
+        public static Texture2D btnHiddenIcon = new Texture2D(24, 24, TextureFormat.ARGB32, false);
 
         public static RectOffset imgOutlineBorder = new RectOffset(2, 2, 2, 2);
         public static RectOffset imgVesselListButtonBorder = new RectOffset(2, 2, 2, 2);
@@ -78,6 +80,7 @@ namespace HaystackContinued
                 LoadImage(ref btnDownArrow, btnDownArrowFilePath);
                 LoadImage(ref btnUpArrow, btnUpArrowFilePath);
                 LoadImage(ref btnOrbitIcon, btnOrbitIconFilePath);
+                LoadImage(ref btnHiddenIcon, btnHiddenIconFilePath);
                 LoadImage(ref btnTargetAlpha, btnTargetAlphaFilePath);
 
                 LoadImage(ref imgLine, imgLineFilePath);

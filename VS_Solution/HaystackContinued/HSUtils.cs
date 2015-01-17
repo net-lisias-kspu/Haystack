@@ -37,7 +37,7 @@ namespace HaystackContinued
 		/// <param name="message">Message to be logged</param>
 		public static void Log(string message)
 		{
-			Debug.Log(String.Format("Haystack: {0}", message));
+			Debug.Log(string.Format("Haystack: {0}", message));
 		}
 
 	    public static void Log(string format, params object[] objects)
@@ -48,7 +48,7 @@ namespace HaystackContinued
         [System.Diagnostics.Conditional("DEBUG")]
 	    public static void DebugLog(string message)
 	    {
-              Debug.Log(String.Format("Haystack: {0}", message));
+              Debug.Log(string.Format("Haystack: {0}", message));
 	    }
 
         [System.Diagnostics.Conditional("DEBUG")]

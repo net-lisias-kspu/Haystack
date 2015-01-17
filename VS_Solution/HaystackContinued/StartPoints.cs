@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Linq;
+using UnityEngine;
 
 namespace HaystackContinued
 {
@@ -26,7 +27,7 @@ namespace HaystackContinued
         {
             HSUtils.DebugLog("HaystackResourceLoader#setupToolbar: toolbar detected, using it.");
 
-            this.ToolbarButtonHide = false; // window is displayed at the start
+            this.ToolbarButtonHide = true; // window is hidden at first loading of the game
 
             this.toolbarButton = ToolbarManager.Instance.add("HaystackContinued", toolbarButtonId);
             this.toolbarButton.Visibility = new GameScenesVisibility(GameScenes.FLIGHT, GameScenes.TRACKSTATION);
@@ -59,6 +60,8 @@ namespace HaystackContinued
                 this.setupToolbar();
             }
         }
+
+    
 
         public void RepeatingTask()
         {
@@ -102,6 +105,39 @@ namespace HaystackContinued
         protected override string SettingsName
         {
             get { return "tracking_center"; }
+        }
+    }
+    
+    /// <summary>
+    /// Need to wait until the user is in the space center to create the scenarios since a saved game is required for them.  
+    /// </summary>
+    [KSPAddon(KSPAddon.Startup.SpaceCentre, false)]
+    public class ScenarioModuleLoader : MonoBehaviour
+    {
+        public void Start()
+        {
+            this.setupScenarioModule();
+        }
+
+        private void setupScenarioModule()
+        {
+            ProtoScenarioModule protoScenarioModule =
+                HighLogic.CurrentGame.scenarios.FirstOrDefault(i => i.moduleName == typeof(HaystackScenarioModule).Name);
+            if (protoScenarioModule == null)
+            {
+                HSUtils.DebugLog("adding scenario module");
+                HighLogic.CurrentGame.AddProtoScenarioModule(typeof(HaystackScenarioModule),
+                    HaystackScenarioModule.Scenes);
+            }
+            else
+            {
+                var missing = HaystackScenarioModule.Scenes.Except(protoScenarioModule.targetScenes);
+                foreach (var i in missing)
+                {
+                    HSUtils.DebugLog("missing scenario module scene: {0}", i);
+                    protoScenarioModule.targetScenes.Add(i);
+                }
+            }
         }
     }
 }

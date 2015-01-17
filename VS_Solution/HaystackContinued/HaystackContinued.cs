@@ -69,8 +69,15 @@ namespace HaystackContinued
 
             typeCount = new Dictionary<string, int>();
             windowId = Resources.rnd.Next(1000, 2000000);
+
+            
         }
 
+
+        private void onDataLoadedHandler()
+        {
+            this.RefreshFilteredVesselList();
+        }
  
         public void OnEnable()
         {
@@ -80,7 +87,7 @@ namespace HaystackContinued
 
             this.WinRect = HaystackResourceLoader.Instance.Settings.WindowPositions[this.SettingsName];
 
-            InvokeRepeating("MainHSActivity", 5.0F, 5.0F); // Refresh from time to time just in case
+            InvokeRepeating("FetchVesselList;", 5.0F, 5.0F);
             InvokeRepeating("RefreshDataSaveSettings", 0, 30.0F);
         }
 
@@ -100,6 +107,9 @@ namespace HaystackContinued
             // not an anonymous functions because we need to remove them in #OnDestroy
             GameEvents.onHideUI.Add(onHideUI);
             GameEvents.onShowUI.Add(onShowUI);
+
+            this.FetchVesselList();
+            DataManager.Instance.OnDataLoaded += this.onDataLoadedHandler;
         }
 
         //called when the game tells us that the UI is going to be shown again
@@ -122,6 +132,8 @@ namespace HaystackContinued
 
             GameEvents.onHideUI.Remove(this.onHideUI);
             GameEvents.onShowUI.Remove(this.onShowUI);
+
+            DataManager.Instance.OnDataLoaded -= this.onDataLoadedHandler;
         }
 
         private void OnMapTargetChange(MapObject mapObject)
@@ -155,7 +167,7 @@ namespace HaystackContinued
         /// <summary>
         /// Refresh list of vessels
         /// </summary>
-        private void RefetchVesselList()
+        public void FetchVesselList()
         {
             hsVesselList = (FlightGlobals.fetch == null ? FlightGlobals.Vessels : FlightGlobals.fetch.vessels);
             // count vessel types
@@ -171,66 +183,65 @@ namespace HaystackContinued
             }
         }
 
-        /// <summary>
-        /// Every second refresh seems to be enough. Data filtering here and switching to selected vessel too.
-        /// </summary>
-        public void MainHSActivity()
+        public void RefreshFilteredVesselList()
         {
-           if (this.IsGuiDisplay)
+            this.filteredVesselList = new List<Vessel>(this.hsVesselList);
+            this.filteredBodyList = new List<CelestialBody>(Resources.CelestialBodies);
+
+            if (this.hsVesselList != null)
             {
-                // refresh filter lists
-                filteredVesselList = new List<Vessel>(hsVesselList);
-                filteredBodyList = new List<CelestialBody>(Resources.CelestialBodies);
-
-                if (hsVesselList != null)
+                if (Resources.vesselTypesList != null)
                 {
-                    if (Resources.vesselTypesList != null)
+                    // For each hidden type remove it from the list
+                    // FIXME: must be optimized
+                    foreach (HSVesselType currentInvisibleType in Resources.vesselTypesList)
                     {
-                        // For each hidden type remove it from the list
-                        // FIXME: must be optimized
-                        foreach (HSVesselType currentInvisibleType in Resources.vesselTypesList)
+                        if (currentInvisibleType.visible == false)
                         {
-                            if (currentInvisibleType.visible == false)
-                            {
-                                //filter out type
-                                filteredVesselList = filteredVesselList.FindAll(sr => sr.vesselType.ToString() != currentInvisibleType.name);
-                            }
-                        }
-                    }
-
-                    // And then filter by the search string
-                    if (!string.IsNullOrEmpty(filterVar))
-                    {
-                            filteredVesselList.RemoveAll(
-                                v => -1 == v.vesselName.IndexOf(this.filterVar, StringComparison.OrdinalIgnoreCase)
-                            );
-
-                        if (showCelestialBodies)
-                        {
-                            filteredBodyList.RemoveAll(
-                                cb => -1 == cb.bodyName.IndexOf(filterVar, StringComparison.OrdinalIgnoreCase)
-                            );
+                            //filter out type
+                            this.filteredVesselList = this.filteredVesselList.FindAll(sr => sr.vesselType.ToString() != currentInvisibleType.name);
                         }
                     }
                 }
 
-                if (this.bottomButtons.GroupByOrbitingBody)
+                //now hidden vessels
+                if (!this.bottomButtons.IsHiddenVesselsToggled)
                 {
-                    groupedBodyVessel.Clear();
+                    this.filteredVesselList.RemoveAll(v => this.HiddenVessels.Contains(v.id));
+                }
 
-                    foreach(var vessel in filteredVesselList)
+                // And then filter by the search string
+                if (!string.IsNullOrEmpty(this.filterVar))
+                {
+                    this.filteredVesselList.RemoveAll(
+                        v => -1 == v.vesselName.IndexOf(this.filterVar, StringComparison.OrdinalIgnoreCase)
+                        );
+
+                    if (this.showCelestialBodies)
                     {
-                        var body = vessel.orbit.referenceBody;
-
-                        List<Vessel> list;
-                        if (!groupedBodyVessel.TryGetValue(body, out list))
-                        {
-                            list = new List<Vessel>();
-                            groupedBodyVessel.Add(body, list);
-                        }
-
-                        list.Add(vessel);
+                        this.filteredBodyList.RemoveAll(
+                            cb => -1 == cb.bodyName.IndexOf(this.filterVar, StringComparison.OrdinalIgnoreCase)
+                            );
                     }
+                }
+            }
+
+            if (this.bottomButtons.GroupByOrbitingBody)
+            {
+                this.groupedBodyVessel.Clear();
+
+                foreach(var vessel in this.filteredVesselList)
+                {
+                    var body = vessel.orbit.referenceBody;
+
+                    List<Vessel> list;
+                    if (!this.groupedBodyVessel.TryGetValue(body, out list))
+                    {
+                        list = new List<Vessel>();
+                        this.groupedBodyVessel.Add(body, list);
+                    }
+
+                    list.Add(vessel);
                 }
             }
         }
@@ -242,8 +253,6 @@ namespace HaystackContinued
         {
             if (!this.IsGuiDisplay) return;
             
-            this.RefetchVesselList();
-
             HaystackResourceLoader.Instance.Settings.WindowPositions[this.SettingsName] = this.WinRect;
         }
 
@@ -262,7 +271,8 @@ namespace HaystackContinued
 
                 this.bottomButtons.OnSwitchVessel += vessel => this.StartCoroutine(SwitchToVessel(vessel));
                 
-                MainHSActivity();
+                this.FetchVesselList();
+                this.RefreshFilteredVesselList();
 
                 this.isGUISetup = true;
             }
@@ -330,8 +340,7 @@ namespace HaystackContinued
                     Resources.buttonFoldStyle))
                 {
                     this.winHidden = !this.winHidden; // toggle window state
-                    this.RefetchVesselList();
-                    this.MainHSActivity();
+                    this.RefreshFilteredVesselList();
                 }
             }
         }
@@ -347,7 +356,30 @@ namespace HaystackContinued
             }
         }
 
+        private bool isVesselHidden(Vessel vessel)
+        {
+            return this.HiddenVessels.Contains(vessel.id);
+        }
+
+        private void markVesselHidden(Vessel vessel, bool mark)
+        {
+            HSUtils.DebugLog("HaystackContinued#markVesselHidden: {0} {1}", vessel.name, mark);
+            if (mark)
+            {
+               DataManager.Instance.HiddenVessels.AddVessel(vessel);
+            }
+            else
+            {
+                DataManager.Instance.HiddenVessels.RemoveVessle(vessel);
+            }
+        }
+
         protected abstract string SettingsName { get; }
+
+        public HashSet<Guid> HiddenVessels
+        {
+            get { return DataManager.Instance.HiddenVessels.VesselList; }
+        }
 
         private bool isGUISetup;
         private IButton toolbarButton;
@@ -396,16 +428,6 @@ namespace HaystackContinued
                 filterVar = "";
             }
 
-            // handle tooltips here so it paints over the find entry
-            // TODO: clamp to window position.
-            if (GUI.tooltip != "")
-            {
-                // get mouse position
-                var mousePosition = Event.current.mousePosition;
-                var width = GUI.tooltip.Length * 11;
-                GUI.Box(new Rect(mousePosition.x - 30, mousePosition.y - 30, width, 25), GUI.tooltip);
-            }
-
             GUILayout.EndHorizontal();
 
             if (this.bottomButtons.GroupByOrbitingBody)
@@ -419,6 +441,16 @@ namespace HaystackContinued
 
             this.bottomButtons.Draw();
 
+            // handle tooltips here so it paints over the find entry
+            // TODO: clamp to window position.
+            if (GUI.tooltip != "")
+            {
+                // get mouse position
+                var mousePosition = Event.current.mousePosition;
+                var width = GUI.tooltip.Length * 11;
+                GUI.Box(new Rect(mousePosition.x - 30, mousePosition.y - 30, width, 25), GUI.tooltip);
+            }
+
             GUILayout.EndVertical();
 
             this.resizeHandle.Draw(ref this.winRect);
@@ -426,7 +458,8 @@ namespace HaystackContinued
             // If user input detected, force mapObject refresh
             if (GUI.changed)
             {
-                MainHSActivity();
+                // might want to make this a bit more granular but it seems ok atm
+                this.RefreshFilteredVesselList();
             }
 
             GUI.DragWindow();
@@ -793,7 +826,8 @@ namespace HaystackContinued
             private GroupedScrollerView groupedScrollerView;
             private DefaultScrollerView defaultScrollerView;
 
-            internal bool GroupByOrbitingBody { get; set; }
+            internal bool GroupByOrbitingBody { get; private set; }
+            internal bool IsHiddenVesselsToggled { get; private set; }
 
             private void groupByButton()
             {
@@ -806,6 +840,19 @@ namespace HaystackContinued
                 {
                     this.fireOnGroupByChanged(this);
                 }
+            }
+
+            private void hiddenVesselsButton()
+            {
+                var previous = this.IsHiddenVesselsToggled;
+                this.IsHiddenVesselsToggled = GUILayout.Toggle(this.IsHiddenVesselsToggled, new GUIContent(Resources.btnHiddenIcon, "Manage hidden vessels"), GUI.skin.button,
+                    GUILayout.Width(32f), GUILayout.Height(32f));
+
+                if (previous != this.IsHiddenVesselsToggled)
+                {
+                    this.fireOnHiddenVesselsChanged(this);
+                }
+
             }
 
             private void targetButton()
@@ -861,6 +908,7 @@ namespace HaystackContinued
                 GUILayout.BeginHorizontal();
                 
                 this.groupByButton();
+                this.hiddenVesselsButton();
                 
                 GUILayout.FlexibleSpace();
 
@@ -909,6 +957,16 @@ namespace HaystackContinued
                 if (handler != null) handler(view);
             }
 
+            internal delegate void OnHiddenVesselsChangedHandler(BottomButtons view);
+
+            internal event OnHiddenVesselsChangedHandler OnHiddenVesselsChanged;
+            private void fireOnHiddenVesselsChanged(BottomButtons bottomButtons)
+            {
+                var handler = this.OnHiddenVesselsChanged;
+                if (handler != null) handler(bottomButtons);
+            }
+
+
             internal delegate void OnSwitchVesselHandler(Vessel vessel);
             internal event OnSwitchVesselHandler OnSwitchVessel;
             protected virtual void fireOnSwitchVessel(Vessel vessel)
@@ -916,6 +974,7 @@ namespace HaystackContinued
                 var handler = this.OnSwitchVessel;
                 if (handler != null) handler(vessel);
             }
+
 
             internal void GUISetup(GroupedScrollerView groupedScrollerView, DefaultScrollerView defaultScrollerView)
             {
@@ -932,10 +991,12 @@ namespace HaystackContinued
             private DockingPortListView dockingPortListView;
 
             private HaystackContinued haystackContinued;
+            private BottomButtons bottomButtons;
 
             internal VesselInfoView(HaystackContinued haystackContinued)
             {
                 this.haystackContinued = haystackContinued;
+                this.bottomButtons = this.haystackContinued.bottomButtons;
                 this.dockingPortListView = new DockingPortListView(haystackContinued);
             }
 
@@ -952,6 +1013,21 @@ namespace HaystackContinued
                 this.Clicked = false;
                 this.selected = selected;
 
+                if (this.bottomButtons.IsHiddenVesselsToggled && !global::HaystackContinued.HiddenVessels.ExcludedTypes.Contains(vessel.vesselType))
+                {
+                    GUILayout.BeginHorizontal();
+
+                    var hidden = this.haystackContinued.isVesselHidden(vessel);
+
+                    var tooltip = hidden ? "Show vessel" : "Hide vessel";
+
+                    var change = GUILayout.Toggle(hidden, new GUIContent(Resources.btnHiddenIcon, tooltip), GUI.skin.button, GUILayout.Height(24f), GUILayout.Height(24f));
+                    if (hidden != change)
+                    {
+                        this.haystackContinued.markVesselHidden(vessel, change);
+                    }
+                }
+
                 GUILayout.BeginVertical(selected ? Resources.buttonVesselListPressed : Resources.buttonTextOnly);
 
                 GUILayout.BeginHorizontal();
@@ -966,6 +1042,13 @@ namespace HaystackContinued
 
                 var check = GUILayoutUtility.GetLastRect();
 
+                if (this.bottomButtons.IsHiddenVesselsToggled &&!global::HaystackContinued.HiddenVessels.ExcludedTypes.Contains(vessel.vesselType))
+                {
+                    GUILayout.EndHorizontal();
+                }
+
+                
+
                 if (!this.selected && Event.current != null && Event.current.type == EventType.Repaint && Input.GetMouseButtonDown(0) &&
                     check.Contains(Event.current.mousePosition))
                 {
@@ -977,7 +1060,8 @@ namespace HaystackContinued
             {
                 string distance = "";
                 var activeVessel = FlightGlobals.ActiveVessel;
-                if (!HSUtils.IsTrackingCenterActive && vessel != activeVessel)
+
+                if (!HSUtils.IsTrackingCenterActive && vessel != activeVessel && vessel != null && activeVessel != null)
                 {
                     var calcDistance = Vector3.Distance(activeVessel.transform.position, vessel.transform.position);
                     distance = HSUtils.ToSI(calcDistance) + "m";
