@@ -947,6 +947,13 @@ namespace HaystackContinued
                            this.groupedScrollerView.SelectedVessel == FlightGlobals.ActiveVessel;
                 }
 
+
+                // cannot target current orbiting body
+                if (this.defaultScrollerView.SelectedBody != null && FlightGlobals.ActiveVessel.orbit.referenceBody != this.defaultScrollerView.SelectedBody)
+                {
+                    return false;
+                }
+
                 return this.defaultScrollerView.SelectedVessel == null ||
                        FlightGlobals.ActiveVessel == this.defaultScrollerView.SelectedVessel;
             }
