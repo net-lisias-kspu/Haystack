@@ -11,7 +11,7 @@ namespace HaystackContinued
         public Settings Settings { get; private set; }
         private static HaystackResourceLoader instance;
         private IButton toolbarButton;
-        public bool ToolbarButtonHide { get; private set; }
+        
 
         // seems to be a unity idiom
         public static HaystackResourceLoader Instance
@@ -27,16 +27,33 @@ namespace HaystackContinued
         {
             HSUtils.DebugLog("HaystackResourceLoader#setupToolbar: toolbar detected, using it.");
 
-            this.ToolbarButtonHide = true; // window is hidden at first loading of the game
-
             this.toolbarButton = ToolbarManager.Instance.add("HaystackContinued", toolbarButtonId);
             this.toolbarButton.Visibility = new GameScenesVisibility(GameScenes.FLIGHT, GameScenes.TRACKSTATION);
             this.toolbarButton.TexturePath = Resources.ToolbarIcon;
             this.toolbarButton.ToolTip = "Haystack Continued";
-            this.toolbarButton.OnClick += (e) =>
+        }
+
+
+        public event ClickHandler ToolbarButtonOnClick
+        {
+            add
             {
-                this.ToolbarButtonHide = !this.ToolbarButtonHide;
-            };
+                HSUtils.DebugLog("ToolbarOnClick add");
+                if (!ToolbarManager.ToolbarAvailable)
+                {
+                    return;
+                }
+                this.toolbarButton.OnClick += value;
+            }
+            remove
+            {
+                HSUtils.DebugLog("ToolbarOnClick remove");
+                if (!ToolbarManager.ToolbarAvailable)
+                {
+                    return;
+                }
+                this.toolbarButton.OnClick -= value;
+            }
         }
 
         /// <summary>
@@ -61,8 +78,6 @@ namespace HaystackContinued
             }
         }
 
-    
-
         public void RepeatingTask()
         {
             this.Settings.Save();
@@ -81,7 +96,7 @@ namespace HaystackContinued
         {
             get
             {
-                return HighLogic.LoadedScene == GameScenes.FLIGHT && !UIHide && !HaystackResourceLoader.Instance.ToolbarButtonHide;
+                return HighLogic.LoadedScene == GameScenes.FLIGHT && !UIHide && (ToolbarManager.ToolbarAvailable ? this.WinVisible : true);
             }
         }
 
@@ -98,7 +113,7 @@ namespace HaystackContinued
         {
             get
             {
-                return HSUtils.IsTrackingCenterActive && !UIHide && !HaystackResourceLoader.Instance.ToolbarButtonHide;
+                return HSUtils.IsTrackingCenterActive && !UIHide && (ToolbarManager.ToolbarAvailable ? this.WinVisible : true);
             }
         }
 

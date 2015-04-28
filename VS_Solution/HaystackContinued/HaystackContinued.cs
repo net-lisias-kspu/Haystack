@@ -44,8 +44,9 @@ namespace HaystackContinued
 
         // window vars
         private int windowId;
-       
-        private bool winHidden = true;
+
+        protected bool WinVisible = false;
+
         private Rect winRect;
 
         // Search text
@@ -69,8 +70,6 @@ namespace HaystackContinued
 
             typeCount = new Dictionary<string, int>();
             windowId = Resources.rnd.Next(1000, 2000000);
-
-            
         }
 
 
@@ -86,6 +85,9 @@ namespace HaystackContinued
             GameEvents.onPlanetariumTargetChanged.Add(OnMapTargetChange);
 
             this.WinRect = HaystackResourceLoader.Instance.Settings.WindowPositions[this.SettingsName];
+            this.WinVisible = HaystackResourceLoader.Instance.Settings.WindowVisibilities[this.SettingsName];
+
+            HaystackResourceLoader.Instance.ToolbarButtonOnClick += this.toolbarButtonClicked;
 
             InvokeRepeating("FetchVesselList;", 5.0F, 5.0F);
             InvokeRepeating("RefreshDataSaveSettings", 0, 30.0F);
@@ -97,9 +99,18 @@ namespace HaystackContinued
             CancelInvoke();
 
             GameEvents.onPlanetariumTargetChanged.Remove(this.OnMapTargetChange);
+            
+            HaystackResourceLoader.Instance.ToolbarButtonOnClick -= this.toolbarButtonClicked;
+
             HaystackResourceLoader.Instance.Settings.WindowPositions[this.SettingsName] = this.WinRect;
+            HaystackResourceLoader.Instance.Settings.WindowVisibilities[this.SettingsName] = this.WinVisible;
 
             HaystackResourceLoader.Instance.Settings.Save();
+        }
+
+        private void toolbarButtonClicked(ClickEvent e)
+        {
+            this.WinVisible = !this.WinVisible;
         }
 
         public void Start()
@@ -313,16 +324,16 @@ namespace HaystackContinued
             }
             else
             {
-                if (this.winHidden)
-                {
-                    //just pushing it off the bottom of the screen
-                    this.winRect.y = Screen.height - 1;
-                }
-                else
+                if (this.WinVisible)
                 {
                     //logic without the toolbar; clamps to the bottom of the screen
                     this.winRect.y = Screen.height - this.winRect.height;
                     this.winRect = this.winRect.ClampToScreen();
+                }
+                else
+                {
+                    //just pushing it off the bottom of the screen
+                    this.winRect.y = Screen.height - 1;
                 }
             }
 
@@ -339,7 +350,7 @@ namespace HaystackContinued
                 if (GUI.Button(new Rect(this.winRect.x + (this.winRect.width/2 - 24), this.winRect.y - 9, 48, 10), "",
                     Resources.buttonFoldStyle))
                 {
-                    this.winHidden = !this.winHidden; // toggle window state
+                    this.WinVisible = !this.WinVisible; // toggle window state
                     this.RefreshFilteredVesselList();
                 }
             }

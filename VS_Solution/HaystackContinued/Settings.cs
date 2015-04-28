@@ -9,116 +9,149 @@ using UnityEngine;
 
 namespace HaystackContinued
 {
-	public class Settings
-	{
-		public static string version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
+    public class Settings
+    {
+        public static string version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
 
-	    private static readonly string SettingsFile = Resources.PathPlugin + Path.DirectorySeparatorChar + "settings.cfg";
-        
-	    private const string NodeSettings = "settings";
-	    private const string NodeWindowPositions = "window_positions";
-	    private const string NodeVesselTypeVisibility = "type_visibility";
-	    private const string WindowPosition = "position";
+        private static readonly string SettingsFile = Resources.PathPlugin + Path.DirectorySeparatorChar +
+                                                      "settings.cfg";
 
-	    private readonly Dictionary<string, Rect> windowPositions = new Dictionary<string, Rect>();
+        private const string NODE_SETTINGS = "settings";
+        private const string NODE_WINDOW_POSITIONS = "window_positions";
+        private const string NODE_WINDOW_VISIBILITIES = "window_visibilities";
+        private const string NODE_VESSEL_TYPE_VISIBILITY = "type_visibility";
+        private const string WINDOW_POSITION = "position";
+        private const string WINDOW_VISIBLE = "window_visible";
+        private const string VALUE = "value";
 
-	    public Settings()
-	    {
-            this.WindowPositions = new WindowPositionsIndexer(this.windowPositions);
-	        
+        private readonly Dictionary<string, Rect> windowPositions = new Dictionary<string, Rect>();
+        private readonly Dictionary<string, bool> windowVisibilities = new Dictionary<string, bool>();
+
+        public Settings()
+        {
+            this.WindowPositions = new GenericIndexer<Rect>(windowPositions, () => new Rect(0, 0, 0, 0),"settings: window WindowPosition: {0} {1}");
+            this.WindowVisibilities = new GenericIndexer<bool>(windowVisibilities, () => false, "settings: window WindowVisibility: {0} {1}");
+
             Load();
-	    }
+        }
 
-		private void Load()
-		{
+        private void Load()
+        {
             HSUtils.Log("loading settings");
             HSUtils.DebugLog("Settings#Load: start");
 
-		    var load = ConfigNode.Load(SettingsFile) ?? new ConfigNode();
+            var load = ConfigNode.Load(SettingsFile) ?? new ConfigNode();
 
-		    if (!load.HasNode(NodeSettings))
-		    {
+            if (!load.HasNode(NODE_SETTINGS))
+            {
                 HSUtils.DebugLog("Settings#Load: no settings node");
-		        return;
-		    }
+                return;
+            }
 
-		    var config = load.GetNode(NodeSettings);
+            var config = load.GetNode(NODE_SETTINGS);
 
-		    var nodeWindowPositions = config.GetNode(NodeWindowPositions) ?? new ConfigNode();
+            var nodeWindowPositions = config.GetNode(NODE_WINDOW_POSITIONS) ?? new ConfigNode();
+
+            var nodeWindowVisibility = config.GetNode(NODE_WINDOW_VISIBILITIES) ?? new ConfigNode();
 
             var defaultPos = new Rect(0, 0, 0, 0);
-		    foreach (var i in nodeWindowPositions.nodes)
-		    {
-		        var node = (ConfigNode) i;
-		        var name = node.name;
-		        var position = node.FromNode(WindowPosition, defaultPos);
-		        
+            foreach (var i in nodeWindowPositions.nodes)
+            {
+                var node = (ConfigNode) i;
+                var name = node.name;
+                var position = node.FromNode(WINDOW_POSITION, defaultPos);
+
                 HSUtils.DebugLog("Settings#load name: {0} position: {1}", name, position);
 
-		        this.windowPositions[name] = position;
-		    }
+                this.windowPositions[name] = position;
+            }
 
-		    var nodeTypeVisibility = config.GetNode(NodeVesselTypeVisibility) ?? new ConfigNode();
-		    foreach (var i in Resources.vesselTypesList)
-		    {
-		        i.visible = nodeTypeVisibility.GetBuiltinValue(i.name, true);
-		    }
-		}
+            foreach (var n in nodeWindowVisibility.nodes)
+            {
+                var node = (ConfigNode) n;
+                var name = node.name;
+                var visible = node.GetBuiltinValue(VALUE, false);
 
-	    public class WindowPositionsIndexer
-	    {
-	        private Dictionary<string, Rect> windowPositions;
+                HSUtils.DebugLog("Settings#Load name: {0} visible: {1}", name, visible);
 
-	        public WindowPositionsIndexer(Dictionary<string, Rect> windowPositions)
-	        {
-	            this.windowPositions = windowPositions;
-	        }
+                this.windowVisibilities[name] = visible;
+            }
 
-	        public Rect this[string name]
-	        {
-	            get
-	            {
-	                Rect outRect;
-	                return this.windowPositions.TryGetValue(name, out outRect) ? outRect : new Rect(0, 0, 0, 0);
-	            }
-	            set
-	            {
-	                HSUtils.DebugLog("settings: window WindowPosition: {0} {1}", name, value);
-                    this.windowPositions[name] = value;
-	            }
-	        }
-	    }
+            var nodeTypeVisibility = config.GetNode(NODE_VESSEL_TYPE_VISIBILITY) ?? new ConfigNode();
+            foreach (var i in Resources.vesselTypesList)
+            {
+                i.visible = nodeTypeVisibility.GetBuiltinValue(i.name, true);
+            }
+        }
 
-	    public readonly WindowPositionsIndexer WindowPositions;
+        public readonly GenericIndexer<Rect> WindowPositions;
+        public readonly GenericIndexer<bool> WindowVisibilities; 
 
-	    public void Save()
-		{
-			HSUtils.DebugLog("saving settings");
 
-	        var t = new ConfigNode();
-	        var config = t.AddNode(NodeSettings);
+        public class GenericIndexer<V>
+        {
+            private Dictionary<string, V> index;
+            private Func<V> defaultValueFactory;
+            private string setDebugMessage;
 
-	        var nodeWindows = config.AddNode(NodeWindowPositions);
-	        foreach (var kv in windowPositions)
-	        {
-	            var name = kv.Key;
-	            var position = kv.Value;
+            public GenericIndexer(Dictionary<string, V> index, Func<V> defaultValueFactory , string setDebugMessage)
+            {
+                this.index = index;
+                this.defaultValueFactory = defaultValueFactory;
+                this.setDebugMessage = setDebugMessage;
+            }
 
-	            var node = nodeWindows.AddNode(name);
-	            node.AddNode(WindowPosition).AddNode(position.ToNode());
-	        }
+            public V this[string name]
+            {
+                get
+                {
+                    V ret;
+                    return index.TryGetValue(name, out ret) ? ret : defaultValueFactory();
+                }
 
-	        var nodeVesselTypeVisibility = config.AddNode(NodeVesselTypeVisibility);
+                set
+                {
+                    HSUtils.DebugLog(setDebugMessage, name, value);
+                    this.index[name] = value;
+                }
+            }
+        }
 
-	        var typeList = Resources.vesselTypesList;
-	        foreach (var type in typeList)
-	        {
-	            nodeVesselTypeVisibility.AddValue(type.name, type.visible);
-	        }
+        public void Save()
+        {
+            HSUtils.DebugLog("saving settings");
+
+            var t = new ConfigNode();
+            var config = t.AddNode(NODE_SETTINGS);
+
+            var nodeWindowPositions = config.AddNode(NODE_WINDOW_POSITIONS);
+            var nodeVisibilities = config.AddNode(NODE_WINDOW_VISIBILITIES);
+
+            saveDicValuesToNode(windowPositions, nodeWindowPositions, WINDOW_POSITION, (node, position) => node.AddNode(position.ToNode()));
+
+            saveDicValuesToNode(windowVisibilities, nodeVisibilities, WINDOW_VISIBLE, (node, visible) => node.AddValue(VALUE, visible));
+
+            var nodeVesselTypeVisibility = config.AddNode(NODE_VESSEL_TYPE_VISIBILITY);
+
+            var typeList = Resources.vesselTypesList;
+            foreach (var type in typeList)
+            {
+                nodeVesselTypeVisibility.AddValue(type.name, type.visible);
+            }
 
             t.Save(SettingsFile);
-		}
-	}
+        }
+
+        private static void saveDicValuesToNode<V>(Dictionary<string, V> dic, ConfigNode node, string configName, Action<ConfigNode, V> saveAction)
+        {
+            foreach (var kv in dic)
+            {
+                var n = node.AddNode(kv.Key);
+                var saveTo = n.AddNode(configName);
+                saveAction(saveTo, kv.Value);
+            }
+        }
+    }
 
     static class NodeSerializers
     {
