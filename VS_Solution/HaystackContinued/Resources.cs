@@ -15,7 +15,9 @@ namespace HaystackContinued
     {
         public static System.Random rnd = new System.Random();
 
-        public static string PathPlugin = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location).Replace("\\", "/");
+        public static string PathPlugin = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)
+            .Replace("\\", "/");
+
         public static string PathImages = String.Format("{0}/icons", PathPlugin);
 
         //toolbar expects to begin in the "gamedata" directory as the root of the provided path
@@ -36,9 +38,10 @@ namespace HaystackContinued
         private static string btnTargetAlphaFilePath = string.Format("{0}/button_targ_alpha.png", PathImages);
         private static string imgLineFilePath = String.Format("{0}/line.png", PathImages);
         private static string imgOutlineFilePath = String.Format("{0}/outline.png", PathImages);
-        
+
         private static string imgDockingPortButtonPressedFilePath = String.Format("{0}/docking_port_button_pressed.png",
             PathImages);
+
         private static string btnOrbitIconFilePath = string.Format("{0}/orbit_icon.png", PathImages);
         private static string btnHiddenIconFilePath = string.Format("{0}/hidden_icon.png", PathImages);
 
@@ -112,12 +115,13 @@ namespace HaystackContinued
 
 
         public static List<HSVesselType> vesselTypesList = new List<HSVesselType>();
+
         /// <summary>
         ///  Function that populates haystack vessel type list with images
         /// </summary>
         public static void PopulateVesselTypes(ref List<HSVesselType> list)
         {
-            foreach (string type in Enum.GetNames(typeof(VesselType)))
+            foreach (string type in Enum.GetNames(typeof (VesselType)))
             {
                 // Kinda dirty and superfluous method...
                 byte sort;
@@ -198,7 +202,7 @@ namespace HaystackContinued
             buttonSearchClearStyle.fixedWidth = 24f;
             buttonSearchClearStyle.fixedHeight = 24f;
             buttonSearchClearStyle.alignment = TextAnchor.MiddleCenter;
-            
+
             // Switch to vessel button
             buttonGoStyle = new GUIStyle(GUI.skin.button);
             buttonGoStyle.fixedWidth = 32.0F;
@@ -267,7 +271,7 @@ namespace HaystackContinued
             textListHeaderStyle.padding = new RectOffset(0, 0, 0, 0);
             textListHeaderStyle.stretchWidth = true;
             textListHeaderStyle.wordWrap = false;
-            
+
 
             textSituationStyle = new GUIStyle(GUI.skin.label);
             textSituationStyle.normal.textColor = XKCDColors.LightGrey;

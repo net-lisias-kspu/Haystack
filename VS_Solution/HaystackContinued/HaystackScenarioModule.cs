@@ -7,7 +7,7 @@ namespace HaystackContinued
     {
         internal static GameScenes[] Scenes = {GameScenes.FLIGHT, GameScenes.TRACKSTATION};
 
-        
+
         public override void OnSave(ConfigNode node)
         {
             HSUtils.DebugLog("HaystackScenarioModule#OnSave: {0}", HighLogic.LoadedScene);
