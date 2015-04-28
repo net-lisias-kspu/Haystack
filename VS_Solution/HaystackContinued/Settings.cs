@@ -29,8 +29,10 @@ namespace HaystackContinued
 
         public Settings()
         {
-            this.WindowPositions = new GenericIndexer<Rect>(windowPositions, () => new Rect(0, 0, 0, 0),"settings: window WindowPosition: {0} {1}");
-            this.WindowVisibilities = new GenericIndexer<bool>(windowVisibilities, () => false, "settings: window WindowVisibility: {0} {1}");
+            this.WindowPositions = new GenericIndexer<Rect>(windowPositions, () => new Rect(0, 0, 0, 0),
+                "settings: window WindowPosition: {0} {1}");
+            this.WindowVisibilities = new GenericIndexer<bool>(windowVisibilities, () => false,
+                "settings: window WindowVisibility: {0} {1}");
 
             Load();
         }
@@ -85,7 +87,7 @@ namespace HaystackContinued
         }
 
         public readonly GenericIndexer<Rect> WindowPositions;
-        public readonly GenericIndexer<bool> WindowVisibilities; 
+        public readonly GenericIndexer<bool> WindowVisibilities;
 
 
         public class GenericIndexer<V>
@@ -94,7 +96,7 @@ namespace HaystackContinued
             private Func<V> defaultValueFactory;
             private string setDebugMessage;
 
-            public GenericIndexer(Dictionary<string, V> index, Func<V> defaultValueFactory , string setDebugMessage)
+            public GenericIndexer(Dictionary<string, V> index, Func<V> defaultValueFactory, string setDebugMessage)
             {
                 this.index = index;
                 this.defaultValueFactory = defaultValueFactory;
@@ -127,9 +129,11 @@ namespace HaystackContinued
             var nodeWindowPositions = config.AddNode(NODE_WINDOW_POSITIONS);
             var nodeVisibilities = config.AddNode(NODE_WINDOW_VISIBILITIES);
 
-            saveDicValuesToNode(windowPositions, nodeWindowPositions, WINDOW_POSITION, (node, position) => node.AddNode(position.ToNode()));
+            saveDicValuesToNode(windowPositions, nodeWindowPositions, WINDOW_POSITION,
+                (node, position) => node.AddNode(position.ToNode()));
 
-            saveDicValuesToNode(windowVisibilities, nodeVisibilities, WINDOW_VISIBLE, (node, visible) => node.AddValue(VALUE, visible));
+            saveDicValuesToNode(windowVisibilities, nodeVisibilities, WINDOW_VISIBLE,
+                (node, visible) => node.AddValue(VALUE, visible));
 
             var nodeVesselTypeVisibility = config.AddNode(NODE_VESSEL_TYPE_VISIBILITY);
 
@@ -142,7 +146,8 @@ namespace HaystackContinued
             t.Save(SettingsFile);
         }
 
-        private static void saveDicValuesToNode<V>(Dictionary<string, V> dic, ConfigNode node, string configName, Action<ConfigNode, V> saveAction)
+        private static void saveDicValuesToNode<V>(Dictionary<string, V> dic, ConfigNode node, string configName,
+            Action<ConfigNode, V> saveAction)
         {
             foreach (var kv in dic)
             {
@@ -153,7 +158,7 @@ namespace HaystackContinued
         }
     }
 
-    static class NodeSerializers
+    internal static class NodeSerializers
     {
         private static readonly Dictionary<Type, CFromNode> converters = new Dictionary<Type, CFromNode>();
 
@@ -161,9 +166,9 @@ namespace HaystackContinued
 
         static NodeSerializers()
         {
-            converters[typeof(Rect)] = RectFromNode;
+            converters[typeof (Rect)] = RectFromNode;
         }
-            
+
         public static ConfigNode ToNode(this Rect rect)
         {
             var node = new ConfigNode("rect");
@@ -185,13 +190,13 @@ namespace HaystackContinued
 
             var type = typeof (T);
             var typeConveter = TypeDescriptor.GetConverter(type);
-            
+
             var strValue = node.GetValue(name);
 
             return (T) typeConveter.ConvertFromInvariantString(strValue);
         }
 
-        public static T FromNode<T>(this ConfigNode node, T defaultValue) where T: class
+        public static T FromNode<T>(this ConfigNode node, T defaultValue) where T : class
         {
             var method = converters[typeof (T)];
 
@@ -208,7 +213,7 @@ namespace HaystackContinued
             }
 
             var method = converters[typeof (T)];
-            return (T)method.Invoke(node.GetNode(name));
+            return (T) method.Invoke(node.GetNode(name));
         }
 
         public static object RectFromNode(ConfigNode node)

@@ -11,12 +11,13 @@ namespace HaystackContinued
         public Settings Settings { get; private set; }
         private static HaystackResourceLoader instance;
         private IButton toolbarButton;
-        
+
 
         // seems to be a unity idiom
         public static HaystackResourceLoader Instance
         {
-            get {
+            get
+            {
                 return instance ??
                        (instance =
                            (HaystackResourceLoader) UnityEngine.Object.FindObjectOfType(typeof (HaystackResourceLoader)));
@@ -67,7 +68,7 @@ namespace HaystackContinued
 
             Resources.PopulateVesselTypes(ref Resources.vesselTypesList);
             Resources.vesselTypesList.Sort(new HSUtils.SortByWeight());
-            
+
             this.Settings = new Settings();
 
             this.InvokeRepeating("RepeatingTask", 0, 30F);
@@ -96,7 +97,8 @@ namespace HaystackContinued
         {
             get
             {
-                return HighLogic.LoadedScene == GameScenes.FLIGHT && !UIHide && (ToolbarManager.ToolbarAvailable ? this.WinVisible : true);
+                return HighLogic.LoadedScene == GameScenes.FLIGHT && !UIHide &&
+                       (ToolbarManager.ToolbarAvailable ? this.WinVisible : true);
             }
         }
 
@@ -113,7 +115,8 @@ namespace HaystackContinued
         {
             get
             {
-                return HSUtils.IsTrackingCenterActive && !UIHide && (ToolbarManager.ToolbarAvailable ? this.WinVisible : true);
+                return HSUtils.IsTrackingCenterActive && !UIHide &&
+                       (ToolbarManager.ToolbarAvailable ? this.WinVisible : true);
             }
         }
 
@@ -122,7 +125,7 @@ namespace HaystackContinued
             get { return "tracking_center"; }
         }
     }
-    
+
     /// <summary>
     /// Need to wait until the user is in the space center to create the scenarios since a saved game is required for them.  
     /// </summary>
@@ -137,11 +140,11 @@ namespace HaystackContinued
         private void setupScenarioModule()
         {
             ProtoScenarioModule protoScenarioModule =
-                HighLogic.CurrentGame.scenarios.FirstOrDefault(i => i.moduleName == typeof(HaystackScenarioModule).Name);
+                HighLogic.CurrentGame.scenarios.FirstOrDefault(i => i.moduleName == typeof (HaystackScenarioModule).Name);
             if (protoScenarioModule == null)
             {
                 HSUtils.DebugLog("adding scenario module");
-                HighLogic.CurrentGame.AddProtoScenarioModule(typeof(HaystackScenarioModule),
+                HighLogic.CurrentGame.AddProtoScenarioModule(typeof (HaystackScenarioModule),
                     HaystackScenarioModule.Scenes);
             }
             else
