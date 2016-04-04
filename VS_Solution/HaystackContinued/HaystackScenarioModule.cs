@@ -5,7 +5,7 @@ namespace HaystackContinued
     /// </summary>
     public class HaystackScenarioModule : ScenarioModule
     {
-        internal static GameScenes[] Scenes = {GameScenes.FLIGHT, GameScenes.TRACKSTATION};
+        internal static GameScenes[] Scenes = { GameScenes.FLIGHT, GameScenes.TRACKSTATION, GameScenes.SPACECENTER};
 
 
         public override void OnSave(ConfigNode node)

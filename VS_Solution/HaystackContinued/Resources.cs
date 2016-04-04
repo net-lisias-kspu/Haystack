@@ -25,6 +25,9 @@ namespace HaystackContinued
         //for the toolbar do not append the extension
         public static string ToolbarIcon = String.Format("{0}/toolbar_icon", ToolbarIconPath);
 
+        //applauncher icon
+        public static string appLauncherIconPath = String.Format("{0}/applauncher_icon.png", PathImages);
+
         private static string btnGoFilePath = String.Format("{0}/button_go.png", PathImages);
         private static string btnGoHoverFilePath = String.Format("{0}/button_go_hover.png", PathImages);
         private static string btnGoTargFilePath = String.Format("{0}/button_targ.png", PathImages);
@@ -43,6 +46,8 @@ namespace HaystackContinued
 
         private static string btnOrbitIconFilePath = string.Format("{0}/orbit_icon.png", PathImages);
         private static string btnHiddenIconFilePath = string.Format("{0}/hidden_icon.png", PathImages);
+
+        public static Texture2D appLauncherIcon = new Texture2D(38, 38, TextureFormat.ARGB32, false);
 
         public static Texture2D btnGo = new Texture2D(32, 32, TextureFormat.ARGB32, false);
         public static Texture2D btnGoHover = new Texture2D(32, 32, TextureFormat.ARGB32, false);
@@ -70,6 +75,8 @@ namespace HaystackContinued
         {
             try
             {
+                LoadImage(ref appLauncherIcon, appLauncherIconPath);
+
                 LoadImage(ref btnGo, btnGoFilePath);
                 LoadImage(ref btnGoHover, btnGoHoverFilePath);
                 LoadImage(ref btnTarg, btnGoTargFilePath);
@@ -182,7 +189,7 @@ namespace HaystackContinued
         public static GUIStyle boxOutlineStyle;
         public static GUIStyle textDockingPortDistanceStyle;
         public static GUIStyle buttonDockingPortTarget;
-
+        public static GUIStyle resizeBoxStyle;
 
         /// <summary>
         /// Set up styles
@@ -193,6 +200,11 @@ namespace HaystackContinued
 
             // Main window
             winStyle = new GUIStyle(GUI.skin.window);
+            winStyle.fontSize = 10;
+
+            resizeBoxStyle = new GUIStyle(GUI.skin.box);
+            resizeBoxStyle.fontSize = 10;
+
 
             //search clear button
             buttonSearchClearStyle = new GUIStyle(GUI.skin.button);

@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
+using KSP.UI.Screens;
 using UnityEngine;
 
 namespace HaystackContinued
@@ -11,6 +13,7 @@ namespace HaystackContinued
         public Settings Settings { get; private set; }
         private static HaystackResourceLoader instance;
         private IButton toolbarButton;
+        private ApplicationLauncherButton appLauncherButton;
 
 
         // seems to be a unity idiom
@@ -33,28 +36,59 @@ namespace HaystackContinued
             this.toolbarButton.Visibility = new GameScenesVisibility(GameScenes.FLIGHT, GameScenes.TRACKSTATION);
             this.toolbarButton.TexturePath = Resources.ToolbarIcon;
             this.toolbarButton.ToolTip = "Haystack Continued";
+
+            this.toolbarButton.OnClick += toolbarButton_OnClick;
         }
 
+        private void toolbarButton_OnClick(ClickEvent e)
+        {
+            this.displayButtonClick(new EventArgs());
+        }
 
-        public event ClickHandler ToolbarButtonOnClick
+        private void appLauncherButton_OnFalse()
+        {
+            this.displayButtonClick(new EventArgs());
+        }
+
+        private void appLauncherButton_OnTrue()
+        {
+            this.displayButtonClick(new EventArgs());
+        }
+
+        public delegate void DisplayButtonClickHandler(EventArgs e);
+
+        private event DisplayButtonClickHandler displayButtonClick;
+
+        public event DisplayButtonClickHandler DisplayButtonOnClick
         {
             add
             {
-                HSUtils.DebugLog("ToolbarOnClick add");
-                if (!ToolbarManager.ToolbarAvailable)
-                {
-                    return;
-                }
-                this.toolbarButton.OnClick += value;
+                HSUtils.DebugLog("DisplayButtonOnClick add");
+                this.displayButtonClick += value;
             }
             remove
             {
-                HSUtils.DebugLog("ToolbarOnClick remove");
-                if (!ToolbarManager.ToolbarAvailable)
-                {
-                    return;
-                }
-                this.toolbarButton.OnClick -= value;
+                HSUtils.DebugLog("DisplayButtonOnClick remove");
+                this.displayButtonClick -= value;
+            }
+        }
+
+        //this is needed since the main window can be saved in a visible state but the application launcher button
+        //will have no knowledge if it is visisble or not on a scene switch
+        public void FixApplicationLauncherButtonDisplay(bool visible)
+        {
+            if (this.appLauncherButton == null)
+            {
+                return;
+            }
+
+            if (visible)
+            {
+                this.appLauncherButton.SetTrue(false);
+            }
+            else
+            {
+                this.appLauncherButton.SetFalse(false);
             }
         }
 
@@ -72,22 +106,78 @@ namespace HaystackContinued
 
             this.Settings = new Settings();
 
-            this.InvokeRepeating("RepeatingTask", 0, 30F);
-
-            if (ToolbarManager.ToolbarAvailable)
+           /* if (ToolbarManager.ToolbarAvailable)
             {
                 this.setupToolbar();
             }
+            else // use applauncher icon
+            {
+                GameEvents.onGUIApplicationLauncherReady.Add(OnAppLauncherReady);
+                GameEvents.onGUIApplicationLauncherDestroyed.Add(OnAppLauncherDestroyed);
+            }*/
+            
+            // just use the app launcher for right now until the toolbar is fully updated.
+            GameEvents.onGUIApplicationLauncherReady.Add(OnAppLauncherReady);
+            GameEvents.onGUIApplicationLauncherDestroyed.Add(OnAppLauncherDestroyed);
         }
 
-        public void RepeatingTask()
+        private void OnAppLauncherReady()
         {
-            this.Settings.Save();
+            if (this.appLauncherButton != null)
+            {
+                HSUtils.DebugLog("application launcher button already exists");
+                return;
+            }
+
+            var appLauncher = ApplicationLauncher.Instance;
+
+            if (appLauncher == null)
+            {
+                HSUtils.DebugLog("application launcher instance is null");
+                //maybe run a coroutine to try again.
+                return;
+            }
+
+            var scenes = ApplicationLauncher.AppScenes.FLIGHT | ApplicationLauncher.AppScenes.TRACKSTATION |
+                         ApplicationLauncher.AppScenes.MAPVIEW | ApplicationLauncher.AppScenes.SPACECENTER;
+
+            this.appLauncherButton = appLauncher.AddModApplication(appLauncherButton_OnTrue, appLauncherButton_OnFalse,
+                () => { },
+                () => { },
+                () => { },
+                () => { },
+                scenes,
+                Resources.appLauncherIcon
+                );
+        }
+
+        private void OnAppLauncherDestroyed()
+        {
+            var appLauncher = ApplicationLauncher.Instance;
+
+            if (appLauncher == null)
+            {
+                HSUtils.DebugLog("OnApplicationLauncherDestroyed: application launcher instance is null.");
+                return;
+            }
+
+            if (this.appLauncherButton == null)
+            {
+                HSUtils.DebugLog("app launcher button is null.");
+                return;
+            }
+
+
+            appLauncher.RemoveModApplication(this.appLauncherButton);
+            this.appLauncherButton = null;
         }
 
         public void OnDestroy()
         {
             this.toolbarButton.Destroy();
+
+            GameEvents.onGUIApplicationLauncherReady.Remove(this.OnAppLauncherReady);
+            GameEvents.onGUIApplicationLauncherDestroyed.Remove(this.OnAppLauncherDestroyed);
         }
     }
 
@@ -98,14 +188,31 @@ namespace HaystackContinued
         {
             get
             {
-                return HighLogic.LoadedScene == GameScenes.FLIGHT && !UIHide &&
-                       (ToolbarManager.ToolbarAvailable ? this.WinVisible : true);
+                return HighLogic.LoadedScene == GameScenes.FLIGHT && !UIHide && this.WinVisible;
             }
         }
 
         protected override string SettingsName
         {
             get { return "flight"; }
+        }
+    }
+
+
+    [KSPAddon(KSPAddon.Startup.SpaceCentre, false)]
+    public class HaystackSpaceCentre : HaystackContinued
+    {
+        protected override bool IsGuiDisplay
+        {
+            get
+            {
+                return HighLogic.LoadedScene == GameScenes.SPACECENTER && !UIHide && this.WinVisible;
+            }
+        }
+
+        protected override string SettingsName
+        {
+            get { return "space_center"; }
         }
     }
 
@@ -116,8 +223,7 @@ namespace HaystackContinued
         {
             get
             {
-                return HSUtils.IsTrackingCenterActive && !UIHide &&
-                       (ToolbarManager.ToolbarAvailable ? this.WinVisible : true);
+                return HSUtils.IsTrackingCenterActive && !UIHide && this.WinVisible;
             }
         }
 

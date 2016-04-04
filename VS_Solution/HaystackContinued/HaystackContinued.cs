@@ -91,10 +91,12 @@ namespace HaystackContinued
             this.WinRect = HaystackResourceLoader.Instance.Settings.WindowPositions[this.SettingsName];
             this.WinVisible = HaystackResourceLoader.Instance.Settings.WindowVisibilities[this.SettingsName];
 
-            HaystackResourceLoader.Instance.ToolbarButtonOnClick += this.toolbarButtonClicked;
+            HaystackResourceLoader.Instance.DisplayButtonOnClick += this.displayButtonClicked;
 
             InvokeRepeating("FetchVesselList;", 5.0F, 5.0F);
             InvokeRepeating("RefreshDataSaveSettings", 0, 30.0F);
+
+            HaystackResourceLoader.Instance.FixApplicationLauncherButtonDisplay(this.WinVisible);
         }
 
         public void OnDisable()
@@ -104,7 +106,7 @@ namespace HaystackContinued
 
             GameEvents.onPlanetariumTargetChanged.Remove(this.OnMapTargetChange);
 
-            HaystackResourceLoader.Instance.ToolbarButtonOnClick -= this.toolbarButtonClicked;
+            HaystackResourceLoader.Instance.DisplayButtonOnClick -= this.displayButtonClicked;
 
             HaystackResourceLoader.Instance.Settings.WindowPositions[this.SettingsName] = this.WinRect;
             HaystackResourceLoader.Instance.Settings.WindowVisibilities[this.SettingsName] = this.WinVisible;
@@ -112,7 +114,7 @@ namespace HaystackContinued
             HaystackResourceLoader.Instance.Settings.Save();
         }
 
-        private void toolbarButtonClicked(ClickEvent e)
+        private void displayButtonClicked(EventArgs e)
         {
             this.WinVisible = !this.WinVisible;
         }
@@ -308,6 +310,10 @@ namespace HaystackContinued
             {
                 HSUtils.TrackingSwitchToVessel(vessel);
             }
+            else if (HSUtils.IsSpaceCenterActive)
+            {
+                HSUtils.SwitchAndFly(vessel);
+            }
             else
             {
                 FlightGlobals.SetActiveVessel(vessel);
@@ -324,24 +330,8 @@ namespace HaystackContinued
         {
             GUI.skin = HighLogic.Skin;
 
-            if (ToolbarManager.ToolbarAvailable)
-            {
-                this.winRect = this.winRect.ClampToScreen();
-            }
-            else
-            {
-                if (this.WinVisible)
-                {
-                    //logic without the toolbar; clamps to the bottom of the screen
-                    this.winRect.y = Screen.height - this.winRect.height;
-                    this.winRect = this.winRect.ClampToScreen();
-                }
-                else
-                {
-                    //just pushing it off the bottom of the screen
-                    this.winRect.y = Screen.height - 1;
-                }
-            }
+            this.winRect = this.winRect.ClampToScreen();
+           
 
             this.winRect = GUILayout.Window(windowId, this.winRect, this.mainWindowConstructor,
                 string.Format("Haystack Continued {0}", Settings.version), Resources.winStyle, GUILayout.MinWidth(120),
@@ -349,17 +339,6 @@ namespace HaystackContinued
 
             // do this here since if it's done within the window you only recieve events that are inside of the window
             this.resizeHandle.DoResize(ref this.winRect);
-
-            if (!ToolbarManager.ToolbarAvailable)
-            {
-                // this is the open close button on the bottom of the screen when the toolbar isn't available
-                if (GUI.Button(new Rect(this.winRect.x + (this.winRect.width/2 - 24), this.winRect.y - 9, 48, 10), "",
-                    Resources.buttonFoldStyle))
-                {
-                    this.WinVisible = !this.WinVisible; // toggle window state
-                    this.RefreshFilteredVesselList();
-                }
-            }
         }
 
         /// <summary>
@@ -396,7 +375,6 @@ namespace HaystackContinued
         }
 
         private bool isGUISetup;
-        private IButton toolbarButton;
 
         private void mainWindowConstructor(int windowID)
         {
@@ -418,6 +396,8 @@ namespace HaystackContinued
                 Resources.vesselTypesList[i].visible = GUILayout.Toggle(Resources.vesselTypesList[i].visible,
                     new GUIContent(Resources.vesselTypesList[i].icon, typeString), Resources.buttonVesselTypeStyle);
             }
+
+            //TODO: save visibility setting
 
             // Bodies
             showCelestialBodies = GUILayout.Toggle(showCelestialBodies, new GUIContent(Resources.btnBodies, "Bodies"),
@@ -777,11 +757,14 @@ namespace HaystackContinued
         {
             private bool resizing;
             private Vector2 lastPosition = new Vector2(0, 0);
+            private const float resizeBoxSize = 18;
+            private const float resizeBoxMargin = 2;
 
             internal void Draw(ref Rect winRect)
             {
-                var resizer = new Rect(winRect.width - 24f - 2f, 2f, 24f, 24f);
-                GUI.Box(resizer, "//", GUI.skin.box);
+                
+                var resizer = new Rect(winRect.width - resizeBoxSize - resizeBoxMargin, resizeBoxMargin, resizeBoxSize, resizeBoxSize);
+                GUI.Box(resizer, "//", Resources.resizeBoxStyle);
 
                 if (!Event.current.isMouse)
                 {

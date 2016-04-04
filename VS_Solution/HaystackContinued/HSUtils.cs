@@ -68,6 +68,17 @@ namespace HaystackContinued
             method.Invoke(spaceTracking, new object[] {vessel});
         }
 
+        internal static void SwitchAndFly(Vessel vessel)
+        {
+            if (vessel.DiscoveryInfo.Level == DiscoveryLevels.Owned)
+            {
+                GamePersistence.SaveGame("persistent", HighLogic.SaveFolder, SaveMode.OVERWRITE);
+                FlightDriver.StartAndFocusVessel("persistent", FlightGlobals.Vessels.IndexOf(vessel));
+            }
+            else
+                ScreenMessages.PostScreenMessage("Cannot switch to " + (vessel.vesselType <= VesselType.Unknown ? "an object" : "a vessel") + " we do not own.", 5f, ScreenMessageStyle.UPPER_CENTER);
+        }
+
         internal static void TrackingSwitchToVessel(Vessel vessel)
         {
             var spaceTracking = (SpaceTracking) Object.FindObjectOfType(typeof (SpaceTracking));
@@ -130,6 +141,11 @@ namespace HaystackContinued
         internal static bool IsTrackingCenterActive
         {
             get { return HighLogic.LoadedScene == GameScenes.TRACKSTATION; }
+        }
+
+        internal static bool IsSpaceCenterActive
+        {
+            get { return HighLogic.LoadedScene == GameScenes.SPACECENTER; }
         }
 
         //from mechjeb: figured it'd be better to keep conversion consistant between various plugins
