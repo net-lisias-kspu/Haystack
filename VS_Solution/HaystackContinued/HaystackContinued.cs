@@ -165,11 +165,11 @@ namespace HaystackContinued
 
             switch (mapObject.type)
             {
-                case MapObject.MapObjectType.VESSEL:
+                case MapObject.ObjectType.Vessel:
                     this.defaultScrollerView.SelectedVessel = mapObject.vessel;
                     this.groupedScrollerView.SelectedVessel = mapObject.vessel;
                     break;
-                case MapObject.MapObjectType.CELESTIALBODY:
+                case MapObject.ObjectType.CelestialBody:
                     this.defaultScrollerView.SelectedBody = mapObject.celestialBody;
                     break;
                 default:

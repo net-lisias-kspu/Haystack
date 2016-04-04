@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
+using KSP.UI.Screens;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
@@ -72,7 +73,7 @@ namespace HaystackContinued
             var spaceTracking = (SpaceTracking) Object.FindObjectOfType(typeof (SpaceTracking));
 
             var method = spaceTracking.GetType()
-                .GetMethod("BoardVessel", BindingFlags.NonPublic | BindingFlags.Instance);
+                .GetMethod("FlyVessel", BindingFlags.NonPublic | BindingFlags.Instance);
 
             method.Invoke(spaceTracking, new object[] {vessel});
         }
@@ -90,8 +91,7 @@ namespace HaystackContinued
             PlanetariumCamera cam;
             if (IsTrackingCenterActive)
             {
-                var spaceTracking = (SpaceTracking) Object.FindObjectOfType(typeof (SpaceTracking));
-                cam = spaceTracking.mainCamera;
+                cam = (PlanetariumCamera)Object.FindObjectOfType(typeof(PlanetariumCamera));
             }
             else if (IsMapActive)
             {

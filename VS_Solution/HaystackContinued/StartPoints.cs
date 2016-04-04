@@ -24,6 +24,7 @@ namespace HaystackContinued
             }
         }
 
+        //blizzy toolbar
         private void setupToolbar()
         {
             HSUtils.DebugLog("HaystackResourceLoader#setupToolbar: toolbar detected, using it.");
