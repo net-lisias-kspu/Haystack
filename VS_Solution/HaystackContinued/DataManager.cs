@@ -123,7 +123,7 @@ namespace HaystackContinued
             }
             catch (Exception e)
             {
-                HSUtils.DebugLog("HiddenVessles#Save: exception: " + e.Message);
+                HSUtils.Log("HiddenVessles#Save: exception: " + e.Message);
             }
         }
 
