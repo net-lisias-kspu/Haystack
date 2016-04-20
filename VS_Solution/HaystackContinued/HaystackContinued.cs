@@ -1159,7 +1159,7 @@ namespace HaystackContinued
                 {
                     moduleDockingNodeNamedType = AssemblyLoader.loadedAssemblies.SelectMany(
                         a => a.assembly.GetExportedTypes())
-                        .SingleOrDefault(t => t.FullName == "DockingPortAlignment.ModuleDockingNodeNamed");
+                        .SingleOrDefault(t => t.FullName == "NavyFish.ModuleDockingNodeNamed");
 
                     modulePortName = moduleDockingNodeNamedType.GetField("portName",
                         BindingFlags.Instance | BindingFlags.Public);
@@ -1269,7 +1269,7 @@ namespace HaystackContinued
 
                 if (!namedDockingPortSupport)
                 {
-                    return port.part.partInfo.title;
+                    return port.part.partInfo.title.Trim();
                 }
 
                 PartModule found = null;
@@ -1304,7 +1304,7 @@ namespace HaystackContinued
                     return;
                 }
 
-                if (this.CurrentVessel.packed)
+                if(!this.CurrentVessel.loaded)
                 {
                     GUILayout.BeginVertical();
                     GUILayout.Label("The vessel is out of range: cannot list docking ports",
@@ -1361,7 +1361,7 @@ namespace HaystackContinued
                 var vessel = portNode.GetVessel();
 
                 //can't set target if the vessel is not loaded or is the active vessel
-                if (vessel.packed || vessel.isActiveVessel)
+                if (!vessel.loaded || vessel.isActiveVessel)
                 {
                     return;
                 }
