@@ -4,7 +4,6 @@ using System.ComponentModel;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using KSP.IO;
 using UnityEngine;
 
 namespace HaystackContinued
@@ -13,8 +12,8 @@ namespace HaystackContinued
     {
         public static string version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
 
-        private static readonly string SettingsFile = Resources.PathPlugin + Path.DirectorySeparatorChar +
-                                                      "settings.cfg";
+        private static readonly string PluginDataDir = Resources.PathPlugin + Path.DirectorySeparatorChar + "PluginData";
+        private static readonly string SettingsFile = PluginDataDir + Path.DirectorySeparatorChar + "settings.cfg";
 
         private const string NODE_SETTINGS = "settings";
         private const string NODE_WINDOW_POSITIONS = "window_positions";
@@ -33,8 +32,39 @@ namespace HaystackContinued
                 "settings: window WindowPosition: {0} {1}");
             this.WindowVisibilities = new GenericIndexer<bool>(windowVisibilities, () => false,
                 "settings: window WindowVisibility: {0} {1}");
+            
+            this.Convert();
+            this.Load();
+        }
 
-            Load();
+        private void Convert()
+        {
+           this.convertToNewDirectory();
+        }
+
+        private void convertToNewDirectory()
+        {
+            var oldSettingsFile = Resources.PathPlugin + Path.DirectorySeparatorChar + "settings.cfg";
+
+            var oldSettingsExists = File.Exists(oldSettingsFile);
+            var newSettingsExists = File.Exists(SettingsFile);
+
+            if (!Directory.Exists(PluginDataDir))
+            {
+                HSUtils.Log("Creating missing PluginData directory.");
+                Directory.CreateDirectory(PluginDataDir);
+            }
+
+            if (oldSettingsExists && !newSettingsExists)
+            {
+                HSUtils.Log("Moving settings file to new location.");
+                
+                File.Move(oldSettingsFile, SettingsFile);
+            } else if (oldSettingsExists)
+            {   HSUtils.Log("Deleting old settings file.");
+
+                File.Delete(oldSettingsFile);
+            }
         }
 
         private void Load()
