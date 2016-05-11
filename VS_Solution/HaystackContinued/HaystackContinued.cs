@@ -720,8 +720,15 @@ namespace HaystackContinued
 
             private void changeCameraTarget()
             {
+                // don't do anything if we are in the space center since there is no map view to change.
+                if (HSUtils.IsSpaceCenterActive)
+                {
+                    return;
+                }
+
                 if (this.SelectedVessel != null)
                 {
+                    
                     if (HSUtils.IsTrackingCenterActive)
                     {
                         HSUtils.RequestCameraFocus(this.SelectedVessel);
@@ -919,7 +926,7 @@ namespace HaystackContinued
 
             private bool isTargetButtonDisabled()
             {
-                if (HSUtils.IsTrackingCenterActive)
+                if (!HSUtils.IsInFlight)
                 {
                     return true;
                 }

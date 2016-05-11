@@ -38,7 +38,7 @@ namespace HaystackContinued
         /// <param name="message">Message to be logged</param>
         public static void Log(string message)
         {
-            Debug.Log(string.Format("Haystack: {0}", message));
+            Debug.Log(string.Format("HaystackContinued: {0}", message));
         }
 
         public static void Log(string format, params object[] objects)
@@ -49,7 +49,7 @@ namespace HaystackContinued
         [System.Diagnostics.Conditional("DEBUG")]
         public static void DebugLog(string message)
         {
-            Debug.Log(string.Format("Haystack: {0}", message));
+            Debug.Log(string.Format("HaystackContinued: {0}", message));
         }
 
         [System.Diagnostics.Conditional("DEBUG")]
@@ -136,6 +136,11 @@ namespace HaystackContinued
         internal static bool IsMapActive
         {
             get { return (HighLogic.LoadedScene == GameScenes.FLIGHT) && MapView.MapIsEnabled; }
+        }
+
+        internal static bool IsInFlight
+        {
+            get { return (HighLogic.LoadedScene == GameScenes.FLIGHT); }
         }
 
         internal static bool IsTrackingCenterActive
