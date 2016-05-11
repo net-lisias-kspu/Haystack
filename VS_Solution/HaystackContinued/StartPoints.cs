@@ -174,7 +174,10 @@ namespace HaystackContinued
 
         public void OnDestroy()
         {
-            this.toolbarButton.Destroy();
+            if (this.toolbarButton != null)
+            {
+                this.toolbarButton.Destroy();
+            }
 
             GameEvents.onGUIApplicationLauncherReady.Remove(this.OnAppLauncherReady);
             GameEvents.onGUIApplicationLauncherDestroyed.Remove(this.OnAppLauncherDestroyed);
