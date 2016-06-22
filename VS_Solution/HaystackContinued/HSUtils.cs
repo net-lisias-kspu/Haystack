@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Reflection;
 using KSP.UI.Screens;
 using UnityEngine;
@@ -38,7 +37,7 @@ namespace HaystackContinued
         /// <param name="message">Message to be logged</param>
         public static void Log(string message)
         {
-            Debug.Log(string.Format("Haystack: {0}", message));
+            Debug.Log(string.Format("HaystackContinued: {0}", message));
         }
 
         public static void Log(string format, params object[] objects)
@@ -49,7 +48,7 @@ namespace HaystackContinued
         [System.Diagnostics.Conditional("DEBUG")]
         public static void DebugLog(string message)
         {
-            Debug.Log(string.Format("Haystack: {0}", message));
+            Debug.Log(string.Format("HaystackContinued: {0}", message));
         }
 
         [System.Diagnostics.Conditional("DEBUG")]
@@ -89,6 +88,80 @@ namespace HaystackContinued
             method.Invoke(spaceTracking, new object[] {vessel});
         }
 
+        internal static void FocusMapObject(CelestialBody body)
+        {
+            if (!(IsMapActive || IsTrackingCenterActive))
+            {
+                return;
+            }
+
+            HSUtils.DebugLog("FocusMapObject(body)");
+
+            var cam = getPlanetariumCamera();
+
+            foreach (var mapObject in cam.targets)
+            {
+                if (mapObject.celestialBody != null && mapObject.celestialBody.GetInstanceID() == body.GetInstanceID())
+                {
+                    cam.SetTarget(mapObject);
+                    return;
+                }
+            }
+        }
+
+        internal static void FocusMapObject(Vessel vessel)
+        {
+            if (!(IsMapActive || IsTrackingCenterActive))
+            {
+                return;
+            }
+
+            HSUtils.DebugLog("FocusMapObject(vessel)");
+
+            var cam = getPlanetariumCamera();
+
+            if (IsTrackingCenterActive)
+            {
+                foreach (var mapObject in cam.targets)
+                {
+                    if (mapObject.vessel != null && mapObject.vessel.GetInstanceID() == vessel.GetInstanceID())
+                    {
+                        cam.SetTarget(mapObject);
+                        return;
+                    }
+                }
+                return;
+            }
+
+            // else
+            // in flight map mode the active vessel is the only vessel in the list of targets
+            // don't know why but will attempt to maintain that
+            cam.targets.RemoveAll(mapObject => mapObject.vessel != null);
+
+            var activeVessel = FlightGlobals.ActiveVessel;
+            if (activeVessel != null && activeVessel.GetInstanceID() != vessel.GetInstanceID())
+            {
+                cam.AddTarget(FlightGlobals.ActiveVessel.mapObject);
+            } 
+
+            cam.AddTarget(vessel.mapObject);
+            cam.SetTarget(vessel.mapObject);
+        }
+
+        private static PlanetariumCamera getPlanetariumCamera()
+        {
+            if (IsTrackingCenterActive)
+            {
+                return Object.FindObjectOfType<PlanetariumCamera>();
+            }
+            else if (IsMapActive)
+            {
+                return MapView.MapCamera;
+            }
+            
+            throw new InvalidOperationException();
+        }
+
         /// <summary>
         /// Focuses the map object matching the intanceID passed in
         /// if the scene is map mode.
@@ -96,39 +169,40 @@ namespace HaystackContinued
         /// Assumes the instance ID is valid.
         /// </summary>
         /// <param name="instanceID"></param>
-        internal static void FocusMapObject(int instanceID)
-        {
-            // focus on the object
-            PlanetariumCamera cam;
-            if (IsTrackingCenterActive)
-            {
-                cam = (PlanetariumCamera)Object.FindObjectOfType(typeof(PlanetariumCamera));
-            }
-            else if (IsMapActive)
-            {
-                cam = MapView.MapCamera;
-            }
-            else
-            {
-                Log("FocusMapObject: invalid scene");
-                return;
-            }
+        //internal static void FocusMapObject(int instanceID)
+        //{
+        //    HSUtils.DebugLog("FocusMapObject: {0}", instanceID);
+        //    // focus on the object
+        //    PlanetariumCamera cam;
+        //    if (IsTrackingCenterActive)
+        //    {
+        //        cam = (PlanetariumCamera)Object.FindObjectOfType(typeof(PlanetariumCamera));
+        //    }
+        //    else if (IsMapActive)
+        //    {
+        //        cam = MapView.MapCamera;
+        //    }
+        //    else
+        //    {
+        //        DebugLog("FocusMapObject: invalid scene");
+        //        return;
+        //    }
 
-            foreach (var mapObject in cam.targets)
-            {
-                if (mapObject.vessel != null && mapObject.vessel.GetInstanceID() == instanceID)
-                {
-                    DebugLog("vessel map object: " + mapObject.vessel.name);
-                    cam.SetTarget(mapObject);
-                    break;
-                }
-                if (mapObject.celestialBody != null && mapObject.celestialBody.GetInstanceID() == instanceID)
-                {
-                    cam.SetTarget(mapObject);
-                    break;
-                }
-            }
-        }
+        //    foreach (var mapObject in cam.targets)
+        //    {
+        //        if (mapObject.vessel != null && mapObject.vessel.GetInstanceID() == instanceID)
+        //        {
+        //            DebugLog("vessel map object: " + mapObject.vessel.name);
+        //            cam.SetTarget(mapObject);
+        //            return;
+        //        }
+        //        if (mapObject.celestialBody != null && mapObject.celestialBody.GetInstanceID() == instanceID)
+        //        {
+        //            cam.SetTarget(mapObject);
+        //            return;
+        //        }
+        //    }
+        //}
 
         /// <summary>
         /// Check if the user is currently viewing the map
@@ -136,6 +210,11 @@ namespace HaystackContinued
         internal static bool IsMapActive
         {
             get { return (HighLogic.LoadedScene == GameScenes.FLIGHT) && MapView.MapIsEnabled; }
+        }
+
+        internal static bool IsInFlight
+        {
+            get { return (HighLogic.LoadedScene == GameScenes.FLIGHT); }
         }
 
         internal static bool IsTrackingCenterActive
@@ -182,6 +261,81 @@ namespace HaystackContinued
         }
     }
 
+    public static class Converters
+    {
+
+        public static string Distance(double distance)
+        {
+            //var sizes = new[]
+            //{
+            //    new {max = 1000000d, suffix = "m", divisor = 1},
+            //    new {max = 1000000d*1000, suffix = "km", divisor = 1000},
+            //    new {max = double.MaxValue, suffix = "Mm", divisor = 1000*1000}
+            //};
+            
+            var sizes = new[]
+            {
+                new {max = 1000000d, suffix = "m", divisor = 1},
+                new {max = double.MaxValue, suffix = "km", divisor = 1000},
+            };
+
+            foreach (var size in sizes)
+            {
+                if (distance < size.max)
+                {
+                    var unit = distance/size.divisor;
+                    return unit.ToString("N") + size.suffix;
+                }
+            }
+
+            return "";
+        }
+
+        public static string Duration(double seconds, int secondSigd = 0)
+        {
+            double secondsLeft = seconds;
+            int years = 0;
+            int days = 0;
+            int hours = 0;
+            int minutes = 0;
+
+            var formatter = KSPUtil.dateTimeFormatter;
+
+            years = (int) (secondsLeft/formatter.Year);
+            secondsLeft -= ((double)years)*formatter.Year; // cast is to keep from int overflow
+
+            days = (int) (secondsLeft/formatter.Day);
+            secondsLeft -= days*formatter.Day;
+
+            hours = (int) (secondsLeft/formatter.Hour);
+            secondsLeft -= hours*formatter.Hour;
+
+            minutes = (int) (secondsLeft/formatter.Minute);
+            secondsLeft -= minutes*formatter.Minute;
+
+            var secondFormat = secondSigd > 0 ? string.Format("00.{0}", new string('#', secondSigd)) : "00";
+
+            var formatted = string.Format("{0}:{1}s", minutes.ToString("00"), secondsLeft.ToString(secondFormat));
+
+            if (hours > 0)
+            {
+                formatted = string.Format("{0}:", hours) + formatted;
+            }
+
+            if (days > 0)
+            {
+                formatted = string.Format("{0}d ", days) + formatted;
+            }
+
+            if (years > 0)
+            {
+                formatted = string.Format("{0}y ", years) + formatted;
+            }
+
+            return formatted;
+        }
+    }
+
     public static class Extensions
     {
         public static Rect ClampToScreen(this Rect rect)
@@ -192,6 +346,29 @@ namespace HaystackContinued
             return rect;
         }
 
+        public static Rect ClampTo(this Rect rect, Rect clampTo)
+        {
+            rect.x = Mathf.Clamp(rect.x, clampTo.x, clampTo.xMax);
+            rect.y = Mathf.Clamp(rect.y, clampTo.y, clampTo.yMax);
+
+            return rect;
+        }
+
+        public static Rect ClampToPosIn(this Rect rect, Rect clampTo)
+        {
+            rect.x = Mathf.Clamp(rect.x, 0, clampTo.width - rect.width);
+            rect.y = Mathf.Clamp(rect.y, 0, clampTo.height - rect.height);
+
+            return rect;
+        }
+
+        public static Rect ToScreen(this Rect rect)
+        {
+            var point = new Vector2(rect.x, rect.y);
+            point = GUIUtility.GUIToScreenPoint(point);
+            return new Rect(point.x, point.y, rect.width, rect.height);
+        }
+
         public static bool IsEmpty<T>(this List<T> list)
         {
             return list.Count == 0;
@@ -200,6 +377,20 @@ namespace HaystackContinued
         public static string SafeName(this Vessel vessel)
         {
             return vessel == null ? "null" : vessel.name;
+        }
+
+        public static Color ToColor(this string hex)
+        {
+            Color color;
+            ColorUtility.TryParseHtmlString(hex, out color);
+            return color;
+        }
+
+        public static double ToDouble(this string value)
+        {
+            double d = 0d;
+            double.TryParse(value, out d);
+            return d;
         }
     }
 }
