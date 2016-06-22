@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
-using System.Reflection.Emit;
 using UnityEngine;
 
 namespace HaystackContinued
@@ -25,7 +24,6 @@ namespace HaystackContinued
         //for the toolbar do not append the extension
         public static string ToolbarIcon = String.Format("{0}/toolbar_icon", ToolbarIconPath);
 
-        //applauncher icon
         public static string appLauncherIconPath = String.Format("{0}/applauncher_icon.png", PathImages);
 
         private static string btnGoFilePath = String.Format("{0}/button_go.png", PathImages);
@@ -38,17 +36,26 @@ namespace HaystackContinued
         private static string btnDownArrowFilePath = String.Format("{0}/down_arrow.png", PathImages);
         private static string btnUpArrowFilePath = String.Format("{0}/up_arrow.png", PathImages);
         private static string btnTargetAlphaFilePath = string.Format("{0}/button_targ_alpha.png", PathImages);
+        private static string btnAscendingFilePath = string.Format("{0}/button_ascending.png", PathImages);
+        private static string btnDescendingFilePath = string.Format("{0}/button_descending.png", PathImages);
+        private static string btnExtendedHoverFilePath = string.Format("{0}/button_extended_background_hover.png", PathImages);
+        private static string btnExtendedPressedFilePath = string.Format("{0}/button_extended_background_pressed.png", PathImages);
         private static string imgLineFilePath = String.Format("{0}/line.png", PathImages);
         private static string imgOutlineFilePath = String.Format("{0}/outline.png", PathImages);
-
-        private static string imgDockingPortButtonPressedFilePath = String.Format("{0}/docking_port_button_pressed.png",
-            PathImages);
-
+        private static string imgVesselInfoNormalFilePath = string.Format("{0}/vessel_info_normal.png", PathImages);
+        private static string imgVesselInfoPressedFilePath = string.Format("{0}/vessel_info_pressed.png", PathImages);
+        private static string imgVesselInfoHoverFilePath = string.Format("{0}/vessel_info_hover.png", PathImages);
+        private static string imgVesselInfoSelectedFilePath = string.Format("{0}/vessel_info_selected.png", PathImages);
+        private static string imgDockingPortButtonPressedFilePath = String.Format("{0}/docking_port_button_pressed.png", PathImages);
         private static string btnOrbitIconFilePath = string.Format("{0}/orbit_icon.png", PathImages);
         private static string btnHiddenIconFilePath = string.Format("{0}/hidden_icon.png", PathImages);
+        private static string btnExtendedIconOpenFilePath = string.Format("{0}/button_extended_icon_open.png", PathImages);
+        private static string btnExtendedIconCloseFilePath = string.Format("{0}/button_extended_icon_close.png", PathImages);
+        private static string btnFlatNormalFilePath = string.Format("{0}/button_flat_normal.png", PathImages);
+        private static string btnFlatHoverFilePath = string.Format("{0}/button_flat_hover.png", PathImages);
+        private static string btnFlatPressedFilePath = string.Format("{0}/button_flat_pressed.png", PathImages);
 
         public static Texture2D appLauncherIcon = new Texture2D(38, 38, TextureFormat.ARGB32, false);
-
         public static Texture2D btnGo = new Texture2D(32, 32, TextureFormat.ARGB32, false);
         public static Texture2D btnGoHover = new Texture2D(32, 32, TextureFormat.ARGB32, false);
         public static Texture2D btnTarg = new Texture2D(32, 32, TextureFormat.ARGB32, false);
@@ -64,9 +71,23 @@ namespace HaystackContinued
         public static Texture2D imgVesselListButtonPressed = new Texture2D(14, 14, TextureFormat.ARGB32, false);
         public static Texture2D btnOrbitIcon = new Texture2D(20, 20, TextureFormat.ARGB32, false);
         public static Texture2D btnHiddenIcon = new Texture2D(24, 24, TextureFormat.ARGB32, false);
+        public static Texture2D btnAscendingIcon = new Texture2D(24, 24, TextureFormat.ARGB32, false);
+        public static Texture2D btnDescendingIcon = new Texture2D(24, 24, TextureFormat.ARGB32, false);
+        public static Texture2D imgVesselInfoNormal = new Texture2D(64, 64, TextureFormat.ARGB32, false);
+        public static Texture2D imgVesselInfoPressed = new Texture2D(64, 64, TextureFormat.ARGB32, false);
+        public static Texture2D imgVesselInfoHover = new Texture2D(64, 64, TextureFormat.ARGB32, false);
+        public static Texture2D imgVesselInfoSelected = new Texture2D(64, 64, TextureFormat.ARGB32, false);
+        public static Texture2D btnExtendedHoverBackground = new Texture2D(12, 12, TextureFormat.ARGB32, false);
+        public static Texture2D btnExtendedPressedBackground = new Texture2D(12, 12, TextureFormat.ARGB32, false);
+        public static Texture2D btnExtendedIconOpen = new Texture2D(16, 32, TextureFormat.ARGB32, false);
+        public static Texture2D btnExtendedIconClose = new Texture2D(16, 32, TextureFormat.ARGB32, false);
+        public static Texture2D btnFlatNormalBackground = new Texture2D(12, 12, TextureFormat.ARGB32, false);
+        public static Texture2D btnFlatPressedBackground = new Texture2D(12, 12, TextureFormat.ARGB32, false);
+        public static Texture2D btnFlatHoverBackground = new Texture2D(12, 12, TextureFormat.ARGB32, false);
 
         public static RectOffset imgOutlineBorder = new RectOffset(2, 2, 2, 2);
         public static RectOffset imgVesselListButtonBorder = new RectOffset(2, 2, 2, 2);
+
 
         /// <summary>
         /// Load images into corresponding textures
@@ -91,9 +112,24 @@ namespace HaystackContinued
                 LoadImage(ref btnOrbitIcon, btnOrbitIconFilePath);
                 LoadImage(ref btnHiddenIcon, btnHiddenIconFilePath);
                 LoadImage(ref btnTargetAlpha, btnTargetAlphaFilePath);
+                LoadImage(ref btnAscendingIcon, btnAscendingFilePath);
+                LoadImage(ref btnDescendingIcon, btnDescendingFilePath);
+
+                LoadImage(ref btnExtendedHoverBackground, btnExtendedHoverFilePath);
+                LoadImage(ref btnExtendedPressedBackground, btnExtendedPressedFilePath);
+                LoadImage(ref btnExtendedIconClose, btnExtendedIconCloseFilePath);
+                LoadImage(ref btnExtendedIconOpen, btnExtendedIconOpenFilePath);
+
+                LoadImage(ref btnFlatNormalBackground, btnFlatNormalFilePath);
+                LoadImage(ref btnFlatHoverBackground, btnFlatHoverFilePath);
+                LoadImage(ref btnFlatPressedBackground, btnFlatPressedFilePath);
 
                 LoadImage(ref imgLine, imgLineFilePath);
                 LoadImage(ref imgOutline, imgOutlineFilePath);
+                LoadImage(ref imgVesselInfoHover, imgVesselInfoHoverFilePath);
+                LoadImage(ref imgVesselInfoNormal, imgVesselInfoNormalFilePath);
+                LoadImage(ref imgVesselInfoPressed, imgVesselInfoPressedFilePath);
+                LoadImage(ref imgVesselInfoSelected, imgVesselInfoSelectedFilePath);
 
                 LoadImage(ref imgVesselListButtonPressed, imgDockingPortButtonPressedFilePath);
             }
@@ -190,20 +226,45 @@ namespace HaystackContinued
         public static GUIStyle textDockingPortDistanceStyle;
         public static GUIStyle buttonDockingPortTarget;
         public static GUIStyle resizeBoxStyle;
+        public static GUIStyle vesselInfoSelected;
+        public static GUIStyle vesselInfoDefault;
+        public static GUIStyle textVesselExpandedInfoItem;
+        public static GUIStyle buttonExtendedStyle;
+        public static GUIStyle tooltipBoxStyle;
+        public static GUIStyle buttonFlatStyle;
+        public static GUIStyle buttonRenameStyle;
+        public static GUIStyle textExpandedVesselNameStyle;
+
+        private static bool stylesLoaded;
+        
 
         /// <summary>
         /// Set up styles
         /// </summary>
         public static void LoadStyles()
         {
+
+            if (stylesLoaded)
+            {
+                return;
+            }
+
             GUI.skin = HighLogic.Skin;
 
             // Main window
             winStyle = new GUIStyle(GUI.skin.window);
             winStyle.fontSize = 10;
+            winStyle.normal.textColor = XKCDColors.LightGrey;
 
+            // resize button
             resizeBoxStyle = new GUIStyle(GUI.skin.box);
             resizeBoxStyle.fontSize = 10;
+            resizeBoxStyle.normal.textColor = XKCDColors.LightGrey;
+
+            //tooltip
+            tooltipBoxStyle = new GUIStyle(GUI.skin.box);
+            tooltipBoxStyle.fontSize = 12;
+            tooltipBoxStyle.normal.textColor = "#f4eac0".ToColor();
 
 
             //search clear button
@@ -226,9 +287,35 @@ namespace HaystackContinued
 
             // Vessel type toggle
             buttonVesselTypeStyle = new GUIStyle(GUI.skin.button);
-            buttonVesselTypeStyle.fixedWidth = 32.0F;
-            buttonVesselTypeStyle.fixedHeight = 32.0F;
+            buttonVesselTypeStyle.fixedWidth = 28.0F;
+            buttonVesselTypeStyle.fixedHeight = 28.0F;
+            buttonVesselTypeStyle.margin.left -= 2;
+            buttonVesselTypeStyle.margin.right -= 2;
+            buttonVesselTypeStyle.margin.top -= 2;
+            buttonVesselTypeStyle.margin.bottom -= 2;
+            buttonVesselTypeStyle.padding.top -= 2;
+            buttonVesselTypeStyle.padding.bottom -= 2;
+            buttonVesselTypeStyle.padding.left -= 2;
+            buttonVesselTypeStyle.padding.right -= 2;
 
+            // vessel info list item default
+            vesselInfoDefault = new GUIStyle(GUI.skin.box);
+            vesselInfoDefault.normal.background = imgVesselInfoNormal;
+            vesselInfoDefault.hover.background = imgVesselInfoHover;
+            vesselInfoDefault.active.background = imgVesselInfoPressed;
+            vesselInfoDefault.padding = new RectOffset(2, 2, 3, 0);
+            vesselInfoDefault.border = new RectOffset(2, 2, 3, 0);
+            vesselInfoDefault.margin = new RectOffset(3, 3, 6, 6);
+
+            // vessel info list item when selected
+            vesselInfoSelected = new GUIStyle(GUI.skin.box);
+            vesselInfoSelected.active.background = imgVesselInfoSelected;
+            vesselInfoSelected.normal.background = imgVesselInfoSelected;
+            vesselInfoSelected.hover.background = imgVesselInfoSelected;
+            vesselInfoSelected.border = new RectOffset(2, 2, 3, 0);
+            vesselInfoSelected.padding = new RectOffset(2, 2, 3, 0);
+            vesselInfoSelected.margin = new RectOffset(3, 3, 6, 6);
+            
             // Hide window button
             buttonFoldStyle = new GUIStyle(GUI.skin.label);
             buttonFoldStyle.fixedWidth = 48;
@@ -259,8 +346,25 @@ namespace HaystackContinued
             buttonExpandStyle.fixedHeight = 16;
             buttonExpandStyle.fixedWidth = 16;
             buttonExpandStyle.padding = new RectOffset(2, 2, 2, 2);
-            buttonExpandStyle.margin = new RectOffset(0, 0, 0, 4);
+            buttonExpandStyle.margin = new RectOffset(0, 0, 0, 3);
 
+            buttonFlatStyle = new GUIStyle(GUI.skin.label);
+            buttonFlatStyle.alignment = TextAnchor.MiddleCenter;
+            buttonFlatStyle.normal.background = btnFlatNormalBackground;
+            buttonFlatStyle.active.background = btnFlatPressedBackground;
+            buttonFlatStyle.onActive.background = btnFlatPressedBackground;
+            buttonFlatStyle.onHover.background = btnFlatHoverBackground;
+            buttonFlatStyle.hover.background = btnFlatHoverBackground;
+            buttonFlatStyle.padding = new RectOffset(2, 2, 2, 2);
+            buttonFlatStyle.border = new RectOffset(1, 1, 1, 1);
+            buttonFlatStyle.margin = new RectOffset(2, 2, 2, 2);
+
+            buttonRenameStyle = new GUIStyle(buttonFlatStyle);
+            buttonRenameStyle.normal.textColor = XKCDColors.LightGrey;
+            buttonRenameStyle.onActive.textColor = XKCDColors.LightGrey;
+            buttonRenameStyle.onHover.textColor = XKCDColors.LightGrey;
+            buttonRenameStyle.fontSize = 11;
+            
             hrSepLineStyle = new GUIStyle(GUI.skin.box);
             hrSepLineStyle.normal.background = imgLine;
             hrSepLineStyle.border = new RectOffset(1, 1, 2, 1);
@@ -275,13 +379,17 @@ namespace HaystackContinued
             buttonVesselListName.wordWrap = true;
 
             textListHeaderStyle = new GUIStyle(GUI.skin.label);
-            textListHeaderStyle.normal.textColor = XKCDColors.Yellow;
+            textListHeaderStyle.normal.textColor = "#f4eac0".ToColor();
             textListHeaderStyle.fontSize = 14;
             textListHeaderStyle.fontStyle = FontStyle.Bold;
             textListHeaderStyle.margin = new RectOffset(6, 6, 2, 0);
             textListHeaderStyle.padding = new RectOffset(0, 0, 0, 0);
             textListHeaderStyle.stretchWidth = true;
             textListHeaderStyle.wordWrap = false;
+
+            textExpandedVesselNameStyle = new GUIStyle(textListHeaderStyle);
+            textExpandedVesselNameStyle.alignment = TextAnchor.MiddleLeft;
+            textExpandedVesselNameStyle.margin = new RectOffset(6, 6, 4, 0);
 
 
             textSituationStyle = new GUIStyle(GUI.skin.label);
@@ -317,6 +425,18 @@ namespace HaystackContinued
             buttonDockingPortTarget.active.background = imgVesselListButtonPressed;
             buttonDockingPortTarget.border = imgVesselListButtonBorder;
             buttonDockingPortTarget.margin = new RectOffset(0, 0, 0, 2);
+
+            textVesselExpandedInfoItem = new GUIStyle(textSituationStyle);
+
+            buttonExtendedStyle = new GUIStyle(GUI.skin.box);
+            buttonExtendedStyle.normal.background = null;
+            buttonExtendedStyle.active.background = btnExtendedPressedBackground;
+            buttonExtendedStyle.hover.background = btnExtendedHoverBackground;
+            buttonExtendedStyle.border = new RectOffset(2, 2, 2, 2);
+            buttonExtendedStyle.margin = new RectOffset(2, 2, 2, 2);
+            buttonExtendedStyle.padding = new RectOffset(1, 1, 1, 1);
+
+            stylesLoaded = true;
         }
     }
 }

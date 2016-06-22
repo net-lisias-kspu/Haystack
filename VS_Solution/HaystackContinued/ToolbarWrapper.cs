@@ -1,5 +1,5 @@
 ﻿/*
-Copyright (c) 2013-2014, Maik Schreiber
+Copyright (c) 2013-2016, Maik Schreiber
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification,
@@ -29,7 +29,9 @@ using System.Linq;
 using System.Reflection;
 using UnityEngine;
 
-namespace HaystackContinued {
+
+// TODO: Change to your plugin's namespace here.
+namespace ToolbarWrapper {
 
 
 

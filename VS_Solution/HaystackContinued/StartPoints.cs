@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using KSP.UI.Screens;
+using ToolbarWrapper;
 using UnityEngine;
 
 namespace HaystackContinued
@@ -14,7 +15,6 @@ namespace HaystackContinued
         private static HaystackResourceLoader instance;
         private IButton toolbarButton;
         private ApplicationLauncherButton appLauncherButton;
-
 
         // seems to be a unity idiom
         public static HaystackResourceLoader Instance
@@ -33,7 +33,7 @@ namespace HaystackContinued
             HSUtils.DebugLog("HaystackResourceLoader#setupToolbar: toolbar detected, using it.");
 
             this.toolbarButton = ToolbarManager.Instance.add("HaystackContinued", toolbarButtonId);
-            this.toolbarButton.Visibility = new GameScenesVisibility(GameScenes.FLIGHT, GameScenes.TRACKSTATION);
+            this.toolbarButton.Visibility = new GameScenesVisibility(GameScenes.FLIGHT, GameScenes.TRACKSTATION, GameScenes.SPACECENTER);
             this.toolbarButton.TexturePath = Resources.ToolbarIcon;
             this.toolbarButton.ToolTip = "Haystack Continued";
 
@@ -106,7 +106,7 @@ namespace HaystackContinued
 
             this.Settings = new Settings();
 
-           /* if (ToolbarManager.ToolbarAvailable)
+           if (ToolbarManager.ToolbarAvailable)
             {
                 this.setupToolbar();
             }
@@ -114,11 +114,7 @@ namespace HaystackContinued
             {
                 GameEvents.onGUIApplicationLauncherReady.Add(OnAppLauncherReady);
                 GameEvents.onGUIApplicationLauncherDestroyed.Add(OnAppLauncherDestroyed);
-            }*/
-            
-            // just use the app launcher for right now until the toolbar is fully updated.
-            GameEvents.onGUIApplicationLauncherReady.Add(OnAppLauncherReady);
-            GameEvents.onGUIApplicationLauncherDestroyed.Add(OnAppLauncherDestroyed);
+            }
         }
 
         private void OnAppLauncherReady()

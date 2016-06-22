@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Globalization;
 using System.IO;
-using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
+using KSP.UI.Screens.PartListCategories;
 using UnityEngine;
 
 namespace HaystackContinued
@@ -21,10 +22,12 @@ namespace HaystackContinued
         private const string NODE_VESSEL_TYPE_VISIBILITY = "type_visibility";
         private const string WINDOW_POSITION = "position";
         private const string WINDOW_VISIBLE = "window_visible";
+        private const string BOTTOM_BUTTONS = "bottom_buttons";
         private const string VALUE = "value";
 
         private readonly Dictionary<string, Rect> windowPositions = new Dictionary<string, Rect>();
         private readonly Dictionary<string, bool> windowVisibilities = new Dictionary<string, bool>();
+        private readonly Dictionary<string, bool> bottomButtons = new Dictionary<string, bool>();
 
         public Settings()
         {
@@ -32,6 +35,7 @@ namespace HaystackContinued
                 "settings: window WindowPosition: {0} {1}");
             this.WindowVisibilities = new GenericIndexer<bool>(windowVisibilities, () => false,
                 "settings: window WindowVisibility: {0} {1}");
+            this.BottomButtons = new GenericIndexer<bool>(bottomButtons, () => false, "settings: bottom buttons: {0} {1}");
             
             this.Convert();
             this.Load();
@@ -86,6 +90,8 @@ namespace HaystackContinued
 
             var nodeWindowVisibility = config.GetNode(NODE_WINDOW_VISIBILITIES) ?? new ConfigNode();
 
+            var bottomButtons = config.GetNode(BOTTOM_BUTTONS) ?? new ConfigNode();
+
             var defaultPos = new Rect(0, 0, 0, 0);
             foreach (var i in nodeWindowPositions.nodes)
             {
@@ -109,6 +115,17 @@ namespace HaystackContinued
                 this.windowVisibilities[name] = visible;
             }
 
+            foreach (var n in bottomButtons.nodes)
+            {
+                var node = (ConfigNode) n;
+                var name = node.name;
+                var value = node.GetBuiltinValue(VALUE, false);
+
+                HSUtils.DebugLog("Settings#Load name: {0} value: {1}", name, value);
+
+                this.bottomButtons[name] = value;
+            }
+
             var nodeTypeVisibility = config.GetNode(NODE_VESSEL_TYPE_VISIBILITY) ?? new ConfigNode();
             foreach (var i in Resources.vesselTypesList)
             {
@@ -118,6 +135,7 @@ namespace HaystackContinued
 
         public readonly GenericIndexer<Rect> WindowPositions;
         public readonly GenericIndexer<bool> WindowVisibilities;
+        public readonly GenericIndexer<bool> BottomButtons;
 
 
         public class GenericIndexer<V>
@@ -158,12 +176,15 @@ namespace HaystackContinued
 
             var nodeWindowPositions = config.AddNode(NODE_WINDOW_POSITIONS);
             var nodeVisibilities = config.AddNode(NODE_WINDOW_VISIBILITIES);
+            var nodeBottomButtons = config.AddNode(BOTTOM_BUTTONS);
 
             saveDicValuesToNode(windowPositions, nodeWindowPositions, WINDOW_POSITION,
                 (node, position) => node.AddNode(position.ToNode()));
 
             saveDicValuesToNode(windowVisibilities, nodeVisibilities, WINDOW_VISIBLE,
                 (node, visible) => node.AddValue(VALUE, visible));
+
+            saveDicValuesToNode(bottomButtons, nodeBottomButtons, BOTTOM_BUTTONS, (node, value) => node.AddValue(VALUE, value));
 
             var nodeVesselTypeVisibility = config.AddNode(NODE_VESSEL_TYPE_VISIBILITY);
 
