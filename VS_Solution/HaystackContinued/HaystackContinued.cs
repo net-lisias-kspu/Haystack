@@ -433,7 +433,7 @@ namespace HaystackContinued
                 new Dictionary<CelestialBody, List<Vessel>>();
 
             private bool listIsAscending;
-            private Vessel activeVessel = null;
+            private Vessel activeVessel;
 
             internal VesselListController(HaystackContinued haystack, BottomButtons bottomButtons)
             {
@@ -789,18 +789,19 @@ namespace HaystackContinued
                     return;
                 }
 
+                if (preSelectedVessel != null && preSelectedVessel == this.selectedVessel)
+                {
+                    this.fireOnSelectedItemClicked(this);
+                    return;
+                }
+
                 if (preSelectedVessel != null && preSelectedVessel != this.selectedVessel)
                 {
                     this.selectedVessel = preSelectedVessel;
                     this.fireOnSelectionChanged(this);
                 }
-                else if (preSelectedVessel != null && preSelectedVessel == this.selectedVessel)
-                {
-                    this.fireOnSelectedItemClicked(this);
-                }
-
+                
                 this.vesselInfoView.Reset();
-
                 this.changeCameraTarget();
             }
 
@@ -952,7 +953,7 @@ namespace HaystackContinued
 
                         Rect check = GUILayoutUtility.GetLastRect();
 
-                        if (Event.current != null && Event.current.type == EventType.Repaint &&
+                        if (Event.current != null && Event.current.type == EventType.MouseDown &&
                             Input.GetMouseButtonDown(0) && check.Contains(Event.current.mousePosition))
                         {
                             if (this.SelectedBody == body)
@@ -978,26 +979,27 @@ namespace HaystackContinued
                     return;
                 }
 
+                if (preSelectedVessel != null && preSelectedVessel == this.SelectedVessel)
+                {
+                    this.fireOnSelectedItemClicked(this);
+                    return;
+                }
+
                 if (preSelecedBody != null && preSelecedBody != this.SelectedBody)
                 {
                     this.SelectedBody = preSelecedBody;
                     this.fireOnSelectionChanged(this);
-                }
-                if (preSelectedVessel != null && preSelectedVessel != this.SelectedVessel)
+                } 
+                else if (preSelectedVessel != null && preSelectedVessel != this.SelectedVessel)
                 {
                     this.SelectedVessel = preSelectedVessel;
                     this.fireOnSelectionChanged(this);
                 }
-                else if (preSelectedVessel != null && preSelectedVessel == this.SelectedVessel)
-                {
-                    this.fireOnSelectedItemClicked(this);
-                }
+                
 
                 this.vesselInfoView.Reset();
                 this.changeCameraTarget();
             }
-
-            
 
             private void changeCameraTarget()
             {
@@ -1458,7 +1460,7 @@ namespace HaystackContinued
                 }
 
 
-                if (Event.current != null && Event.current.type == EventType.Repaint &&
+                if (Event.current != null && Event.current.type == EventType.MouseDown &&
                     Input.GetMouseButtonDown(0) &&
                     check.Contains(Event.current.mousePosition))
                 {
@@ -1514,8 +1516,8 @@ namespace HaystackContinued
 
             private void drawDockingExpandButton(Vessel vessel)
             {
-                //can't show docking ports in the tracking center
-                if (HSUtils.IsTrackingCenterActive)
+                //can't show docking ports in the tracking center or space center
+                if (HSUtils.IsTrackingCenterActive || HSUtils.IsSpaceCenterActive)
                 {
                     return;
                 }
@@ -2067,7 +2069,7 @@ namespace HaystackContinued
                 if (vessel.loaded)
                 {
                     var counts = from part in vessel.parts
-                        from resource in part.Resources.list
+                        from resource in part.Resources
                         group resource by resource.resourceName
                         into resources
                         select new
@@ -2093,10 +2095,10 @@ namespace HaystackContinued
                         {
                             ResourceName = resources.Key,
                             Total =
-                                resources.Aggregate(0d, (acc, r) => acc + r.resourceValues.GetValue("amount").ToDouble()),
+                                resources.Aggregate(0d, (acc, r) => acc + r.amount),
                             Max =
                                 resources.Aggregate(0d,
-                                    (acc, r) => acc + r.resourceValues.GetValue("maxAmount").ToDouble())
+                                    (acc, r) => acc + r.maxAmount)
                         };
 
                     

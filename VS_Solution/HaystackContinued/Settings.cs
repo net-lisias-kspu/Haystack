@@ -2,9 +2,6 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
-using KSP.UI.Screens.PartListCategories;
 using UnityEngine;
 
 namespace HaystackContinued
