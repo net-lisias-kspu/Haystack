@@ -346,7 +346,7 @@ namespace HaystackContinued
             buttonExpandStyle.fixedHeight = 16;
             buttonExpandStyle.fixedWidth = 16;
             buttonExpandStyle.padding = new RectOffset(2, 2, 2, 2);
-            buttonExpandStyle.margin = new RectOffset(0, 0, 0, 3);
+            buttonExpandStyle.margin = new RectOffset(0, 0, 0, 0);
 
             buttonFlatStyle = new GUIStyle(GUI.skin.label);
             buttonFlatStyle.alignment = TextAnchor.MiddleCenter;
@@ -382,8 +382,8 @@ namespace HaystackContinued
             textListHeaderStyle.normal.textColor = "#f4eac0".ToColor();
             textListHeaderStyle.fontSize = 14;
             textListHeaderStyle.fontStyle = FontStyle.Bold;
-            textListHeaderStyle.margin = new RectOffset(6, 6, 2, 0);
-            textListHeaderStyle.padding = new RectOffset(0, 0, 0, 0);
+            textListHeaderStyle.margin = new RectOffset(6, 6, 2, 2);
+            textListHeaderStyle.padding = new RectOffset(0, 0, 0, 2);
             textListHeaderStyle.stretchWidth = true;
             textListHeaderStyle.wordWrap = false;
 
@@ -401,13 +401,13 @@ namespace HaystackContinued
             textSituationStyle.stretchWidth = false;
 
             textDockingPortHeaderStyle = new GUIStyle(textSituationStyle);
-            textDockingPortHeaderStyle.fontSize = 13;
+            textDockingPortHeaderStyle.fontSize = 12;
             textDockingPortHeaderStyle.margin = new RectOffset(6, 6, 4, 2);
 
             textDockingPortStyle = new GUIStyle(textSituationStyle);
             textDockingPortStyle.alignment = TextAnchor.MiddleLeft;
             textDockingPortStyle.normal.textColor = XKCDColors.LightOlive;
-            textDockingPortStyle.fontSize = 13;
+            textDockingPortStyle.fontSize = 12;
             textDockingPortStyle.margin = new RectOffset(10, 10, 4, 2);
 
             textDockingPortDistanceStyle = new GUIStyle(textDockingPortStyle);

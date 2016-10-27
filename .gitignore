@@ -1,8 +1,8 @@
 KSP
 *.dll
 References/
-VS_Solution/HaystackContinued/obj
-VS_Solution/HaystackContinued/bin
+VS_Solution/*/obj
+VS_Solution/*/bin
 *.suo
 
 # ReSharper is a .NET coding add-in
