@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
 using KSP.UI.Screens;
-using ToolbarWrapper;
 using UnityEngine;
 
 namespace HaystackContinued
