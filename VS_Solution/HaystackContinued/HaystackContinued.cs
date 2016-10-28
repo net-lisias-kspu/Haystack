@@ -1551,9 +1551,16 @@ namespace HaystackContinued
             {
                 try
                 {
-                    moduleDockingNodeNamedType = AssemblyLoader.loadedAssemblies.SelectMany(
-                        a => a.assembly.GetExportedTypes())
-                        .SingleOrDefault(t => t.FullName == "NavyFish.ModuleDockingNodeNamed");
+                    Type result = null;
+                    AssemblyLoader.loadedAssemblies.TypeOperation(t =>
+                    {
+                        if (t.FullName == "NavyFish.ModuleDockingNodeNamed")
+                        {
+                            result = t;
+                        }
+                    });
+
+                    moduleDockingNodeNamedType = result;
 
                     modulePortName = moduleDockingNodeNamedType.GetField("portName",
                         BindingFlags.Instance | BindingFlags.Public);
