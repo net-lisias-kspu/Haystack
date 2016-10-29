@@ -129,6 +129,7 @@ namespace HaystackContinued
             {
                 i.visible = nodeTypeVisibility.GetBuiltinValue(i.name, true);
             }
+
         }
 
         public readonly GenericIndexer<Rect> WindowPositions;

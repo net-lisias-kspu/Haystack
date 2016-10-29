@@ -31,8 +31,6 @@ namespace HaystackContinued
 
     public abstract class HaystackContinued : MonoBehaviour
     {
-        private bool showCelestialBodies = true;
-
         // window vars
         private int windowId;
         protected bool WinVisible = false;
@@ -346,14 +344,12 @@ namespace HaystackContinued
                 {
                     this.vesselListController.RefreshFilteredList();
                 }
+
+                if(typeString.Equals(Resources.BODIES))
+                {
+                    defaultScrollerView.ShowCelestialBodies = Resources.vesselTypesList[i].visible;
+                }
             }
-
-            //TODO: save visibility setting
-
-            // Bodies
-            showCelestialBodies = GUILayout.Toggle(showCelestialBodies, new GUIContent(Resources.btnBodies, "Bodies"),
-                Resources.buttonVesselTypeStyle);
-            defaultScrollerView.ShowCelestialBodies = showCelestialBodies;
 
             GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();
