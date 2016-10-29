@@ -16,11 +16,12 @@ namespace HaystackContinued
         private const string NODE_SETTINGS = "settings";
         private const string NODE_WINDOW_POSITIONS = "window_positions";
         private const string NODE_WINDOW_VISIBILITIES = "window_visibilities";
+        private const string BOTTOM_BUTTONS = "bottom_buttons";
         private const string NODE_VESSEL_TYPE_VISIBILITY = "type_visibility";
         private const string WINDOW_POSITION = "position";
         private const string WINDOW_VISIBLE = "window_visible";
-        private const string BOTTOM_BUTTONS = "bottom_buttons";
-        private const string VALUE = "value";
+        private const String BUTTON_STATE = "button_state";
+        internal const string VALUE = "value";
 
         private readonly Dictionary<string, Rect> windowPositions = new Dictionary<string, Rect>();
         private readonly Dictionary<string, bool> windowVisibilities = new Dictionary<string, bool>();
@@ -105,7 +106,7 @@ namespace HaystackContinued
             {
                 var node = (ConfigNode) n;
                 var name = node.name;
-                var visible = node.GetBuiltinValue(VALUE, false);
+                var visible = node.FromNode(WINDOW_VISIBLE, false);
 
                 HSUtils.DebugLog("Settings#Load name: {0} visible: {1}", name, visible);
 
@@ -116,7 +117,7 @@ namespace HaystackContinued
             {
                 var node = (ConfigNode) n;
                 var name = node.name;
-                var value = node.GetBuiltinValue(VALUE, false);
+                var value = node.FromNode(BUTTON_STATE, false);
 
                 HSUtils.DebugLog("Settings#Load name: {0} value: {1}", name, value);
 
@@ -128,6 +129,7 @@ namespace HaystackContinued
             {
                 i.visible = nodeTypeVisibility.GetBuiltinValue(i.name, true);
             }
+
         }
 
         public readonly GenericIndexer<Rect> WindowPositions;
@@ -181,7 +183,7 @@ namespace HaystackContinued
             saveDicValuesToNode(windowVisibilities, nodeVisibilities, WINDOW_VISIBLE,
                 (node, visible) => node.AddValue(VALUE, visible));
 
-            saveDicValuesToNode(bottomButtons, nodeBottomButtons, BOTTOM_BUTTONS, (node, value) => node.AddValue(VALUE, value));
+            saveDicValuesToNode(bottomButtons, nodeBottomButtons, BUTTON_STATE, (node, value) => node.AddValue(VALUE, value));
 
             var nodeVesselTypeVisibility = config.AddNode(NODE_VESSEL_TYPE_VISIBILITY);
 
@@ -260,8 +262,17 @@ namespace HaystackContinued
                 return defaultValue;
             }
 
-            var method = converters[typeof (T)];
-            return (T) method.Invoke(node.GetNode(name));
+            var t = typeof(T);
+
+            if (t.IsPrimitive)
+            {
+                return GetBuiltinValue(node.GetNode(name), Settings.VALUE, defaultValue);
+            }
+            else
+            {
+                var method = converters[t];
+                return (T) method.Invoke(node.GetNode(name));
+            }
         }
 
         public static object RectFromNode(ConfigNode node)

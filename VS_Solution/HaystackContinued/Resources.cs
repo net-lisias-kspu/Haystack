@@ -18,6 +18,8 @@ namespace HaystackContinued
 
         public static string PathImages = String.Format("{0}/icons", PathPlugin);
 
+        public static readonly string BODIES = "Bodies";
+
         //toolbar expects to begin in the "gamedata" directory as the root of the provided path
         //so we're going use a relative path starting at our plugin's folder in the "gamedata" directory
         public static string ToolbarIconPath = PathImages.Substring(PathImages.ToLower().IndexOf("/gamedata/") + 10);
@@ -176,7 +178,7 @@ namespace HaystackContinued
                         sort = 250; // next to last as we don't care much about garbage
                         break;
                     case "unknown":
-                        sort = 255; // unknown last
+                        sort = 254; // unknown last
                         break;
                     default:
                         sort = 128; // everything else in between :)
@@ -195,6 +197,8 @@ namespace HaystackContinued
 
                 list.Add(new HSVesselType(type, sort, icon, true));
             }
+
+            list.Add(new HSVesselType(BODIES, 255, btnBodies, true));
         }
 
         /// <summary>
