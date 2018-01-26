@@ -8,17 +8,17 @@ using System.Text;
 using UnityEngine;
 
 
-namespace HaystackContinued
+namespace HaystackReContinued
 {
     // http://forum.kerbalspaceprogram.com/index.php?/topic/147576-modders-notes-for-ksp-12/#comment-2754813
     // search for "Mod integration into Stock Settings
 
     public class HS : GameParameters.CustomParameterNode
     {
-        public override string Title { get { return "Haystack Continued"; } }
+        public override string Title { get { return "Haystack ReContinued"; } }
         public override GameParameters.GameMode GameMode { get { return GameParameters.GameMode.ANY; } }
-        public override string Section { get { return "Haystack Continued"; } }
-        public override string DisplaySection { get { return "Haystack Continued"; } }
+        public override string Section { get { return "Haystack ReContinued"; } }
+        public override string DisplaySection { get { return "Haystack ReContinued"; } }
         public override int SectionOrder { get { return 3; } }
         public override bool HasPresets { get { return false; } }
 

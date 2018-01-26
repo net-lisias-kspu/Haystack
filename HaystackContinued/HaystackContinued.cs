@@ -5,7 +5,7 @@ using System.Linq;
 using System.Reflection;
 using UnityEngine;
 
-namespace HaystackContinued
+namespace HaystackReContinued
 {
     /// <summary>
     /// Class to house vessel types along with icons and sort order for the plugin
@@ -274,7 +274,7 @@ namespace HaystackContinued
            
 
             this.winRect = GUILayout.Window(windowId, this.winRect, this.mainWindowConstructor,
-                string.Format("Haystack Continued {0}", Settings.version), Resources.winStyle, GUILayout.MinWidth(120),
+                string.Format("Haystack ReContinued {0}", Settings.version), Resources.winStyle, GUILayout.MinWidth(120),
                 GUILayout.MinHeight(300));
 
             this.expandedVesselInfo.DrawExpandedWindow();
@@ -1419,7 +1419,7 @@ namespace HaystackContinued
                 this.selected = selected;
 
                 if (this.bottomButtons.IsHiddenVesselsToggled &&
-                    !global::HaystackContinued.HiddenVessels.ExcludedTypes.Contains(vessel.vesselType))
+                    !global::HaystackReContinued.HiddenVessels.ExcludedTypes.Contains(vessel.vesselType))
                 {
                     GUILayout.BeginHorizontal();
 
@@ -1450,7 +1450,7 @@ namespace HaystackContinued
                 var check = GUILayoutUtility.GetLastRect();
 
                 if (this.bottomButtons.IsHiddenVesselsToggled &&
-                    !global::HaystackContinued.HiddenVessels.ExcludedTypes.Contains(vessel.vesselType))
+                    !global::HaystackReContinued.HiddenVessels.ExcludedTypes.Contains(vessel.vesselType))
                 {
                     GUILayout.EndHorizontal();
                 }

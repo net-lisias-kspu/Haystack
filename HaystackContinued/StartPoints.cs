@@ -4,7 +4,7 @@ using KSP.UI.Screens;
 using UnityEngine;
 using ToolbarControl_NS;
 
-namespace HaystackContinued
+namespace HaystackReContinued
 {
     [KSPAddon(KSPAddon.Startup.SpaceCentre, true)]
     public class HaystackResourceLoader : MonoBehaviour
@@ -39,7 +39,7 @@ namespace HaystackContinued
             this.toolbarButton = ToolbarManager.Instance.add("HaystackContinued", toolbarButtonId);
             this.toolbarButton.Visibility = new GameScenesVisibility(GameScenes.FLIGHT, GameScenes.TRACKSTATION, GameScenes.SPACECENTER);
             this.toolbarButton.TexturePath = Resources.ToolbarIcon;
-            this.toolbarButton.ToolTip = "Haystack Continued";
+            this.toolbarButton.ToolTip = "Haystack ReContinued";
 
             this.toolbarButton.OnClick += toolbarButton_OnClick;
         }
@@ -191,11 +191,11 @@ namespace HaystackContinued
             toolbarControl.UseBlizzy(HighLogic.CurrentGame.Parameters.CustomParams<HS>().useBlizzy);
             toolbarControl.AddToAllToolbars(appLauncherButton_OnTrue, appLauncherButton_OnFalse,
                       scenes,
-                      "HaystackContinued",
+                      "HaystackReContinued",
                       toolbarButtonId,
                       Resources.appLauncherIconPath,
                       Resources.ToolbarIcon,
-                      "Haystack Continued"
+                      "Haystack ReContinued"
               );
         }
 

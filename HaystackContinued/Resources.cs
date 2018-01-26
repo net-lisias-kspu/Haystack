@@ -4,7 +4,7 @@ using System.IO;
 using System.Reflection;
 using UnityEngine;
 
-namespace HaystackContinued
+namespace HaystackReContinued
 {
     /// <summary>
     /// All plugin resources such as textures and styles are here

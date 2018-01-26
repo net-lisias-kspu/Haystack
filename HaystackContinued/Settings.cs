@@ -4,7 +4,7 @@ using System.ComponentModel;
 using System.IO;
 using UnityEngine;
 
-namespace HaystackContinued
+namespace HaystackReContinued
 {
     public class Settings
     {

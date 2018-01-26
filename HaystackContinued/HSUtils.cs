@@ -5,7 +5,7 @@ using KSP.UI.Screens;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace HaystackContinued
+namespace HaystackReContinued
 {
     internal class HSUtils
     {

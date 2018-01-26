@@ -3,6 +3,7 @@
 	Replaced toolbar code with ToolbarController
 	Changed resource loading from MainMenu to SpaceCentre
 	DLL moved into Plugins folder
+	Updated name and namespace names
 
 0.5.2.1
 	Updated to be compatible with new Contract Configurator changes.
