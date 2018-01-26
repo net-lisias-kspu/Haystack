@@ -1,4 +1,68 @@
 0.5.3
+	Adoption by LinuxGuruGamer
 	Replaced toolbar code with ToolbarController
 	Changed resource loading from MainMenu to SpaceCentre
 	DLL moved into Plugins folder
+
+0.5.2.1
+	Updated to be compatible with new Contract Configurator changes.
+	Celestial bodies filter button state is now saved like the other filter buttons.
+	Vessel type icons for plane and relay have been added.
+
+0.5.2.0
+	Updated for KSP 1.2
+	A couple of UI updates due to changes in new KSP version
+	Tweaked docking port list font size due to new font rendering code
+	Known issues: missing filter button icons for new ship types: plane and relay
+
+0.5.1.0
+	Updated for KSP 1.1.3
+	Made the UI look a bit nicer.
+	Added extended vessel info window. It can be accessed by the arrow button on the right side of the window or by clicking the currently selected vessel as a toggle.
+	Extended vessel info window also works for Celestial Bodies (i.e., planets and moons). It will display important information about them. Of note are the science High, and Low altitude values. You don't have to look them up anymore.
+	Added sort order buttons for the vessel list. These let you change the sort order of the vessel list.
+	Added a nearby button. This only displays the vessels in the current SOI. Vessels in physics range are sorted by name; vessels outside of physics range are sorted by distance from the active vessel. This button only works while flying a vessel.
+	Added ability to rename a vessel. The button is accessed from the extended vessel info display.
+	Search results are ordered by the location of the search term in the result. Closer to the beginning of the result the higher on the list.
+	Added blizzy toolbar support back. Defaults to using blizzy toolbar if found, otherwise it will use the stock toolbar.
+	Moved the settings.cfg file to PluginData directory. Thanks to Enceos and RealKolago for the heads up.
+	Fixed tooltips so they are clamped to within the window and are not cut off.
+	Added KSP-AVC support.
+
+0.5.0.0
+	Updated to KSP 1.1
+	Added window to the space center
+	Added app launcher button and icon
+	Disabled use of blizzy toolbar until that is updated.
+	Switched to allowing targeting of docking ports when a vessel is loaded instead of packed. Once the targeted vessel is within 200m (i.e., unpacked) the port needs to be retargeted for automated docking support to work (e.g., mechjeb)
+	Updated support for Docking Port Alignment Indicator mod named docking port feature
+
+0.4.9.0
+	Updated to KSP 1.1
+	Added window to the space center
+	Added app launcher button and icon
+	Disabled use of blizzy toolbar until that is updated.
+
+0.4.1.0
+	Fixed the missing spaceobject icon error message by adding the icon.
+	The haystack window will now save the visible state depending on the scene. This means that leaving the window open in the tracking station will not leave it open during flight.
+	You can now target the currently selected celestial body (i.e., planet or moon) when in the default view (i.e., not group by).
+
+0.4.0.0
+	There is a new button that allows you to set vessels to be hidden from the list. The hidden vessels are saved in the save game file and will be saved whenever the game is saved.
+	The window will now default to hidden when first loading the game. In the future this will be updated so the tracking center window and the in flight window will have separate state for the being shown / hidden.
+
+0.3.3.0
+	This release updates the comple against KSP 0.90
+	Added support for blizzy toolbar - this allows the window to be positioned anywhere on the screen when the toolbar is installed
+	Minor tweaks to some UI elements
+	Fixed a bug reported by Apollo13 where the names of vessels would wrap to a new line
+
+0.3.2.0
+	Compiled and checked against KSP 0.25
+	Changed save log output to debug mode only
+	Haystack window now respects the Hide GUI game event. It's now possible to take screenshots without the Haystack window appearing.
+
+0.3.1.1
+	Fixed a bug where the display would break as debris left physics range and was removed by the game.
+	Resizing the window should be smoother in low FPS situations.
