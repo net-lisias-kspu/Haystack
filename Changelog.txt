@@ -1,0 +1,4 @@
+0.5.3
+	Replaced toolbar code with ToolbarController
+	Changed resource loading from MainMenu to SpaceCentre
+	DLL moved into Plugins folder

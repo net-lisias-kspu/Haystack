@@ -16,17 +16,19 @@ namespace HaystackContinued
         public static string PathPlugin = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)
             .Replace("\\", "/");
 
-        public static string PathImages = String.Format("{0}/icons", PathPlugin);
+//        public static string PathImages = String.Format("../{0}/icons", PathPlugin);
+        public static string PathImages = String.Format("{0}/icons", "GameData/HaystackContinued");
 
         public static readonly string BODIES = "Bodies";
 
         //toolbar expects to begin in the "gamedata" directory as the root of the provided path
         //so we're going use a relative path starting at our plugin's folder in the "gamedata" directory
-        public static string ToolbarIconPath = PathImages.Substring(PathImages.ToLower().IndexOf("/gamedata/") + 10);
+        //        public static string ToolbarIconPath = PathImages.Substring(PathImages.ToLower().IndexOf("/gamedata/") + 10);
+        public static string ToolbarIconPath = String.Format("{0}/icons", "HaystackContinued");
         //for the toolbar do not append the extension
         public static string ToolbarIcon = String.Format("{0}/toolbar_icon", ToolbarIconPath);
 
-        public static string appLauncherIconPath = String.Format("{0}/applauncher_icon.png", PathImages);
+        public static string appLauncherIconPath = String.Format("{0}/applauncher_icon", ToolbarIconPath);
 
         private static string btnGoFilePath = String.Format("{0}/button_go.png", PathImages);
         private static string btnGoHoverFilePath = String.Format("{0}/button_go_hover.png", PathImages);
@@ -57,7 +59,7 @@ namespace HaystackContinued
         private static string btnFlatHoverFilePath = string.Format("{0}/button_flat_hover.png", PathImages);
         private static string btnFlatPressedFilePath = string.Format("{0}/button_flat_pressed.png", PathImages);
 
-        public static Texture2D appLauncherIcon = new Texture2D(38, 38, TextureFormat.ARGB32, false);
+        //public static Texture2D appLauncherIcon = new Texture2D(38, 38, TextureFormat.ARGB32, false);
         public static Texture2D btnGo = new Texture2D(32, 32, TextureFormat.ARGB32, false);
         public static Texture2D btnGoHover = new Texture2D(32, 32, TextureFormat.ARGB32, false);
         public static Texture2D btnTarg = new Texture2D(32, 32, TextureFormat.ARGB32, false);
@@ -98,7 +100,7 @@ namespace HaystackContinued
         {
             try
             {
-                LoadImage(ref appLauncherIcon, appLauncherIconPath);
+               // LoadImage(ref appLauncherIcon, appLauncherIconPath);
 
                 LoadImage(ref btnGo, btnGoFilePath);
                 LoadImage(ref btnGoHover, btnGoHoverFilePath);
@@ -208,6 +210,12 @@ namespace HaystackContinued
         /// <param name="filename">File name in images directory. Path is hardcoded: PluginData/HrmHaystack/images/</param>
         private static void LoadImage(ref Texture2D targ, string filename)
         {
+            Debug.Log("LoadImage: " + filename);
+            if (!File.Exists(filename))
+            {
+                Debug.Log("Missing file: " + filename);
+                return;
+            }
             targ.LoadImage(File.ReadAllBytes(filename));
         }
 

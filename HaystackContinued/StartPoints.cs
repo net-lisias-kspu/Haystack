@@ -2,18 +2,22 @@
 using System.Linq;
 using KSP.UI.Screens;
 using UnityEngine;
+using ToolbarControl_NS;
 
 namespace HaystackContinued
 {
-    [KSPAddon(KSPAddon.Startup.MainMenu, true)]
+    [KSPAddon(KSPAddon.Startup.SpaceCentre, true)]
     public class HaystackResourceLoader : MonoBehaviour
     {
         private static string toolbarButtonId = "haystackContinuedButton";
 
         public Settings Settings { get; private set; }
         private static HaystackResourceLoader instance;
-        private IButton toolbarButton;
-        private ApplicationLauncherButton appLauncherButton;
+        //private IButton toolbarButton;
+       // private ApplicationLauncherButton appLauncherButton;
+
+
+        ToolbarControl toolbarControl;
 
         // seems to be a unity idiom
         public static HaystackResourceLoader Instance
@@ -26,6 +30,7 @@ namespace HaystackContinued
             }
         }
 
+#if false
         //blizzy toolbar
         private void setupToolbar()
         {
@@ -38,7 +43,7 @@ namespace HaystackContinued
 
             this.toolbarButton.OnClick += toolbarButton_OnClick;
         }
-
+#endif
         private void toolbarButton_OnClick(ClickEvent e)
         {
             this.displayButtonClick(new EventArgs());
@@ -71,7 +76,7 @@ namespace HaystackContinued
                 this.displayButtonClick -= value;
             }
         }
-
+#if false
         //this is needed since the main window can be saved in a visible state but the application launcher button
         //will have no knowledge if it is visisble or not on a scene switch
         public void FixApplicationLauncherButtonDisplay(bool visible)
@@ -90,7 +95,9 @@ namespace HaystackContinued
                 this.appLauncherButton.SetFalse(false);
             }
         }
-
+#endif
+        ApplicationLauncher.AppScenes scenes = ApplicationLauncher.AppScenes.FLIGHT | ApplicationLauncher.AppScenes.TRACKSTATION |
+                         ApplicationLauncher.AppScenes.MAPVIEW | ApplicationLauncher.AppScenes.SPACECENTER;
         /// <summary>
         /// Awake Event - when the DLL is loaded
         /// </summary>
@@ -105,7 +112,9 @@ namespace HaystackContinued
 
             this.Settings = new Settings();
 
-           if (ToolbarManager.ToolbarAvailable)
+#if false
+
+            if (ToolbarManager.ToolbarAvailable)
             {
                 this.setupToolbar();
             }
@@ -114,8 +123,9 @@ namespace HaystackContinued
                 GameEvents.onGUIApplicationLauncherReady.Add(OnAppLauncherReady);
                 GameEvents.onGUIApplicationLauncherDestroyed.Add(OnAppLauncherDestroyed);
             }
-        }
+#endif
 
+#if false
         private void OnAppLauncherReady()
         {
             if (this.appLauncherButton != null)
@@ -133,8 +143,7 @@ namespace HaystackContinued
                 return;
             }
 
-            var scenes = ApplicationLauncher.AppScenes.FLIGHT | ApplicationLauncher.AppScenes.TRACKSTATION |
-                         ApplicationLauncher.AppScenes.MAPVIEW | ApplicationLauncher.AppScenes.SPACECENTER;
+            
 
             this.appLauncherButton = appLauncher.AddModApplication(appLauncherButton_OnTrue, appLauncherButton_OnFalse,
                 () => { },
@@ -166,9 +175,33 @@ namespace HaystackContinued
             appLauncher.RemoveModApplication(this.appLauncherButton);
             this.appLauncherButton = null;
         }
+#endif
+
+
+        }
+
+        public void Start()
+        {
+            Debug.Log("HaystackContinued.Start");
+            toolbarControl = gameObject.AddComponent<ToolbarControl>();
+            Debug.Log("HaystackContinued, useBlizzy: " + HighLogic.CurrentGame.Parameters.CustomParams<HS>().useBlizzy);
+            Debug.Log("HaystackContinued, Resources.appLauncherIconPath: " + Resources.appLauncherIconPath);
+            Debug.Log("HaystackContinued, Resources.ToolbarIcon: " + Resources.ToolbarIcon);
+
+            toolbarControl.UseBlizzy(HighLogic.CurrentGame.Parameters.CustomParams<HS>().useBlizzy);
+            toolbarControl.AddToAllToolbars(appLauncherButton_OnTrue, appLauncherButton_OnFalse,
+                      scenes,
+                      "HaystackContinued",
+                      toolbarButtonId,
+                      Resources.appLauncherIconPath,
+                      Resources.ToolbarIcon,
+                      "Haystack Continued"
+              );
+        }
 
         public void OnDestroy()
         {
+#if false
             if (this.toolbarButton != null)
             {
                 this.toolbarButton.Destroy();
@@ -176,6 +209,15 @@ namespace HaystackContinued
 
             GameEvents.onGUIApplicationLauncherReady.Remove(this.OnAppLauncherReady);
             GameEvents.onGUIApplicationLauncherDestroyed.Remove(this.OnAppLauncherDestroyed);
+#endif
+            toolbarControl.OnDestroy();
+            Destroy(toolbarControl);
+        }
+
+        public void OnGUI()
+        {
+            if (toolbarControl != null && HighLogic.LoadedScene != GameScenes.MAINMENU)
+                toolbarControl.UseBlizzy(HighLogic.CurrentGame.Parameters.CustomParams<HS>().useBlizzy);
         }
     }
 

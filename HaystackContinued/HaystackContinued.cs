@@ -87,7 +87,7 @@ namespace HaystackContinued
             InvokeRepeating("IRFetchVesselList", 5.0F, 5.0F);
             InvokeRepeating("RefreshDataSaveSettings", 0, 30.0F);
 
-            HaystackResourceLoader.Instance.FixApplicationLauncherButtonDisplay(this.WinVisible);
+            //HaystackResourceLoader.Instance.FixApplicationLauncherButtonDisplay(this.WinVisible);
         }
 
         public void OnDisable()
