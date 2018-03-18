@@ -16,3 +16,4 @@ thumbs.db
 # Mac desktop service store files
 .DS_Store
 *.zip
+.vs

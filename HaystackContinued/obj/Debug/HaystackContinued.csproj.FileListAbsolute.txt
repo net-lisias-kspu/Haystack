@@ -8,13 +8,14 @@ D:\Users\jbb\github\HaystackContinued\HaystackContinued\bin\Debug\Assembly-CShar
 D:\Users\jbb\github\HaystackContinued\HaystackContinued\bin\Debug\UnityEngine.dll
 D:\Users\jbb\github\HaystackContinued\HaystackContinued\bin\Debug\UnityEngine.UI.dll
 D:\Users\jbb\github\HaystackContinued\HaystackContinued\bin\Debug\KSPTrackIR.dll
-D:\Users\jbb\github\HaystackContinued\HaystackContinued\bin\Debug\System.Xml.dll
 D:\Users\jbb\github\HaystackContinued\HaystackContinued\bin\Debug\KSPAssets.dll
 D:\Users\jbb\github\HaystackContinued\HaystackContinued\bin\Debug\Mono.Cecil.dll
 D:\Users\jbb\github\HaystackContinued\HaystackContinued\bin\Debug\TDx.TDxInput.dll
-D:\Users\jbb\github\HaystackContinued\HaystackContinued\bin\Debug\Mono.Security.dll
-D:\Users\jbb\github\HaystackContinued\HaystackContinued\bin\Debug\UnityEngine.xml
 D:\Users\jbb\github\HaystackContinued\HaystackContinued\obj\Debug\HaystackContinued.dll
 D:\Users\jbb\github\HaystackContinued\HaystackContinued\obj\Debug\HaystackContinued.pdb
 D:\Users\jbb\github\HaystackContinued\HaystackContinued\obj\Debug\HaystackContinued.csprojResolveAssemblyReference.cache
 D:\Users\jbb\github\HaystackContinued\HaystackContinued\bin\Debug\ToolbarControl.dll
+D:\Users\jbb\github\HaystackContinued\HaystackContinued\bin\Debug\ClickThroughBlocker.dll
+D:\Users\jbb\github\HaystackContinued\HaystackContinued\bin\Debug\Ionic.Zip.dll
+D:\Users\jbb\github\HaystackContinued\HaystackContinued\bin\Debug\RedShellSDK.dll
+D:\Users\jbb\github\HaystackContinued\HaystackContinued\obj\Debug\HaystackContinued.csproj.CopyComplete

@@ -4,6 +4,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using UnityEngine;
+using KSP.Localization;
+
+using ClickThroughFix;
 
 namespace HaystackReContinued
 {
@@ -36,7 +39,7 @@ namespace HaystackReContinued
         protected bool WinVisible = false;
         private Rect winRect;
         private bool isGUISetup;
-       
+
 
         // controllers and managers
         private VesselListController vesselListController;
@@ -48,10 +51,11 @@ namespace HaystackReContinued
         private BottomButtons bottomButtons;
         private ExpandedVesselInfo expandedVesselInfo;
 
+
         public void Awake()
         {
             HSUtils.DebugLog("HaystackContinued#Awake");
-            
+
             this.bottomButtons = new BottomButtons();
             this.bottomButtons.LoadSettings();
 
@@ -61,7 +65,7 @@ namespace HaystackReContinued
             this.expandedVesselInfo = new ExpandedVesselInfo(this, this.bottomButtons, this.defaultScrollerView,
                 this.groupedScrollerView);
             this.resizeHandle = new ResizeHandle();
-            
+
 
             windowId = Resources.rnd.Next(1000, 2000000);
         }
@@ -202,7 +206,7 @@ namespace HaystackReContinued
 
             this.vesselListController.RefreshFilteredList();
         }
-        
+
 
         /// <summary>
         /// Function called every 30 seconds
@@ -269,11 +273,12 @@ namespace HaystackReContinued
         private void drawGUI()
         {
             GUI.skin = HighLogic.Skin;
-
+            if (expandedVesselInfo.popupDialog)
+                return;
             this.winRect = this.winRect.ClampToScreen();
-           
 
-            this.winRect = GUILayout.Window(windowId, this.winRect, this.mainWindowConstructor,
+
+            this.winRect = ClickThruBlocker.GUILayoutWindow(windowId, this.winRect, this.mainWindowConstructor,
                 string.Format("Haystack ReContinued {0}", Settings.version), Resources.winStyle, GUILayout.MinWidth(120),
                 GUILayout.MinHeight(300));
 
@@ -345,7 +350,7 @@ namespace HaystackReContinued
                     this.vesselListController.RefreshFilteredList();
                 }
 
-                if(typeString.Equals(Resources.BODIES))
+                if (typeString.Equals(Resources.BODIES))
                 {
                     defaultScrollerView.ShowCelestialBodies = Resources.vesselTypesList[i].visible;
                 }
@@ -359,7 +364,7 @@ namespace HaystackReContinued
             //Search area
 
             GUILayout.BeginHorizontal();
-            
+
             GUILayout.Label("Search:", Resources.textSearchStyle);
             this.vesselListController.SearchTerm = GUILayout.TextField(this.vesselListController.SearchTerm, GUILayout.MinWidth(50.0F), GUILayout.ExpandWidth(true));
 
@@ -392,7 +397,7 @@ namespace HaystackReContinued
             }
 
             GUILayout.EndVertical();
-            
+
             this.expandedVesselInfo.DrawExpandButton();
 
             GUILayout.EndHorizontal();
@@ -446,7 +451,7 @@ namespace HaystackReContinued
             private void onSortOrderChanged(BottomButtons view)
             {
                 this.listIsAscending = view.IsAscendingSortOrder;
-                
+
                 this.RefreshFilteredList();
             }
 
@@ -535,7 +540,7 @@ namespace HaystackReContinued
                 }
 
                 this.updateActiveVessel();
-                
+
                 // count vessel types
                 this.VesselTypeCounts.Clear();
                 foreach (var vessel in vesselList)
@@ -664,7 +669,7 @@ namespace HaystackReContinued
             {
                 if (!HSUtils.IsInFlight)
                 {
-                    return;   
+                    return;
                 }
                 var localBody = FlightGlobals.ActiveVessel.orbit.referenceBody;
 
@@ -796,7 +801,7 @@ namespace HaystackReContinued
                     this.selectedVessel = preSelectedVessel;
                     this.fireOnSelectionChanged(this);
                 }
-                
+
                 this.vesselInfoView.Reset();
                 this.changeCameraTarget();
             }
@@ -985,13 +990,13 @@ namespace HaystackReContinued
                 {
                     this.SelectedBody = preSelecedBody;
                     this.fireOnSelectionChanged(this);
-                } 
+                }
                 else if (preSelectedVessel != null && preSelectedVessel != this.SelectedVessel)
                 {
                     this.SelectedVessel = preSelectedVessel;
                     this.fireOnSelectionChanged(this);
                 }
-                
+
 
                 this.vesselInfoView.Reset();
                 this.changeCameraTarget();
@@ -1007,7 +1012,7 @@ namespace HaystackReContinued
 
                 if (this.SelectedVessel != null)
                 {
-                    
+
                     if (HSUtils.IsTrackingCenterActive)
                     {
                         HSUtils.RequestCameraFocus(this.SelectedVessel);
@@ -1054,7 +1059,7 @@ namespace HaystackReContinued
 
             internal void Draw(ref Rect winRect)
             {
-                
+
                 var resizer = new Rect(winRect.width - resizeBoxSize - resizeBoxMargin, resizeBoxMargin, resizeBoxSize, resizeBoxSize);
                 GUI.Box(resizer, "//", Resources.resizeBoxStyle);
 
@@ -1126,7 +1131,7 @@ namespace HaystackReContinued
                 get { return this.isAscendingSortOrder; }
                 private set { this.isAscendingSortOrder = value; }
             }
-            
+
             private static readonly GUIContent groupByOrbitContent = new GUIContent(Resources.btnOrbitIcon, "Group by orbiting body");
             private static readonly GUIContent hiddenVesselsButtonContent = new GUIContent(Resources.btnHiddenIcon, "Manage hidden vessels");
             private static readonly GUIContent nearbyButtonContent = new GUIContent("NB", "Nearby vessels only");
@@ -1219,7 +1224,7 @@ namespace HaystackReContinued
                     this.fireOnSortOrderChanged(this);
                 }
             }
-            
+
             private void targetButton()
             {
                 // Disable buttons for current vessel or nothing selected
@@ -1239,7 +1244,7 @@ namespace HaystackReContinued
                     }
                     else
                     {
-                        selected = (ITargetable) this.defaultScrollerView.SelectedVessel ??
+                        selected = (ITargetable)this.defaultScrollerView.SelectedVessel ??
                                    this.defaultScrollerView.SelectedBody;
                     }
 
@@ -1480,20 +1485,34 @@ namespace HaystackReContinued
 
             private void drawVesselInfoText(Vessel vessel, Vessel activeVessel)
             {
-                var status = "";
+                string status = "";
+                int cnt = 0;
                 if (activeVessel == vessel)
                 {
                     status = ". Currently active";
+                    cnt = vessel.Parts.Count;
                 }
                 else if (vessel.loaded)
                 {
                     status = ". Loaded";
+                    cnt = vessel.Parts.Count;
+                    //cnt = vessel.protoVessel.protoPartSnapshots.Count;
                 }
+                else cnt = vessel.protoVessel.protoPartSnapshots.Count;
 
-                var situation = string.Format("{0}. {1}{2}",
-                    vessel.vesselType,
-                    Vessel.GetSituationString(vessel),
-                    status);
+                string situation = "";
+                if (cnt == 1)
+                    situation = string.Format("{0}. {1}{2}",
+                       vessel.vesselType,
+                       Vessel.GetSituationString(vessel),
+                       status
+                       );
+                else
+                    situation = string.Format("{0}. {1}{2}. Parts: {3}",
+                       vessel.vesselType,
+                       Vessel.GetSituationString(vessel),
+                       status, cnt
+                       );
 
                 GUILayout.BeginHorizontal();
 
@@ -1687,7 +1706,7 @@ namespace HaystackReContinued
                     return port.part.partInfo.title;
                 }
 
-                var portName = (string) modulePortName.GetValue(found);
+                var portName = (string)modulePortName.GetValue(found);
 
                 HSUtils.DebugLog("DockingPortListView#getPortName: found name: {0}", portName);
 
@@ -1701,7 +1720,7 @@ namespace HaystackReContinued
                     return;
                 }
 
-                if(!this.CurrentVessel.loaded)
+                if (!this.CurrentVessel.loaded)
                 {
                     GUILayout.BeginVertical();
                     GUILayout.Label("The vessel is out of range: cannot list docking ports",
@@ -1724,7 +1743,7 @@ namespace HaystackReContinued
 
                 foreach (var i in portList)
                 {
-                    GUILayout.Box((Texture) null, Resources.hrSepLineStyle, GUILayout.ExpandWidth(true),
+                    GUILayout.Box((Texture)null, Resources.hrSepLineStyle, GUILayout.ExpandWidth(true),
                         GUILayout.ExpandHeight(false));
 
                     GUILayout.BeginHorizontal();
@@ -1797,7 +1816,9 @@ namespace HaystackReContinued
             private Rect windowRect;
 
             private GUIContent renameContent = new GUIContent("R", "Rename vessel");
-            
+            private GUIContent terminateContent = new GUIContent(Resources.btnTerminateNormalBackground, "Terminate vessel");
+            //btnTerminateFilePath
+
             internal ExpandedVesselInfo(HaystackContinued haystack, BottomButtons bottomButtons, DefaultScrollerView defaultScrollerView,
                 GroupedScrollerView groupedScrollerView)
             {
@@ -1815,7 +1836,7 @@ namespace HaystackReContinued
                        this.haystack.winRect.height);
             }
 
-            private bool IsVessel 
+            private bool IsVessel
             {
                 get
                 {
@@ -1840,8 +1861,9 @@ namespace HaystackReContinued
 
             private Vessel currentVessel
             {
-                get {
-                    return this.bottomButtons.GroupByOrbitingBody ? 
+                get
+                {
+                    return this.bottomButtons.GroupByOrbitingBody ?
                         this.groupedScrollerView.SelectedVessel : this.defaultScrollerView.SelectedVessel;
                 }
             }
@@ -1865,7 +1887,7 @@ namespace HaystackReContinued
 
             private bool IsExpanded
             {
-                get { return this._isExpanded;  }
+                get { return this._isExpanded; }
                 set
                 {
                     if (value)
@@ -1901,7 +1923,7 @@ namespace HaystackReContinued
                 var newBodyData = new BodyData
                 {
                     Id = body.bodyName.GetHashCode(),
-                    OrbitData = body.orbit != null ?  OrbitData.FromOrbit(body.orbit) : new OrbitData(),
+                    OrbitData = body.orbit != null ? OrbitData.FromOrbit(body.orbit) : new OrbitData(),
                     PhysicalData = same ? this.bodyData.PhysicalData : getPhysicalData(body),
                     AtmData = same ? this.bodyData.AtmData : getAtmData(body),
                     SciData = same ? this.bodyData.SciData : getSciData(body),
@@ -1914,7 +1936,7 @@ namespace HaystackReContinued
             private List<DisplayItem> getSatellites(CelestialBody body)
             {
                 return (from satellite in body.orbitingBodies
-                    select DisplayItem.Create(satellite.bodyName, "")).ToList();
+                        select DisplayItem.Create(satellite.bodyName, "")).ToList();
             }
 
             private List<DisplayItem> getSciData(CelestialBody body)
@@ -1937,7 +1959,7 @@ namespace HaystackReContinued
             private List<DisplayItem> getAtmData(CelestialBody body)
             {
                 var items = new List<DisplayItem>();
-                
+
                 if (!body.atmosphere)
                 {
                     return items;
@@ -1949,7 +1971,7 @@ namespace HaystackReContinued
                 items.Add(oxygen);
 
                 var kPAASL = body.GetPressure(0d);
-                var atmASL = kPAASL*PhysicsGlobals.KpaToAtmospheres;
+                var atmASL = kPAASL * PhysicsGlobals.KpaToAtmospheres;
                 var aslDisplay = string.Format("{0}kPa ({1}atm)", kPAASL.ToString("F2"), atmASL.ToString("F2"));
                 var aslPressure = DisplayItem.Create("Atm. ASL: ", aslDisplay);
                 items.Add(aslPressure);
@@ -1962,25 +1984,25 @@ namespace HaystackReContinued
 
             private List<DisplayItem> getPhysicalData(CelestialBody body)
             {
-                var radius = DisplayItem.Create("Radius: ", (body.Radius/1000d).ToString("N0") + "km");
+                var radius = DisplayItem.Create("Radius: ", (body.Radius / 1000d).ToString("N0") + "km");
                 var mass = DisplayItem.Create("Mass: ", body.Mass.ToString("0.###E+0") + "kg");
                 var gm = DisplayItem.Create("GM: ", body.gravParameter.ToString("0.###E+0"));
                 var gravity = DisplayItem.Create("Surface Gravity: ", body.GeeASL.ToString("0.####") + "g");
 
-                var escape = 2d*body.gravParameter/body.Radius;
+                var escape = 2d * body.gravParameter / body.Radius;
                 escape = Math.Sqrt(escape);
 
                 var escapeVelocity = DisplayItem.Create("Escape Velocity: ", escape.ToString("0.0") + "m/s");
 
-                double alt = body.atmosphere ? body.atmosphereDepth + 20000 : 15000;               
-                var orbitVelocity = Math.Sqrt(body.gravParameter/(body.Radius + alt));
+                double alt = body.atmosphere ? body.atmosphereDepth + 20000 : 15000;
+                var orbitVelocity = Math.Sqrt(body.gravParameter / (body.Radius + alt));
 
                 var standardOrbitVelocity = DisplayItem.Create("Std Orbit Velocity: ",
                     orbitVelocity.ToString("0.0") + "m/s @ " + Converters.Distance(alt));
 
                 var rotationalPeriod = DisplayItem.Create("Rotational Period: ", Converters.Duration(body.rotationPeriod));
                 var tidalLocked = DisplayItem.Create("Tidally Locked: ", body.tidallyLocked ? "Yes" : "No");
-                var soiSize = DisplayItem.Create("SOI Size: ", (body.sphereOfInfluence/1000d).ToString("N0") + "km");
+                var soiSize = DisplayItem.Create("SOI Size: ", (body.sphereOfInfluence / 1000d).ToString("N0") + "km");
 
                 return new List<DisplayItem>
                 {
@@ -2023,7 +2045,7 @@ namespace HaystackReContinued
                 this.vesselData = vesselData;
             }
 
-            private CrewData  updateVesselCrewData(Vessel vessel)
+            private CrewData updateVesselCrewData(Vessel vessel)
             {
                 var crewData = new CrewData();
 
@@ -2038,9 +2060,9 @@ namespace HaystackReContinued
                     crewData.MaxCrew = vessel.GetCrewCapacity();
 
                     crewData.Crew = (from part in vessel.parts
-                        from crew in part.protoModuleCrew
-                        orderby crew.name  
-                        select formatCrewDisplay(part.partInfo.title, crew)).ToList();
+                                     from crew in part.protoModuleCrew
+                                     orderby crew.name
+                                     select formatCrewDisplay(part.partInfo.title, crew)).ToList();
                 }
                 else
                 {
@@ -2050,9 +2072,9 @@ namespace HaystackReContinued
                         (acc, part) => acc + part.partInfo.partPrefab.CrewCapacity);
 
                     crewData.Crew = (from part in vessel.protoVessel.protoPartSnapshots
-                        from crew in part.protoModuleCrew
-                        orderby crew.name
-                        select this.formatCrewDisplay(part.partInfo.title, crew)).ToList();
+                                     from crew in part.protoModuleCrew
+                                     orderby crew.name
+                                     select this.formatCrewDisplay(part.partInfo.title, crew)).ToList();
                 }
 
                 return crewData;
@@ -2072,45 +2094,45 @@ namespace HaystackReContinued
                 if (vessel.loaded)
                 {
                     var counts = from part in vessel.parts
-                        from resource in part.Resources
-                        group resource by resource.resourceName
+                                 from resource in part.Resources
+                                 group resource by resource.resourceName
                         into resources
-                        select new
-                        {
-                            ResourceName = resources.Key,
-                            Total = resources.Aggregate(0d, (acc, r) => acc + r.amount),
-                            Max = resources.Aggregate(0d, (acc, r) => acc + r.maxAmount),
-                        };
+                                 select new
+                                 {
+                                     ResourceName = resources.Key,
+                                     Total = resources.Aggregate(0d, (acc, r) => acc + r.amount),
+                                     Max = resources.Aggregate(0d, (acc, r) => acc + r.maxAmount),
+                                 };
 
                     return (from resource in counts
-                        orderby resource.ResourceName
-                        select
-                            string.Format("{0}: {1}/{2} ({3})", resource.ResourceName, resource.Total.ToString("N1"), resource.Max.ToString("N1"),
-                                (resource.Total / resource.Max).ToString("P1"))).ToList();
+                            orderby resource.ResourceName
+                            select
+                                string.Format("{0}: {1}/{2} ({3})", resource.ResourceName, resource.Total.ToString("N1"), resource.Max.ToString("N1"),
+                                    (resource.Total / resource.Max).ToString("P1"))).ToList();
                 }
                 else
                 {
                     var counts = from proto in vessel.protoVessel.protoPartSnapshots
-                        from resource in proto.resources
-                        group resource by resource.resourceName
+                                 from resource in proto.resources
+                                 group resource by resource.resourceName
                         into resources
-                        select new
-                        {
-                            ResourceName = resources.Key,
-                            Total =
-                                resources.Aggregate(0d, (acc, r) => acc + r.amount),
-                            Max =
-                                resources.Aggregate(0d,
-                                    (acc, r) => acc + r.maxAmount)
-                        };
+                                 select new
+                                 {
+                                     ResourceName = resources.Key,
+                                     Total =
+                                         resources.Aggregate(0d, (acc, r) => acc + r.amount),
+                                     Max =
+                                         resources.Aggregate(0d,
+                                             (acc, r) => acc + r.maxAmount)
+                                 };
 
-                    
+
 
                     return (from resource in counts
-                        orderby resource.ResourceName
-                        select
-                            string.Format("{0}: {1}/{2} ({3})", resource.ResourceName, resource.Total.ToString("N1"), resource.Max.ToString("N1"),
-                                (resource.Total/resource.Max).ToString("P1"))).ToList();
+                            orderby resource.ResourceName
+                            select
+                                string.Format("{0}: {1}/{2} ({3})", resource.ResourceName, resource.Total.ToString("N1"), resource.Max.ToString("N1"),
+                                    (resource.Total / resource.Max).ToString("P1"))).ToList();
                 }
             }
 
@@ -2126,13 +2148,13 @@ namespace HaystackReContinued
 
             public void DrawExpandButton()
             {
-                    GUILayout.BeginVertical();
-                    if (GUILayout.Button(this.IsExpanded ? Resources.btnExtendedIconClose : Resources.btnExtendedIconOpen, Resources.buttonExtendedStyle, GUILayout.ExpandHeight(true), GUILayout.ExpandWidth(false), GUILayout.Width(12f)))
-                    {
-                        this.IsExpanded = !this.IsExpanded;
-                    }
-                    GUILayout.Space(20f);
-                    GUILayout.EndVertical();
+                GUILayout.BeginVertical();
+                if (GUILayout.Button(this.IsExpanded ? Resources.btnExtendedIconClose : Resources.btnExtendedIconOpen, Resources.buttonExtendedStyle, GUILayout.ExpandHeight(true), GUILayout.ExpandWidth(false), GUILayout.Width(12f)))
+                {
+                    this.IsExpanded = !this.IsExpanded;
+                }
+                GUILayout.Space(20f);
+                GUILayout.EndVertical();
             }
 
             public void DrawExpandedWindow()
@@ -2145,7 +2167,7 @@ namespace HaystackReContinued
                 this.windowRect.x = this.haystack.WinRect.xMax;
                 this.windowRect.y = this.haystack.WinRect.y;
                 this.windowRect.height = this.haystack.WinRect.height;
-                var rect = GUILayout.Window(this.windowId, this.windowRect, this.drawExpanded, "Vessel Infomation", Resources.winStyle, new [] {GUILayout.MaxWidth(600), GUILayout.MinHeight(this.haystack.winRect.height), GUILayout.ExpandWidth(true), GUILayout.ExpandHeight(false)});
+                var rect = ClickThruBlocker.GUILayoutWindow(this.windowId, this.windowRect, this.drawExpanded, "Vessel Infomation", Resources.winStyle, new[] { GUILayout.MaxWidth(600), GUILayout.MinHeight(this.haystack.winRect.height), GUILayout.ExpandWidth(true), GUILayout.ExpandHeight(false) });
                 this.windowRect.width = rect.width;
             }
 
@@ -2158,7 +2180,8 @@ namespace HaystackReContinued
                 if (this.IsVessel)
                 {
                     drawVessel();
-                } else if (this.IsBody)
+                }
+                else if (this.IsBody)
                 {
                     drawBody();
                 }
@@ -2168,7 +2191,7 @@ namespace HaystackReContinued
                 }
 
                 GUILayout.EndVertical();
-                GUILayout.EndScrollView();              
+                GUILayout.EndScrollView();
                 GUILayout.EndHorizontal();
 
                 if (GUI.tooltip != "")
@@ -2184,7 +2207,7 @@ namespace HaystackReContinued
             {
                 GUILayout.Space(4f);
                 GUILayout.Label(this.currentBody.bodyName, Resources.textListHeaderStyle);
-                
+
                 if (this.currentBody.orbit != null)
                 {
                     GUILayout.Space(10f);
@@ -2196,20 +2219,47 @@ namespace HaystackReContinued
 
                 GUILayout.Space(10f);
                 this.drawItemList("Physical Information:", this.bodyData.PhysicalData);
-                
+
                 if (this.currentBody.atmosphere)
                 {
                     GUILayout.Space(10f);
                     this.drawItemList("Atmospheric Information:", this.bodyData.AtmData);
                 }
-                
+
                 if (!this.bodyData.Satellites.IsEmpty())
                 {
                     GUILayout.Space(10f);
                     this.drawItemList("Satellites:", this.bodyData.Satellites);
                 }
             }
-   
+
+            private void TerminateVessel()
+            {
+                //this.unlockUI();
+                Vessel vessel = this.currentVessel;
+
+                GameEvents.onVesselTerminated.Fire(vessel.protoVessel);
+                KSP.UI.Screens.SpaceTracking.StopTrackingObject(vessel);
+                List<ProtoCrewMember> vesselCrew = vessel.GetVesselCrew();
+                int count = vesselCrew.Count;
+                for (int i = 0; i < count; i++)
+                {
+                    ProtoCrewMember protoCrewMember = vesselCrew[i];
+                    UnityEngine.Debug.Log("Crewmember " + protoCrewMember.name + " is lost.");
+                    protoCrewMember.StartRespawnPeriod(-1.0);
+                }
+                UnityEngine.Object.DestroyImmediate(vessel.gameObject);
+                GamePersistence.SaveGame("persistent", HighLogic.SaveFolder, SaveMode.OVERWRITE);
+                this.OnDialogDismiss();
+            }
+
+            private void OnDialogDismiss()
+            {
+                popupDialog = false;
+                //this.unlockUI();
+            }
+            internal bool popupDialog = false;
+
             private void drawVessel()
             {
                 GUILayout.Space(4f);
@@ -2221,11 +2271,35 @@ namespace HaystackReContinued
                 {
                     this.currentVessel.RenameVessel();
                 }
-                
+                GUILayout.FlexibleSpace();
+                if (HighLogic.CurrentGame.Mode != Game.Modes.MISSION_BUILDER && this.currentVessel != FlightGlobals.ActiveVessel)
+                {
+                    if (GUILayout.Button(terminateContent, Resources.buttonTerminateStyle, GUILayout.Width(16f), GUILayout.Height(16f)))
+                    {
+                        //TerminateVessel(this.currentVessel);
+                        popupDialog = true;
+
+                        PopupDialog.SpawnPopupDialog(new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new MultiOptionDialog("TerminateMission", Localizer.Format("#autoLOC_481625"), Localizer.Format("#autoLOC_5050048"), HighLogic.UISkin, new DialogGUIBase[]
+                               {
+                                        new DialogGUIButton("Terminate", new Callback(this.TerminateVessel)),
+                                        new DialogGUIButton("Cancel", new Callback(this.OnDialogDismiss))
+                               }), false, HighLogic.UISkin, true, string.Empty);
+
+                    }
+                }
+
                 GUILayout.EndHorizontal();
+                GUILayout.BeginHorizontal();
+                int cnt = 0;
+                if (currentVessel.loaded)
+                    cnt = currentVessel.Parts.Count;
+                else
+                    cnt = currentVessel.protoVessel.protoPartSnapshots.Count;
+                GUILayout.Label("Parts: " + cnt, Resources.textVesselExpandedInfoItem);
                 GUILayout.Space(10f);
 
-               
+                GUILayout.EndHorizontal();
+
                 drawResources();
                 drawCrew();
                 drawOrbit(vesselData.OrbitData);
@@ -2323,14 +2397,14 @@ namespace HaystackReContinued
 
                 public bool HasCrew { get { return CrewData.TotalCrew > 0; } }
                 public bool HasResources { get { return this.Resources.Count > 0; } }
-                
+
             }
 
             private class CrewData
             {
                 public int TotalCrew;
                 public int MaxCrew;
-                public List<string> Crew = new List<string>(); 
+                public List<string> Crew = new List<string>();
             }
 
             private class OrbitData
@@ -2360,7 +2434,7 @@ namespace HaystackReContinued
                         IsSOIChange = orbit.patchEndTransition == Orbit.PatchTransitionType.ESCAPE || orbit.patchEndTransition == Orbit.PatchTransitionType.ENCOUNTER,
                         SOIChangeTime = Converters.Duration(orbit.UTsoi - Planetarium.GetUniversalTime()),
                         SOIChangeDate = KSPUtil.PrintDateCompact(orbit.UTsoi, true, true)
-                        
+
                     };
                 }
             }

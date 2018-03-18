@@ -59,6 +59,9 @@ namespace HaystackReContinued
         private static string btnFlatHoverFilePath = string.Format("{0}/button_flat_hover.png", PathImages);
         private static string btnFlatPressedFilePath = string.Format("{0}/button_flat_pressed.png", PathImages);
 
+        private static string btnTerminateFlatFilePath = String.Format("{0}/button_terminate.png", PathImages);
+        private static string btnTerminateHoverFilePath = String.Format("{0}/button_terminate_hover.png", PathImages);
+
         //public static Texture2D appLauncherIcon = new Texture2D(38, 38, TextureFormat.ARGB32, false);
         public static Texture2D btnGo = new Texture2D(32, 32, TextureFormat.ARGB32, false);
         public static Texture2D btnGoHover = new Texture2D(32, 32, TextureFormat.ARGB32, false);
@@ -87,7 +90,13 @@ namespace HaystackReContinued
         public static Texture2D btnExtendedIconClose = new Texture2D(16, 32, TextureFormat.ARGB32, false);
         public static Texture2D btnFlatNormalBackground = new Texture2D(12, 12, TextureFormat.ARGB32, false);
         public static Texture2D btnFlatPressedBackground = new Texture2D(12, 12, TextureFormat.ARGB32, false);
+
+       // public static Texture2D btnFlatNormalBackground = new Texture2D(12, 12, TextureFormat.ARGB32, false);
         public static Texture2D btnFlatHoverBackground = new Texture2D(12, 12, TextureFormat.ARGB32, false);
+
+        public static Texture2D btnTerminateNormalBackground = new Texture2D(16, 14, TextureFormat.ARGB32, false);
+        public static Texture2D btnTerminateHoverBackground = new Texture2D(16, 14, TextureFormat.ARGB32, false);
+        //public static Texture2D btnTerminate = new Texture2D(16, 14, TextureFormat.ARGB32, false);
 
         public static RectOffset imgOutlineBorder = new RectOffset(2, 2, 2, 2);
         public static RectOffset imgVesselListButtonBorder = new RectOffset(2, 2, 2, 2);
@@ -136,6 +145,11 @@ namespace HaystackReContinued
                 LoadImage(ref imgVesselInfoSelected, imgVesselInfoSelectedFilePath);
 
                 LoadImage(ref imgVesselListButtonPressed, imgDockingPortButtonPressedFilePath);
+
+                LoadImage(ref btnTerminateHoverBackground, btnTerminateFlatFilePath);
+                LoadImage(ref btnTerminateNormalBackground, btnTerminateHoverFilePath);
+
+
             }
             catch (Exception e)
             {
@@ -245,6 +259,7 @@ namespace HaystackReContinued
         public static GUIStyle tooltipBoxStyle;
         public static GUIStyle buttonFlatStyle;
         public static GUIStyle buttonRenameStyle;
+        public static GUIStyle buttonTerminateStyle;
         public static GUIStyle textExpandedVesselNameStyle;
 
         private static bool stylesLoaded;
@@ -376,7 +391,19 @@ namespace HaystackReContinued
             buttonRenameStyle.onActive.textColor = XKCDColors.LightGrey;
             buttonRenameStyle.onHover.textColor = XKCDColors.LightGrey;
             buttonRenameStyle.fontSize = 11;
-            
+
+
+            buttonTerminateStyle = new GUIStyle(GUI.skin.label);
+            buttonTerminateStyle.alignment = TextAnchor.MiddleCenter;
+            buttonTerminateStyle.normal.background = btnFlatNormalBackground;
+            buttonTerminateStyle.active.background = btnFlatPressedBackground;
+            buttonTerminateStyle.onActive.background = btnFlatPressedBackground;
+            buttonTerminateStyle.onHover.background = btnFlatHoverBackground;
+            buttonTerminateStyle.hover.background = btnFlatHoverBackground;
+            buttonTerminateStyle.padding = new RectOffset(2, 2, 2, 2);
+            buttonTerminateStyle.border = new RectOffset(1, 1, 1, 1);
+            buttonTerminateStyle.margin = new RectOffset(2, 2, 2, 2);
+
             hrSepLineStyle = new GUIStyle(GUI.skin.box);
             hrSepLineStyle.normal.background = imgLine;
             hrSepLineStyle.border = new RectOffset(1, 1, 2, 1);

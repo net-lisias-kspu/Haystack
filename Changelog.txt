@@ -1,3 +1,9 @@
+0.5.4
+	Updated for 1.4.1
+	Added ClickThroughBlocker support
+	Added part count to display
+	Added delete button
+
 0.5.3
 	Adoption by LinuxGuruGamer
 	Replaced toolbar code with ToolbarController
