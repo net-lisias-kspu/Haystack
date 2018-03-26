@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using UnityEngine;
+using ToolbarControl_NS;
 
 namespace HaystackReContinued
 {
@@ -17,14 +18,14 @@ namespace HaystackReContinued
             .Replace("\\", "/");
 
 //        public static string PathImages = String.Format("../{0}/icons", PathPlugin);
-        public static string PathImages = String.Format("{0}/icons", "GameData/HaystackContinued");
+        public static string PathImages = String.Format("{0}/PluginData/icons", "GameData/HaystackContinued");
 
         public static readonly string BODIES = "Bodies";
 
         //toolbar expects to begin in the "gamedata" directory as the root of the provided path
         //so we're going use a relative path starting at our plugin's folder in the "gamedata" directory
         //        public static string ToolbarIconPath = PathImages.Substring(PathImages.ToLower().IndexOf("/gamedata/") + 10);
-        public static string ToolbarIconPath = String.Format("{0}/icons", "HaystackContinued");
+        public static string ToolbarIconPath = String.Format("{0}/PluginData/icons", "HaystackContinued");
         //for the toolbar do not append the extension
         public static string ToolbarIcon = String.Format("{0}/toolbar_icon", ToolbarIconPath);
 
@@ -224,6 +225,7 @@ namespace HaystackReContinued
         /// <param name="filename">File name in images directory. Path is hardcoded: PluginData/HrmHaystack/images/</param>
         private static void LoadImage(ref Texture2D targ, string filename)
         {
+#if false
             Debug.Log("LoadImage: " + filename);
             if (!File.Exists(filename))
             {
@@ -231,6 +233,12 @@ namespace HaystackReContinued
                 return;
             }
             targ.LoadImage(File.ReadAllBytes(filename));
+#endif
+            if (!ToolbarControl.LoadImageFromFile(ref targ, filename))
+            {
+                Debug.Log("Missing file: " + filename);
+                return;
+            }
         }
 
         public static GUIStyle winStyle;
