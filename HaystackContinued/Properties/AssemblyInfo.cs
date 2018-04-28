@@ -33,3 +33,7 @@ using System.Resources;
 //[assembly: AssemblyVersion("0.5.2.2")]
 [assembly: AssemblyFileVersion("0.5.2.1")]
 [assembly: NeutralResourcesLanguageAttribute("en")]
+
+
+[assembly: KSPAssemblyDependency("ClickThroughBlocker", 1, 0)]
+[assembly: KSPAssemblyDependency("ToolbarController", 1, 0)]

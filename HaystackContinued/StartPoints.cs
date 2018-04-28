@@ -179,23 +179,24 @@ namespace HaystackReContinued
 
 
         }
-
+        internal const string MODID = "HaystackReContinued_NS";
+        internal const string MODNAME = "Haystack ReContinued";
         public void Start()
         {
             Debug.Log("HaystackContinued.Start");
             toolbarControl = gameObject.AddComponent<ToolbarControl>();
-            Debug.Log("HaystackContinued, useBlizzy: " + HighLogic.CurrentGame.Parameters.CustomParams<HS>().useBlizzy);
+            //Debug.Log("HaystackContinued, useBlizzy: " + HighLogic.CurrentGame.Parameters.CustomParams<HS>().useBlizzy);
             Debug.Log("HaystackContinued, Resources.appLauncherIconPath: " + Resources.appLauncherIconPath);
             Debug.Log("HaystackContinued, Resources.ToolbarIcon: " + Resources.ToolbarIcon);
 
-            toolbarControl.UseBlizzy(HighLogic.CurrentGame.Parameters.CustomParams<HS>().useBlizzy);
+            //toolbarControl.UseBlizzy(HighLogic.CurrentGame.Parameters.CustomParams<HS>().useBlizzy);
             toolbarControl.AddToAllToolbars(appLauncherButton_OnTrue, appLauncherButton_OnFalse,
                       scenes,
-                      "HaystackReContinued",
+                      MODID,
                       toolbarButtonId,
                       Resources.appLauncherIconPath,
                       Resources.ToolbarIcon,
-                      "Haystack ReContinued"
+                      MODNAME
               );
         }
 
@@ -213,12 +214,7 @@ namespace HaystackReContinued
             toolbarControl.OnDestroy();
             Destroy(toolbarControl);
         }
-
-        public void OnGUI()
-        {
-            if (toolbarControl != null && HighLogic.LoadedScene != GameScenes.MAINMENU)
-                toolbarControl.UseBlizzy(HighLogic.CurrentGame.Parameters.CustomParams<HS>().useBlizzy);
-        }
+       
     }
 
     [KSPAddon(KSPAddon.Startup.Flight, false)]

@@ -7,7 +7,7 @@
     <ProjectGuid>{879FD0A8-E340-4F46-9D86-B610903030CC}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>HaystackContinued</RootNamespace>
+    <RootNamespace>HaystackReContinued</RootNamespace>
     <AssemblyName>HaystackContinued</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -51,7 +51,7 @@
     <Compile Include="StartPoints.cs" />
     <Compile Include="DataManager.cs" />
     <Compile Include="StockSettings.cs" />
-    <Compile Include="ToolbarWrapper.cs" />
+    <Compile Include="ToolbarRegistration.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="AssemblyVersion.tt">
