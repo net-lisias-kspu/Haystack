@@ -1,6 +1,10 @@
 .vs
+Archive
 GameData/**/README.md
 GameData/**/CHANGE_LOG.md
+GameData/**/LICENSE
+GameData/**/*.version
+GameData/**/Plugins/*.dll
 */obj
 **/Version.cs
 bin
