@@ -1,5 +1,18 @@
 # Haystack :: Change Log
 
+* 2016-0621: 0.5.1.0 (qberticus) for KSP 1.1.3
+	+ Updated for KSP 1.1.3
+	+ Made the UI look a bit nicer.
+	+ Added extended vessel info window. It can be accessed by the arrow button on the right side of the window or by clicking the currently selected vessel as a toggle.
+	+ Extended vessel info window also works for Celestial Bodies (i.e., planets and moons). It will display important information about them. Of note are the science High, and Low altitude values. 	+ You don't have to look them up anymore.
+	+ Added sort order buttons for the vessel list. These let you change the sort order of the vessel list.
+	+ Added a nearby button. This only displays the vessels in the current SOI. Vessels in physics range are sorted by name; vessels outside of physics range are sorted by distance from the active vessel. This button only works while flying a vessel.
+	+ Added ability to rename a vessel. The button is accessed from the extended vessel info display.
+	+ Search results are ordered by the location of the search term in the result. Closer to the beginning of the result the higher on the list.
+	+ Added blizzy toolbar support back. Defaults to using blizzy toolbar if found, otherwise it will use the stock toolbar.
+	+ Moved the settings.cfg file to PluginData directory. Thanks to Enceos and RealKolago for the heads up.
+	+ Fixed tooltips so they are clamped to within the window and are not cut off.
+	+ Added KSP-AVC support.
 * 2016-0428: 0.5.0.0 (qberticus) for KSP 1.1.2
 	+ Updated to KSP 1.1
 	+ Added window to the space center
