@@ -1,5 +1,8 @@
 # Haystack :: Change Log
 
+* 2014-0818: 0.3.1.1 (qberticus) for KSP 0.24.2
+	+ Fixed a bug where the display would break as debris left physics range and was removed by the game.
+	+ Resizing the window should be smoother in low FPS situations.
 * 2014-0811: 0.3.1.0 (qberticus) for KSP 0.24.2
 	+ You can now display a list of docking ports for the nearby ships (i.e., loaded in physics range) and target them. The list only displays available docking ports (i.e., the docking port must not have a ship docked and must have a free attach node)
 	+ The docking port list includes support for the Docking Port Alignment Indicator mod's named port feature. If it detects this mode it will use the name of the docking port that has been set in the display. If the mod is not detected it will default to using the name of the part.
