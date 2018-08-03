@@ -1,5 +1,12 @@
 # Haystack :: Change Log
 
+* 2016-0428: 0.5.0.0 (qberticus) for KSP 1.1.2
+	+ Updated to KSP 1.1
+	+ Added window to the space center
+	+ Added app launcher button and icon
+	+ Disabled use of blizzy toolbar until that is updated.
+	+ Switched to allowing targeting of docking ports when a vessel is loaded instead of packed. Once the targeted vessel is within 200m (i.e., unpacked) the port needs to be retargeted for automated docking support to work (e.g., mechjeb)
+	+ Updated support for Docking Port Alignment Indicator mod named docking port feature
 * 2016-0404: 0.4.9.0 (qberticus) for KSP 1.1.0 PRE-RELEASE
 	+ Updated to KSP 1.1
 		+ This is a development release for KSP 1.1 experimental.
