@@ -1,5 +1,7 @@
 # Haystack :: Change Log
 
+* 2018-0327: 0.5.4.2 (linuxgurugamer) for KSP 1.4.1
+	+ Updated version file 
 * 2018-0326: 0.5.4.1 (linuxgurugamer) for KSP 1.4.1
 	+ Changed method of loading images to use the 	+ ToolbarControl.LoadImageFromFile
 	+ Moved icon folder into PluginData to avoid useless error messages from Unity
