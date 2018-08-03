@@ -1,5 +1,9 @@
 # Haystack :: Change Log
 
+* 2016-1028: 0.5.2.1 (qberticus) for KSP 1.2
+	+ Updated to be compatible with new Contract Configurator changes.
+	+ Celestial bodies filter button state is now saved like the other filter buttons.
+	+ Vessel type icons for plane and relay have been added.
 * 2016-1026: 0.5.2.0 (qberticus) for KSP 1.2
 	+ Updated for KSP 1.2
 	+ A couple of UI updates due to changes in new KSP version
