@@ -1,5 +1,9 @@
 # Haystack :: Change Log
 
+* 2014-1012: 0.3.2.0 (qberticus) for KSP 0.25
+	+ Compiled and checked against KSP 0.25
+	+ Changed save log output to debug mode only
+	+ Haystack window now respects the Hide GUI game event. It's now possible to take screenshots without the Haystack window appearing. 
 * 2014-0818: 0.3.1.1 (qberticus) for KSP 0.24.2
 	+ Fixed a bug where the display would break as debris left physics range and was removed by the game.
 	+ Resizing the window should be smoother in low FPS situations.
