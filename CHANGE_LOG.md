@@ -1,5 +1,10 @@
 # Haystack :: Change Log
 
+* 2018-0318: 0.5.4 (linuxgurugamer) for KSP 1.4.1
+	+ Updated for 1.4.1
+	+ Added ClickThroughBlocker support
+	+ Added part count to display
+	+ Added delete button
 * 2018-0126: 0.5.3 (linuxgurugamer) for KSP 1.3.1
 	+ Adoption by LinuxGuruGamer
 	+ Replaced toolbar code with ToolbarController
