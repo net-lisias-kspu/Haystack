@@ -1,5 +1,9 @@
 # Haystack :: Change Log
 
+* 2014-0808: 0.3.0.0 (qberticus) for KSP 0.24.2
+	+ Vessels can now be grouped by the celestial body that they are orbiting
+	+ Window is also provided in the Tracking Center
+	+ Window is now resizable to compliment its ability to be dragged
 * 2013-1115: 0.2.2.1 (enamelizer) for KSP 0.22
 	+ Allow the UI in flight for quick switching
 	+ Added celestial bodies as a target type
