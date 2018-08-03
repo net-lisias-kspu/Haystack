@@ -1,5 +1,8 @@
 # Haystack :: Change Log
 
+* 2015-0117: 0.4.0.0 (qberticus) for KSP 0.90
+	+ There is a new button that allows you to set vessels to be hidden from the list. The hidden vessels are saved in the save game file and will be saved whenever the game is saved.
+	+ The window will now default to hidden when first loading the game. In the future this will be updated so the tracking center window and the in flight window will have separate state for the being shown / hidden.
 * 2015-0112: 0.3.3.0 (qberticus) for KSP 0.90
 	+ This release updates the comple against KSP 0.90
 	+ Added support for blizzy toolbar - this allows the window to be positioned anywhere on the screen when the toolbar is installed
