@@ -1,5 +1,10 @@
 # Haystack :: Change Log
 
+* 2015-0112: 0.3.3.0 (qberticus) for KSP 0.90
+	+ This release updates the comple against KSP 0.90
+	+ Added support for blizzy toolbar - this allows the window to be positioned anywhere on the screen when the toolbar is installed
+	+ Minor tweaks to some UI elements
+	+ Fixed a bug reported by Apollo13 where the names of vessels would wrap to a new line
 * 2014-1012: 0.3.2.0 (qberticus) for KSP 0.25
 	+ Compiled and checked against KSP 0.25
 	+ Changed save log output to debug mode only
