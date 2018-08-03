@@ -1,5 +1,11 @@
 # Haystack :: Change Log
 
+* 2018-0126: 0.5.3 (linuxgurugamer) for KSP 1.3.1
+	+ Adoption by LinuxGuruGamer
+	+ Replaced toolbar code with ToolbarController
+	+ Changed resource loading from MainMenu to SpaceCentre
+	+ DLL moved into Plugins folder
+	+ Updated name and namespace names
 * 2016-1028: 0.5.2.1 (qberticus) for KSP 1.2
 	+ Updated to be compatible with new Contract Configurator changes.
 	+ Celestial bodies filter button state is now saved like the other filter buttons.
