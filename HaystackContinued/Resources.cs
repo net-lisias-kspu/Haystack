@@ -14,8 +14,7 @@ namespace HaystackReContinued
     {
         public static System.Random rnd = new System.Random();
 
-        public static string PathPlugin = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)
-            .Replace("\\", "/");
+        public static string PathPlugin = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location).Replace("\\", "/");
 
 //        public static string PathImages = String.Format("../{0}/icons", PathPlugin);
         public static string PathImages = String.Format("{0}/PluginData/icons", "GameData/HaystackContinued");

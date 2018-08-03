@@ -10,8 +10,9 @@ namespace HaystackReContinued
     {
         public static string version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
 
-        private static readonly string PluginDataDir = Resources.PathPlugin + Path.DirectorySeparatorChar + "PluginData";
-        private static readonly string SettingsFile = PluginDataDir + Path.DirectorySeparatorChar + "settings.cfg";
+		private static readonly string PluginDataDir = Path.Combine(Resources.PathPlugin,"PluginData");
+		private static readonly string SettingsDir = Path.Combine(KSPUtil.ApplicationRootPath, "PluginData/Haystack");
+		private static readonly string SettingsFile = Path.Combine(SettingsDir, "settings.cfg");
 
         private const string NODE_SETTINGS = "settings";
         private const string NODE_WINDOW_POSITIONS = "window_positions";
@@ -193,7 +194,8 @@ namespace HaystackReContinued
                 nodeVesselTypeVisibility.AddValue(type.name, type.visible);
             }
 
-            t.Save(SettingsFile);
+			if (!Directory.Exists(SettingsDir)) Directory.CreateDirectory(SettingsDir);
+			t.Save(SettingsFile);
         }
 
         private static void saveDicValuesToNode<V>(Dictionary<string, V> dic, ConfigNode node, string configName,
