@@ -2,4 +2,5 @@
 GameData/**/README.md
 GameData/**/CHANGE_LOG.md
 */obj
+**/Version.cs
 bin
