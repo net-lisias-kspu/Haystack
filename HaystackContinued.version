@@ -1,16 +1,19 @@
 {
-	"NAME": "Haystack ReContinued",
-	"URL": "https://raw.githubusercontent.com/linuxgurugamer/HaystackContinued/master/HaystackContinued.version",
-	"DOWNLOAD": "https://github.com/linuxgurugamer/HaystackContinued/releases",
-	"GITHUB": {
-		"USERNAME": "linuxgurugamer",
-		"REPOSITORY": "HaystackContinued"
+	"NAME": "Haystack Unofficial",
+	"URL":"https://raw.githubusercontent.com/net-lisias-kspu/HaystackContinued/master/NavUtilities.version",
+	"DOWNLOAD":"https://github.com/net-lisias-kspu/HaystackContinued/releases",
+	"CHANGE_LOG":"https://raw.githubusercontent.com/net-lisias-kspu/HaystackContinued/CHANGE_LOG.md",
+	"CHANGE_LOG_URL":"https://raw.githubusercontent.com/net-lisias-kspu/HaystackContinued/CHANGES.md",
+	"GITHUB":{
+		"USERNAME":"net-lisias-kspu",
+		"REPOSITORY":"HaystackContinued",
+		"ALLOW_PRE_RELEASE":false
 		},
 	"VERSION":{
 		"MAJOR":0,
 		"MINOR":5,
 		"PATCH":4,
-		"BUILD":3
+		"BUILD":4
 		},
 	"KSP_VERSION":{
 		"MAJOR":1,
