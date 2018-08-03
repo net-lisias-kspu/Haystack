@@ -1,5 +1,11 @@
 # Haystack :: Change Log
 
+* 2016-0404: 0.4.9.0 (qberticus) for KSP 1.1.0 PRE-RELEASE
+	+ Updated to KSP 1.1
+		+ This is a development release for KSP 1.1 experimental.
+	+ Added window to the space center
+	+ Added app launcher button and icon
+	+ Disabled use of blizzy toolbar until that is updated.
 * 2015-0428: 0.4.1.0 (qberticus) for KSP 0.90
 	+ Fixed the missing spaceobject icon error message by adding the icon.
 	+ The haystack window will now save the visible state depending on the scene. This means that leaving the window open in the tracking station will not leave it open during flight.
