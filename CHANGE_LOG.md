@@ -1,5 +1,9 @@
 # Haystack :: Change Log
 
+* 2015-0428: 0.4.1.0 (qberticus) for KSP 0.90
+	+ Fixed the missing spaceobject icon error message by adding the icon.
+	+ The haystack window will now save the visible state depending on the scene. This means that leaving the window open in the tracking station will not leave it open during flight.
+	+ You can now target the currently selected celestial body (i.e., planet or moon) when in the default view (i.e., not group by).
 * 2015-0117: 0.4.0.0 (qberticus) for KSP 0.90
 	+ There is a new button that allows you to set vessels to be hidden from the list. The hidden vessels are saved in the save game file and will be saved whenever the game is saved.
 	+ The window will now default to hidden when first loading the game. In the future this will be updated so the tracking center window and the in flight window will have separate state for the being shown / hidden.
