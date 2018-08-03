@@ -1,5 +1,10 @@
 # Haystack :: Change Log
 
+* 2016-1026: 0.5.2.0 (qberticus) for KSP 1.2
+	+ Updated for KSP 1.2
+	+ A couple of UI updates due to changes in new KSP version
+	+ Tweaked docking port list font size due to new font rendering code
+	+ Known issues: missing filter button icons for new ship types: plane and relay
 * 2016-0621: 0.5.1.0 (qberticus) for KSP 1.1.3
 	+ Updated for KSP 1.1.3
 	+ Made the UI look a bit nicer.
