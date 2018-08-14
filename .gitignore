@@ -6,5 +6,5 @@ GameData/**/LICENSE
 GameData/**/*.version
 GameData/**/Plugins/*.dll
 */obj
-**/Version.cs
+**/Properties/Version.cs
 bin
