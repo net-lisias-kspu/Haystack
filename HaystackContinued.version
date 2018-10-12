@@ -1,9 +1,4 @@
 {
-	"GITHUB":{
-		"USERNAME":"net-lisias-kspu",
-		"REPOSITORY":"HaystackContinued",
-		"ALLOW_PRE_RELEASE":false
-		},
 	"NAME"		: "Haystack Unofficial",
 	"URL"		: "https://raw.githubusercontent.com/net-lisias-kspu/HaystackContinued/master/NavUtilities.version",
 	"DOWNLOAD"	: "https://github.com/net-lisias-kspu/HaystackContinued/releases",
@@ -17,8 +12,7 @@
 		},
 	"KSP_VERSION":{
 		"MAJOR":1,
-		"MINOR":4,
-		"PATCH":1
+		"MINOR":4
 		},
 	"KSP_VERSION_MIN":{
 		"MAJOR":1,
