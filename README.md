@@ -6,8 +6,8 @@ Plugin for [Kerbal Space Program](http://www.kerbalspaceprogram.com/) which help
 ## In a Hurry
 
 * [Latest Release](https://github.com/net-lisias-kspu/HaystackContinued/releases)
+	+ [Binaries](https://github.com/net-lisias-kspu/HaystackContinued/tree/Archive)
 * [Source](https://github.com/net-lisias-kspu/HaystackContinued)
-* [Binaries](https://github.com/net-lisias-kspu/HaystackContinued/tree/Archive)
 * [Change Log](./CHANGE_LOG.md)
 
 
