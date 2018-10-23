@@ -13,7 +13,6 @@ D:\Users\jbb\github\HaystackContinued\HaystackContinued\bin\Debug\KSPAssets.dll
 D:\Users\jbb\github\HaystackContinued\HaystackContinued\bin\Debug\Mono.Cecil.dll
 D:\Users\jbb\github\HaystackContinued\HaystackContinued\bin\Debug\Ionic.Zip.dll
 D:\Users\jbb\github\HaystackContinued\HaystackContinued\bin\Debug\TDx.TDxInput.dll
-D:\Users\jbb\github\HaystackContinued\HaystackContinued\bin\Debug\RedShellSDK.dll
 D:\Users\jbb\github\HaystackContinued\HaystackContinued\obj\Debug\HaystackContinued.csprojResolveAssemblyReference.cache
 D:\Users\jbb\github\HaystackContinued\HaystackContinued\obj\Debug\HaystackContinued.csproj.CoreCompileInputs.cache
 D:\Users\jbb\github\HaystackContinued\HaystackContinued\obj\Debug\HaystackContinued.csproj.CopyComplete

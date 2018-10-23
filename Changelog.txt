@@ -1,6 +1,10 @@
+0.5.4.4
+	Version bump for 1.5 rebuild
+
 0.5.4.3
 	Added ToolbarRegistration
 	Removed settings page
+	Updated version info
 
 0.5.4.2
 	Updated version file

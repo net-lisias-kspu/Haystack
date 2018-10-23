@@ -31,6 +31,5 @@ D:\Users\jbb\github\HaystackContinued\HaystackContinued\obj\Release\HaystackCont
 D:\Users\jbb\github\HaystackContinued\HaystackContinued\bin\Release\ToolbarControl.dll
 D:\Users\jbb\github\HaystackContinued\HaystackContinued\bin\Release\ClickThroughBlocker.dll
 D:\Users\jbb\github\HaystackContinued\HaystackContinued\bin\Release\Ionic.Zip.dll
-D:\Users\jbb\github\HaystackContinued\HaystackContinued\bin\Release\RedShellSDK.dll
 D:\Users\jbb\github\HaystackContinued\HaystackContinued\obj\Release\HaystackContinued.csprojResolveAssemblyReference.cache
 D:\Users\jbb\github\HaystackContinued\HaystackContinued\obj\Release\HaystackContinued.csproj.CopyComplete
