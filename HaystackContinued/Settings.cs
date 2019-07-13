@@ -10,7 +10,7 @@ namespace HaystackReContinued
     {
         public static string version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
 
-        private static readonly string PluginDataDir = Resources.PathPlugin + Path.DirectorySeparatorChar + "PluginData";
+        private static readonly string PluginDataDir = Resources.PathPlugin + Path.DirectorySeparatorChar;
         private static readonly string SettingsFile = PluginDataDir + Path.DirectorySeparatorChar + "settings.cfg";
 
         private const string NODE_SETTINGS = "settings";
@@ -34,14 +34,14 @@ namespace HaystackReContinued
             this.WindowVisibilities = new GenericIndexer<bool>(windowVisibilities, () => false,
                 "settings: window WindowVisibility: {0} {1}");
             this.BottomButtons = new GenericIndexer<bool>(bottomButtons, () => false, "settings: bottom buttons: {0} {1}");
-            
+
             this.Convert();
             this.Load();
         }
 
         private void Convert()
         {
-           this.convertToNewDirectory();
+            this.convertToNewDirectory();
         }
 
         private void convertToNewDirectory()
@@ -51,19 +51,19 @@ namespace HaystackReContinued
             var oldSettingsExists = File.Exists(oldSettingsFile);
             var newSettingsExists = File.Exists(SettingsFile);
 
-            if (!Directory.Exists(PluginDataDir))
-            {
-                HSUtils.Log("Creating missing PluginData directory.");
-                Directory.CreateDirectory(PluginDataDir);
-            }
+
+            System.IO.Directory.CreateDirectory(PluginDataDir);
+
 
             if (oldSettingsExists && !newSettingsExists)
             {
                 HSUtils.Log("Moving settings file to new location.");
-                
+
                 File.Move(oldSettingsFile, SettingsFile);
-            } else if (oldSettingsExists)
-            {   HSUtils.Log("Deleting old settings file.");
+            }
+            else if (oldSettingsExists)
+            {
+                HSUtils.Log("Deleting old settings file.");
 
                 File.Delete(oldSettingsFile);
             }
@@ -93,7 +93,7 @@ namespace HaystackReContinued
             var defaultPos = new Rect(0, 0, 0, 0);
             foreach (var i in nodeWindowPositions.nodes)
             {
-                var node = (ConfigNode) i;
+                var node = (ConfigNode)i;
                 var name = node.name;
                 var position = node.FromNode(WINDOW_POSITION, defaultPos);
 
@@ -104,7 +104,7 @@ namespace HaystackReContinued
 
             foreach (var n in nodeWindowVisibility.nodes)
             {
-                var node = (ConfigNode) n;
+                var node = (ConfigNode)n;
                 var name = node.name;
                 var visible = node.FromNode(WINDOW_VISIBLE, false);
 
@@ -115,7 +115,7 @@ namespace HaystackReContinued
 
             foreach (var n in bottomButtons.nodes)
             {
-                var node = (ConfigNode) n;
+                var node = (ConfigNode)n;
                 var name = node.name;
                 var value = node.FromNode(BUTTON_STATE, false);
 
@@ -216,7 +216,7 @@ namespace HaystackReContinued
 
         static NodeSerializers()
         {
-            converters[typeof (Rect)] = RectFromNode;
+            converters[typeof(Rect)] = RectFromNode;
         }
 
         public static ConfigNode ToNode(this Rect rect)
@@ -238,19 +238,19 @@ namespace HaystackReContinued
                 return defaultValue;
             }
 
-            var type = typeof (T);
+            var type = typeof(T);
             var typeConveter = TypeDescriptor.GetConverter(type);
 
             var strValue = node.GetValue(name);
 
-            return (T) typeConveter.ConvertFromInvariantString(strValue);
+            return (T)typeConveter.ConvertFromInvariantString(strValue);
         }
 
         public static T FromNode<T>(this ConfigNode node, T defaultValue) where T : class
         {
-            var method = converters[typeof (T)];
+            var method = converters[typeof(T)];
 
-            var value = (T) method.Invoke(node) ?? defaultValue;
+            var value = (T)method.Invoke(node) ?? defaultValue;
 
             return value;
         }
@@ -271,7 +271,7 @@ namespace HaystackReContinued
             else
             {
                 var method = converters[t];
-                return (T) method.Invoke(node.GetNode(name));
+                return (T)method.Invoke(node.GetNode(name));
             }
         }
 

@@ -18,14 +18,14 @@ namespace HaystackReContinued
             .Replace("\\", "/");
 
 //        public static string PathImages = String.Format("../{0}/icons", PathPlugin);
-        public static string PathImages = String.Format("{0}/PluginData/icons", "GameData/HaystackContinued");
+        public static string PathImages = String.Format("{0}/icons", "GameData/HaystackContinued");
 
         public static readonly string BODIES = "Bodies";
 
         //toolbar expects to begin in the "gamedata" directory as the root of the provided path
         //so we're going use a relative path starting at our plugin's folder in the "gamedata" directory
         //        public static string ToolbarIconPath = PathImages.Substring(PathImages.ToLower().IndexOf("/gamedata/") + 10);
-        public static string ToolbarIconPath = String.Format("{0}/PluginData/icons", "HaystackContinued");
+        public static string ToolbarIconPath = String.Format("{0}/icons", "HaystackContinued");
         //for the toolbar do not append the extension
         public static string ToolbarIcon = String.Format("{0}/toolbar_icon", ToolbarIconPath);
 
@@ -222,7 +222,7 @@ namespace HaystackReContinued
         /// Load image from file
         /// </summary>
         /// <param name="targ"></param>
-        /// <param name="filename">File name in images directory. Path is hardcoded: PluginData/HrmHaystack/images/</param>
+        /// <param name="filename">File name in images directory. Path is hardcoded: HrmHaystack/images/</param>
         private static void LoadImage(ref Texture2D targ, string filename)
         {
 #if false
