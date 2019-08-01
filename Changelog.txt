@@ -1,5 +1,8 @@
+0.5.5.1
+	Fixed code to move settings.cfg into PluginData
+
 0.5.5
-	Version bump for 1..7.2
+	Version bump for 1.7.2
 	Updated Assenblyversion.tt
 	Moved icons out of the PluginData folder
 	Added InstallChecker

@@ -10,8 +10,11 @@ namespace HaystackReContinued
     {
         public static string version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
 
+        public static string DATA_FOLDER =  "/PluginData/";
+
         private static readonly string PluginDataDir = Resources.PathPlugin + Path.DirectorySeparatorChar;
-        private static readonly string SettingsFile = PluginDataDir + Path.DirectorySeparatorChar + "settings.cfg";
+        private static string NewPluginDataDir;
+        private static  string SettingsFile = PluginDataDir + "settings.cfg";
 
         private const string NODE_SETTINGS = "settings";
         private const string NODE_WINDOW_POSITIONS = "window_positions";
@@ -35,6 +38,8 @@ namespace HaystackReContinued
                 "settings: window WindowVisibility: {0} {1}");
             this.BottomButtons = new GenericIndexer<bool>(bottomButtons, () => false, "settings: bottom buttons: {0} {1}");
 
+            NewPluginDataDir = Resources.PathPlugin.Substring(0, Resources.PathPlugin.Length -8) + DATA_FOLDER;
+            SettingsFile = NewPluginDataDir + "settings.cfg";
             this.Convert();
             this.Load();
         }
@@ -46,13 +51,12 @@ namespace HaystackReContinued
 
         private void convertToNewDirectory()
         {
-            var oldSettingsFile = Resources.PathPlugin + Path.DirectorySeparatorChar + "settings.cfg";
+            var oldSettingsFile = Resources.PathPlugin + "/settings.cfg";
 
             var oldSettingsExists = File.Exists(oldSettingsFile);
             var newSettingsExists = File.Exists(SettingsFile);
-
-
-            System.IO.Directory.CreateDirectory(PluginDataDir);
+                    
+            System.IO.Directory.CreateDirectory(NewPluginDataDir);
 
 
             if (oldSettingsExists && !newSettingsExists)
