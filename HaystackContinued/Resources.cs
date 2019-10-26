@@ -211,8 +211,12 @@ namespace HaystackReContinued
                 {
                     Debug.LogException(e);
                 }
-
-                list.Add(new HSVesselType(type, sort, icon, true));
+                string type1 = type;
+                if (type == "DeployedScienceController")
+                    type1 = "Deployed Science Controller";
+                if (type == "DeployedSciencePart")
+                    type1 = "Deployed Science Part";
+                list.Add(new HSVesselType(type1, sort, icon, true));
             }
 
             list.Add(new HSVesselType(BODIES, 255, btnBodies, true));

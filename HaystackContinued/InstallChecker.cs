@@ -16,6 +16,27 @@ using UnityEngine;
 
 namespace HaystackReContinued
 {
+    [KSPAddon(KSPAddon.Startup.Instantly, true)]
+    internal class Startup : MonoBehaviour
+    {
+        private void Start()
+        {
+            string v = "n/a";
+            AssemblyTitleAttribute attributes = (AssemblyTitleAttribute)Attribute.GetCustomAttribute(Assembly.GetExecutingAssembly(), typeof(AssemblyTitleAttribute), false);
+            string title = attributes?.Title;
+            if (title == null)
+            {
+                title = "TitleNotAvailable";
+            }
+            v = Assembly.GetExecutingAssembly().FullName;
+            if (v == null)
+            {
+                v = "VersionNotAvailable";
+            }
+            Debug.Log("[" + title + "] Version " + v);
+        }
+    }
+
     [KSPAddon(KSPAddon.Startup.MainMenu, true)]
     internal class InstallChecker : MonoBehaviour
     {
@@ -25,7 +46,7 @@ namespace HaystackReContinued
 
         protected void Start()
         {
-            // Search for this mod's DLL existing in the wrong location. This will also detect duplicate copies because only one can be in the right place.
+            // Search for this mod's DLL existing in the wyrong location. This will also detect duplicate copies because only one can be in the right place.
             var assemblies = AssemblyLoader.loadedAssemblies.Where(a => a.assembly.GetName().Name == Assembly.GetExecutingAssembly().GetName().Name).Where(a => a.url != EXPECTEDPATH);
             if (assemblies.Any())
             {

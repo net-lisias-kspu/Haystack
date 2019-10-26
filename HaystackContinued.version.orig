@@ -1,0 +1,25 @@
+{
+  "NAME": "Haystack ReContinued",
+  "URL": "http://ksp.spacetux.net/avc/HaystackContinued",
+  "DOWNLOAD": "https://github.com/linuxgurugamer/HaystackContinued/releases",
+  "GITHUB": {
+    "USERNAME": "linuxgurugamer",
+    "REPOSITORY": "HaystackContinued"
+  },
+  "VERSION": {
+    "MAJOR": 0,
+    "MINOR": 5,
+    "PATCH": 5,
+    "BUILD": 1
+  },
+  "KSP_VERSION": {
+    "MAJOR": 1,
+    "MINOR": 5,
+    "PATCH": 1
+  },
+  "KSP_VERSION_MIN": {
+    "MAJOR": 1,
+    "MINOR": 5,
+    "PATCH": 1
+  }
+}

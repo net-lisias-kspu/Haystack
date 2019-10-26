@@ -1,3 +1,10 @@
+0.5.6
+	Updated for KSP 1.8
+		Added icons for two new vessel types:
+                Vesseltypes.DeployedScienceController
+                VesselTypes.DeployedSciencePart
+		Added code to add spaces to the text names for the new vessel types
+
 0.5.5.1
 	Fixed code to move settings.cfg into PluginData
 
