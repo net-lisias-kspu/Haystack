@@ -14,7 +14,7 @@ namespace Haystack
         private static string toolbarButtonId = "haystackContinuedButton";
 
         public Settings Settings { get; private set; }
-        private static HaystackResourceLoader instance;
+        internal static HaystackResourceLoader instance;
         //private IButton toolbarButton;
        // private ApplicationLauncherButton appLauncherButton;
 
@@ -56,7 +56,7 @@ namespace Haystack
             this.displayButtonClick(new EventArgs());
         }
 
-        private void appLauncherButton_OnTrue()
+        internal void appLauncherButton_OnTrue()
         {
             this.displayButtonClick(new EventArgs());
         }
