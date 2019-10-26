@@ -8,3 +8,4 @@ D:\Users\jbb\github\HaystackContinued\HaystackContinued\obj\Debug\HaystackContin
 D:\Users\jbb\github\HaystackContinued\HaystackContinued\obj\Debug\HaystackContinued.csproj.CopyComplete
 D:\Users\jbb\github\HaystackContinued\HaystackContinued\obj\Debug\HaystackContinued.dll
 D:\Users\jbb\github\HaystackContinued\HaystackContinued\obj\Debug\HaystackContinued.pdb
+D:\Users\jbb\github\HaystackContinued\HaystackContinued\obj\Debug\HaystackContinued.csprojResolveAssemblyReference.cache

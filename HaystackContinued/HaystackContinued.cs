@@ -50,7 +50,7 @@ namespace HaystackReContinued
         private GroupedScrollerView groupedScrollerView;
         private BottomButtons bottomButtons;
         private ExpandedVesselInfo expandedVesselInfo;
-
+        private CloseHandle closeHandle;
 
         public void Awake()
         {
@@ -65,7 +65,7 @@ namespace HaystackReContinued
             this.expandedVesselInfo = new ExpandedVesselInfo(this, this.bottomButtons, this.defaultScrollerView,
                 this.groupedScrollerView);
             this.resizeHandle = new ResizeHandle();
-
+            this.closeHandle = new CloseHandle();
 
             windowId = Resources.rnd.Next(1000, 2000000);
         }
@@ -403,6 +403,7 @@ namespace HaystackReContinued
             GUILayout.EndHorizontal();
 
             this.resizeHandle.Draw(ref this.winRect);
+            this.closeHandle.Draw(ref this.winRect);
 
             // If user input detected, force refresh
             if (GUI.changed)
@@ -1049,6 +1050,47 @@ namespace HaystackReContinued
                 bottomButtons.OnGroupByChanged += view => this.reset();
             }
         }
+
+        private class CloseHandle
+        {
+            private const float xBoxSize = 18;
+            private const float xBoxMargin = 2;
+            GUIStyle buttonStyle;
+            bool initted = false;
+ 
+            internal void Draw(ref Rect winRect)
+            {
+                if (!initted)
+                {
+                    buttonStyle = new GUIStyle(GUI.skin.box);
+                    buttonStyle.padding = new RectOffset(5, 5, 3, 3);
+                    buttonStyle.margin = new RectOffset(2,2,2,2);
+                    buttonStyle.stretchWidth = false;
+                    buttonStyle.stretchHeight = false;
+                    buttonStyle.normal.textColor = buttonStyle.focused.textColor = Color.red;
+                    
+                    buttonStyle.fontSize = 14;
+                    
+
+                    initted = true;
+                }
+
+                var resizer = new Rect(xBoxMargin, xBoxMargin, xBoxSize, xBoxSize);
+                GUI.Box(resizer, "X", buttonStyle);
+
+                if (!Event.current.isMouse)
+                {
+                    return;
+                }
+
+                if (Event.current.type == EventType.MouseDown && Event.current.button == 0 &&
+                    resizer.Contains(Event.current.mousePosition))
+                {
+                    Debug.Log("Close Event");
+                    HaystackResourceLoader.instance.appLauncherButton_OnTrue();
+                }           
+            }
+       }
 
         private class ResizeHandle
         {

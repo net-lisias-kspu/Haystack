@@ -1,3 +1,6 @@
+0.5.6.1
+	Added red X, upperleft to close window
+
 0.5.6
 	Updated for KSP 1.8
 		Added icons for two new vessel types:
