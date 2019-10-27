@@ -40,7 +40,7 @@ namespace HaystackReContinued
     [KSPAddon(KSPAddon.Startup.MainMenu, true)]
     internal class InstallChecker : MonoBehaviour
     {
-        private const string MODNAME = "Haystack Continued";
+        private const string MODNAME = "Haystack ReContinued";
         private const string FOLDERNAME = "HaystackContinued";
         private const string EXPECTEDPATH = FOLDERNAME + "/Plugins";
 

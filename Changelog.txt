@@ -1,3 +1,6 @@
+0.5.6.2
+	Updated MiniAVC.dll to 1.4.0.2 to fix a nasty CTD
+
 0.5.6.1
 	Added red X, upperleft to close window
 
