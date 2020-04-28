@@ -1,5 +1,9 @@
 ChangeLog
 
+0.5.6.4
+	Fixed localized vessel names
+	Added API for AlertMonitors to access last selected vessel & open/move the window
+
 0.5.6.3
 	Really did the MiniAVC update
 

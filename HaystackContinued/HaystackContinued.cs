@@ -34,10 +34,11 @@ namespace HaystackReContinued
 
     public abstract class HaystackContinued : MonoBehaviour
     {
+        public static HaystackContinued fetch = null;
         // window vars
         private int windowId;
-        protected bool WinVisible = false;
-        private Rect winRect;
+        internal bool WinVisible = false;
+        internal Rect winRect;
         private bool isGUISetup;
 
 
@@ -55,7 +56,7 @@ namespace HaystackReContinued
         public void Awake()
         {
             HSUtils.DebugLog("HaystackContinued#Awake");
-
+            fetch = this;
             this.bottomButtons = new BottomButtons();
             this.bottomButtons.LoadSettings();
 
@@ -83,7 +84,7 @@ namespace HaystackReContinued
             GameEvents.onPlanetariumTargetChanged.Add(this.onMapTargetChange);
 
             this.WinRect = HaystackResourceLoader.Instance.Settings.WindowPositions[this.SettingsName];
-            this.WinVisible = HaystackResourceLoader.Instance.Settings.WindowVisibilities[this.SettingsName];
+            WinVisible = HaystackResourceLoader.Instance.Settings.WindowVisibilities[this.SettingsName];
             this.bottomButtons.LoadSettings();
 
             HaystackResourceLoader.Instance.DisplayButtonOnClick += this.displayButtonClicked;
@@ -272,7 +273,7 @@ namespace HaystackReContinued
 
         private void drawGUI()
         {
-            GUI.skin = HighLogic.Skin;
+            //GUI.skin = HighLogic.Skin;
             if (expandedVesselInfo.popupDialog)
                 return;
             this.winRect = this.winRect.ClampToScreen();
@@ -310,7 +311,7 @@ namespace HaystackReContinued
             }
             else
             {
-                DataManager.Instance.HiddenVessels.RemoveVessle(vessel);
+                DataManager.Instance.HiddenVessels.RemoveVessel(vessel);
             }
         }
 
@@ -683,9 +684,12 @@ namespace HaystackReContinued
                 {
                     return;
                 }
+                //string vname = v.vesselName;
+                //Localizer.TryGetStringByTag(v.vesselName, out vname);
 
                 list.RemoveAll(
-                        v => v == null || v.vesselName == null || -1 == v.vesselName.IndexOf(this.SearchTerm, StringComparison.OrdinalIgnoreCase)
+
+                v => v == null || v.vesselName == null || -1 == v.vesselName.IndexOf(this.SearchTerm, StringComparison.OrdinalIgnoreCase)
                         );
             }
 
@@ -1086,7 +1090,6 @@ namespace HaystackReContinued
                 if (Event.current.type == EventType.MouseDown && Event.current.button == 0 &&
                     resizer.Contains(Event.current.mousePosition))
                 {
-                    Debug.Log("Close Event");
                     HaystackResourceLoader.instance.appLauncherButton_OnTrue();
                 }           
             }
@@ -1485,7 +1488,10 @@ namespace HaystackReContinued
                 GUILayout.BeginVertical(selected ? Resources.vesselInfoSelected : Resources.vesselInfoDefault);
 
                 GUILayout.BeginHorizontal();
-                GUILayout.Label(vessel.vesselName, Resources.textListHeaderStyle);
+                string vname;
+                if (!Localizer.TryGetStringByTag(vessel.vesselName, out vname))
+                    vname = vessel.vesselName;
+                GUILayout.Label(vname, Resources.textListHeaderStyle);
                 GUILayout.FlexibleSpace();
                 this.drawDistance(vessel, activeVessel);
                 GUILayout.EndHorizontal();
@@ -1507,7 +1513,9 @@ namespace HaystackReContinued
                     Input.GetMouseButtonDown(0) &&
                     check.Contains(Event.current.mousePosition))
                 {
+                    HSUtils.Log("HaystackContinued, SelectedVessel set to : " + vessel.vesselName);
                     this.Clicked = true;
+                    API.SelectedVessel = vessel;
                 }
             }
 
@@ -2287,7 +2295,7 @@ namespace HaystackReContinued
                 for (int i = 0; i < count; i++)
                 {
                     ProtoCrewMember protoCrewMember = vesselCrew[i];
-                    UnityEngine.Debug.Log("Crewmember " + protoCrewMember.name + " is lost.");
+                    //UnityEngine.Debug.Log("Crewmember " + protoCrewMember.name + " is lost.");
                     protoCrewMember.StartRespawnPeriod(-1.0);
                 }
                 UnityEngine.Object.DestroyImmediate(vessel.gameObject);
@@ -2306,7 +2314,11 @@ namespace HaystackReContinued
             {
                 GUILayout.Space(4f);
                 GUILayout.BeginHorizontal();
-                GUILayout.Label(this.currentVessel.vesselName, Resources.textExpandedVesselNameStyle, GUILayout.ExpandWidth(false));
+                string vname;
+                if (!Localizer.TryGetStringByTag(this.currentVessel.vesselName, out vname))
+                    vname = this.currentVessel.vesselName;
+
+                GUILayout.Label(vname, Resources.textExpandedVesselNameStyle, GUILayout.ExpandWidth(false));
 
                 GUILayout.Space(8f);
                 if (GUILayout.Button(renameContent, Resources.buttonRenameStyle, GUILayout.Width(16f), GUILayout.Height(16f)))

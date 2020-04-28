@@ -99,7 +99,7 @@ namespace HaystackReContinued
             this.hiddenVessels.Add(vessel.id);
         }
 
-        public void RemoveVessle(Vessel vessel)
+        public void RemoveVessel(Vessel vessel)
         {
             if (ExcludedTypes.Contains(vessel.vesselType))
             {

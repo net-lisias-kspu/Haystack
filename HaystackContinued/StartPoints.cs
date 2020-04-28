@@ -9,6 +9,8 @@ namespace HaystackReContinued
     [KSPAddon(KSPAddon.Startup.SpaceCentre, true)]
     public class HaystackResourceLoader : MonoBehaviour
     {
+        internal static HaystackResourceLoader fetch = null;
+
         private static string toolbarButtonId = "haystackContinuedButton";
 
         public Settings Settings { get; private set; }
@@ -30,20 +32,6 @@ namespace HaystackReContinued
             }
         }
 
-#if false
-        //blizzy toolbar
-        private void setupToolbar()
-        {
-            HSUtils.DebugLog("HaystackResourceLoader#setupToolbar: toolbar detected, using it.");
-
-            this.toolbarButton = ToolbarManager.Instance.add("HaystackContinued", toolbarButtonId);
-            this.toolbarButton.Visibility = new GameScenesVisibility(GameScenes.FLIGHT, GameScenes.TRACKSTATION, GameScenes.SPACECENTER);
-            this.toolbarButton.TexturePath = Resources.ToolbarIcon;
-            this.toolbarButton.ToolTip = "Haystack ReContinued";
-
-            this.toolbarButton.OnClick += toolbarButton_OnClick;
-        }
-#endif
         private void toolbarButton_OnClick(ClickEvent e)
         {
             this.displayButtonClick(new EventArgs());
@@ -56,6 +44,7 @@ namespace HaystackReContinued
 
         internal void appLauncherButton_OnTrue()
         {
+            Debug.Log("Haystack.appLauncherButton_OnTrue");
             this.displayButtonClick(new EventArgs());
         }
 
@@ -76,26 +65,7 @@ namespace HaystackReContinued
                 this.displayButtonClick -= value;
             }
         }
-#if false
-        //this is needed since the main window can be saved in a visible state but the application launcher button
-        //will have no knowledge if it is visisble or not on a scene switch
-        public void FixApplicationLauncherButtonDisplay(bool visible)
-        {
-            if (this.appLauncherButton == null)
-            {
-                return;
-            }
 
-            if (visible)
-            {
-                this.appLauncherButton.SetTrue(false);
-            }
-            else
-            {
-                this.appLauncherButton.SetFalse(false);
-            }
-        }
-#endif
         ApplicationLauncher.AppScenes scenes = ApplicationLauncher.AppScenes.FLIGHT | ApplicationLauncher.AppScenes.TRACKSTATION |
                          ApplicationLauncher.AppScenes.MAPVIEW | ApplicationLauncher.AppScenes.SPACECENTER;
         /// <summary>
@@ -103,6 +73,8 @@ namespace HaystackReContinued
         /// </summary>
         public void Awake()
         {
+            fetch = this;
+            API.APIAwake();
             DontDestroyOnLoad(this);
 
             Resources.LoadTextures();
@@ -111,85 +83,13 @@ namespace HaystackReContinued
             Resources.vesselTypesList.Sort(new HSUtils.SortByWeight());
 
             this.Settings = new Settings();
-
-#if false
-
-            if (ToolbarManager.ToolbarAvailable)
-            {
-                this.setupToolbar();
-            }
-            else // use applauncher icon
-            {
-                GameEvents.onGUIApplicationLauncherReady.Add(OnAppLauncherReady);
-                GameEvents.onGUIApplicationLauncherDestroyed.Add(OnAppLauncherDestroyed);
-            }
-#endif
-
-#if false
-        private void OnAppLauncherReady()
-        {
-            if (this.appLauncherButton != null)
-            {
-                HSUtils.DebugLog("application launcher button already exists");
-                return;
-            }
-
-            var appLauncher = ApplicationLauncher.Instance;
-
-            if (appLauncher == null)
-            {
-                HSUtils.DebugLog("application launcher instance is null");
-                //maybe run a coroutine to try again.
-                return;
-            }
-
-            
-
-            this.appLauncherButton = appLauncher.AddModApplication(appLauncherButton_OnTrue, appLauncherButton_OnFalse,
-                () => { },
-                () => { },
-                () => { },
-                () => { },
-                scenes,
-                Resources.appLauncherIcon
-                );
-        }
-
-        private void OnAppLauncherDestroyed()
-        {
-            var appLauncher = ApplicationLauncher.Instance;
-
-            if (appLauncher == null)
-            {
-                HSUtils.DebugLog("OnApplicationLauncherDestroyed: application launcher instance is null.");
-                return;
-            }
-
-            if (this.appLauncherButton == null)
-            {
-                HSUtils.DebugLog("app launcher button is null.");
-                return;
-            }
-
-
-            appLauncher.RemoveModApplication(this.appLauncherButton);
-            this.appLauncherButton = null;
-        }
-#endif
-
-
         }
         internal const string MODID = "HaystackReContinued_NS";
         internal const string MODNAME = "Haystack ReContinued";
         public void Start()
         {
-            Debug.Log("HaystackContinued.Start");
             toolbarControl = gameObject.AddComponent<ToolbarControl>();
-            //Debug.Log("HaystackContinued, useBlizzy: " + HighLogic.CurrentGame.Parameters.CustomParams<HS>().useBlizzy);
-            Debug.Log("HaystackContinued, Resources.appLauncherIconPath: " + Resources.appLauncherIconPath);
-            Debug.Log("HaystackContinued, Resources.ToolbarIcon: " + Resources.ToolbarIcon);
 
-            //toolbarControl.UseBlizzy(HighLogic.CurrentGame.Parameters.CustomParams<HS>().useBlizzy);
             toolbarControl.AddToAllToolbars(appLauncherButton_OnTrue, appLauncherButton_OnFalse,
                       scenes,
                       MODID,
@@ -202,17 +102,9 @@ namespace HaystackReContinued
 
         public void OnDestroy()
         {
-#if false
-            if (this.toolbarButton != null)
-            {
-                this.toolbarButton.Destroy();
-            }
-
-            GameEvents.onGUIApplicationLauncherReady.Remove(this.OnAppLauncherReady);
-            GameEvents.onGUIApplicationLauncherDestroyed.Remove(this.OnAppLauncherDestroyed);
-#endif
             toolbarControl.OnDestroy();
             Destroy(toolbarControl);
+            fetch = null;
         }
        
     }

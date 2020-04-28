@@ -229,15 +229,6 @@ namespace HaystackReContinued
         /// <param name="filename">File name in images directory. Path is hardcoded: HrmHaystack/images/</param>
         private static void LoadImage(ref Texture2D targ, string filename)
         {
-#if false
-            Debug.Log("LoadImage: " + filename);
-            if (!File.Exists(filename))
-            {
-                Debug.Log("Missing file: " + filename);
-                return;
-            }
-            targ.LoadImage(File.ReadAllBytes(filename));
-#endif
             if (!ToolbarControl.LoadImageFromFile(ref targ, filename))
             {
                 Debug.Log("Missing file: " + filename);
@@ -288,7 +279,7 @@ namespace HaystackReContinued
                 return;
             }
 
-            GUI.skin = HighLogic.Skin;
+           // GUI.skin = HighLogic.Skin;
 
             // Main window
             winStyle = new GUIStyle(GUI.skin.window);
