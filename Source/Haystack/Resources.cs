@@ -262,7 +262,7 @@ namespace Haystack
                 return;
             }
 
-            GUI.skin = HighLogic.Skin;
+           // GUI.skin = HighLogic.Skin;
 
             // Main window
             winStyle = new GUIStyle(GUI.skin.window);

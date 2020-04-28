@@ -37,6 +37,7 @@
     <RunPostBuildEvent>Always</RunPostBuildEvent>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="API.cs" />
     <Compile Include="Comparers.cs" />
     <Compile Include="HaystackScenarioModule.cs" />
     <Compile Include="Settings.cs" />

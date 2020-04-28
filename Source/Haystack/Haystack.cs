@@ -35,10 +35,11 @@ namespace Haystack
 
     public abstract class HaystackContinued : MonoBehaviour
     {
+        public static HaystackContinued fetch = null;
         // window vars
         private int windowId;
-        protected bool WinVisible = false;
-        private Rect winRect;
+        internal bool WinVisible = false;
+        internal Rect winRect;
         private bool isGUISetup;
 
 
@@ -57,6 +58,7 @@ namespace Haystack
         {
             Log.dbg("HaystackContinued#Awake");
 
+            fetch = this;
             this.bottomButtons = new BottomButtons();
             this.bottomButtons.LoadSettings();
 
@@ -273,7 +275,7 @@ namespace Haystack
 
         private void drawGUI()
         {
-            GUI.skin = HighLogic.Skin;
+            //GUI.skin = HighLogic.Skin;
             if (expandedVesselInfo.popupDialog)
                 return;
             this.winRect = this.winRect.ClampToScreen();
@@ -311,7 +313,7 @@ namespace Haystack
             }
             else
             {
-                DataManager.Instance.HiddenVessels.RemoveVessle(vessel);
+                DataManager.Instance.HiddenVessels.RemoveVessel(vessel);
             }
         }
 
@@ -684,6 +686,8 @@ namespace Haystack
                 {
                     return;
                 }
+                //string vname = v.vesselName;
+                //Localizer.TryGetStringByTag(v.vesselName, out vname);
 
                 list.RemoveAll(
                         v => v == null || v.vesselName == null || -1 == v.vesselName.IndexOf(this.SearchTerm, StringComparison.OrdinalIgnoreCase)
@@ -1486,7 +1490,10 @@ namespace Haystack
                 GUILayout.BeginVertical(selected ? Resources.vesselInfoSelected : Resources.vesselInfoDefault);
 
                 GUILayout.BeginHorizontal();
-                GUILayout.Label(vessel.vesselName, Resources.textListHeaderStyle);
+                string vname;
+                if (!Localizer.TryGetStringByTag(vessel.vesselName, out vname))
+                    vname = vessel.vesselName;
+                GUILayout.Label(vname, Resources.textListHeaderStyle);
                 GUILayout.FlexibleSpace();
                 this.drawDistance(vessel, activeVessel);
                 GUILayout.EndHorizontal();
@@ -1508,7 +1515,9 @@ namespace Haystack
                     Input.GetMouseButtonDown(0) &&
                     check.Contains(Event.current.mousePosition))
                 {
+                    Log.info("SelectedVessel set to : {0}", vessel.vesselName);
                     this.Clicked = true;
+                    API.SelectedVessel = vessel;
                 }
             }
 
@@ -2305,7 +2314,11 @@ namespace Haystack
             {
                 GUILayout.Space(4f);
                 GUILayout.BeginHorizontal();
-                GUILayout.Label(this.currentVessel.vesselName, Resources.textExpandedVesselNameStyle, GUILayout.ExpandWidth(false));
+                string vname;
+                if (!Localizer.TryGetStringByTag(this.currentVessel.vesselName, out vname))
+                    vname = this.currentVessel.vesselName;
+
+                GUILayout.Label(vname, Resources.textExpandedVesselNameStyle, GUILayout.ExpandWidth(false));
 
                 GUILayout.Space(8f);
                 if (GUILayout.Button(renameContent, Resources.buttonRenameStyle, GUILayout.Width(16f), GUILayout.Height(16f)))

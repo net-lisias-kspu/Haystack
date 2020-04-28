@@ -11,6 +11,8 @@ namespace Haystack
     [KSPAddon(KSPAddon.Startup.SpaceCentre, true)]
     public class HaystackResourceLoader : MonoBehaviour
     {
+        internal static HaystackResourceLoader fetch = null;
+
         private static string toolbarButtonId = "haystackContinuedButton";
 
         public Settings Settings { get; private set; }
@@ -58,6 +60,7 @@ namespace Haystack
 
         internal void appLauncherButton_OnTrue()
         {
+            Debug.Log("Haystack.appLauncherButton_OnTrue");
             this.displayButtonClick(new EventArgs());
         }
 
@@ -105,6 +108,8 @@ namespace Haystack
         /// </summary>
         public void Awake()
         {
+            fetch = this;
+            API.APIAwake();
             DontDestroyOnLoad(this);
 
             Resources.LoadTextures();
@@ -216,6 +221,7 @@ namespace Haystack
 #endif
             toolbarControl.OnDestroy();
             Destroy(toolbarControl);
+            fetch = null;
         }
        
     }
