@@ -1,5 +1,4 @@
-﻿#if false
-using System;
+﻿using System;
 using System.IO;
 using System.Collections;
 using System.Collections.Generic;
@@ -24,8 +23,10 @@ namespace Haystack
         public override bool HasPresets { get { return false; } }
 
 
-        [GameParameters.CustomParameterUI("Use Blizzy Toolbar", toolTip = "If available (will require scene change to activate)")]
-        public bool useBlizzy = false;
+        //[GameParameters.CustomParameterUI("Use Blizzy Toolbar", toolTip = "If available (will require scene change to activate)")]
+        //public bool useBlizzy = false;
+        [GameParameters.CustomParameterUI("Use Alternate Skin")]
+        public bool useAltSkin = false;
 
 
 
@@ -53,4 +54,3 @@ namespace Haystack
         }
     }
 }
-#endif
