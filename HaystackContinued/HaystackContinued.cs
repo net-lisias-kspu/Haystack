@@ -273,7 +273,8 @@ namespace HaystackReContinued
 
         private void drawGUI()
         {
-            //GUI.skin = HighLogic.Skin;
+            if (!HighLogic.CurrentGame.Parameters.CustomParams<HS>().useAltSkin)
+                GUI.skin = HighLogic.Skin;
             if (expandedVesselInfo.popupDialog)
                 return;
             this.winRect = this.winRect.ClampToScreen();

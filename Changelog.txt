@@ -1,5 +1,9 @@
 ChangeLog
 
+0.5.6.5
+	Added Stock Settings page to control alternate skin use
+	Added back normal stock skin
+
 0.5.6.4
 	Fixed localized vessel names
 	Added API for AlertMonitors to access last selected vessel & open/move the window
