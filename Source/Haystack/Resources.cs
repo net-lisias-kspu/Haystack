@@ -254,15 +254,18 @@ namespace Haystack
         /// <summary>
         /// Set up styles
         /// </summary>
-        public static void LoadStyles()
+        public static void LoadStyles(bool force = false)
         {
 
-            if (stylesLoaded)
+            if (stylesLoaded && !force)
             {
                 return;
             }
 
-           // GUI.skin = HighLogic.Skin;
+            if (!HighLogic.CurrentGame.Parameters.CustomParams<HS>().useAltSkin)
+                GUI.skin = HighLogic.Skin;
+
+            // GUI.skin = HighLogic.Skin;
 
             // Main window
             winStyle = new GUIStyle(GUI.skin.window);

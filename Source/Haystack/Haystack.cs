@@ -222,6 +222,7 @@ namespace Haystack
             this.bottomButtons.SaveSettings();
         }
 
+        static bool altSkin = false;
         /// <summary>
         /// Repaint GUI
         /// </summary>
@@ -229,6 +230,7 @@ namespace Haystack
         {
             if (!this.isGUISetup)
             {
+                altSkin = HighLogic.CurrentGame.Parameters.CustomParams<HS>().useAltSkin;
                 Resources.LoadStyles();
 
                 //TODO: eliminate
@@ -242,7 +244,11 @@ namespace Haystack
 
                 this.isGUISetup = true;
             }
-
+            if (altSkin != HighLogic.CurrentGame.Parameters.CustomParams<HS>().useAltSkin)
+            {
+                altSkin = HighLogic.CurrentGame.Parameters.CustomParams<HS>().useAltSkin;
+                Resources.LoadStyles(true);
+            }
             if (this.IsGuiDisplay)
             {
                 this.drawGUI();
