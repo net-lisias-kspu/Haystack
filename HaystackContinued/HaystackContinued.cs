@@ -226,31 +226,31 @@ namespace HaystackReContinued
         /// </summary>
         public void OnGUI()
         {
-            if (!this.isGUISetup)
+            if (this.IsGuiDisplay)
             {
-                altSkin = HighLogic.CurrentGame.Parameters.CustomParams<HS>().useAltSkin;
+                if (!this.isGUISetup)
+                {
+                    altSkin = HighLogic.CurrentGame.Parameters.CustomParams<HS>().useAltSkin;
 
 
                     Resources.LoadStyles();
 
-                //TODO: eliminate
-                this.groupedScrollerView.GUISetup(this.bottomButtons);
-                this.defaultScrollerView.GUISetup(this.bottomButtons);
-                this.bottomButtons.GUISetup(this.groupedScrollerView, this.defaultScrollerView);
+                    //TODO: eliminate
+                    this.groupedScrollerView.GUISetup(this.bottomButtons);
+                    this.defaultScrollerView.GUISetup(this.bottomButtons);
+                    this.bottomButtons.GUISetup(this.groupedScrollerView, this.defaultScrollerView);
 
-                this.bottomButtons.OnSwitchVessel += vessel => this.StartCoroutine(SwitchToVessel(vessel));
+                    this.bottomButtons.OnSwitchVessel += vessel => this.StartCoroutine(SwitchToVessel(vessel));
 
-                this.vesselListController.FetchVesselList();
+                    this.vesselListController.FetchVesselList();
 
-                this.isGUISetup = true;
-            }
-            if (altSkin != HighLogic.CurrentGame.Parameters.CustomParams<HS>().useAltSkin)
-            {
-                altSkin = HighLogic.CurrentGame.Parameters.CustomParams<HS>().useAltSkin;
-                Resources.LoadStyles(true);
-            }
-            if (this.IsGuiDisplay)
-            {
+                    this.isGUISetup = true;
+                }
+                if (altSkin != HighLogic.CurrentGame.Parameters.CustomParams<HS>().useAltSkin)
+                {
+                    altSkin = HighLogic.CurrentGame.Parameters.CustomParams<HS>().useAltSkin;
+                    Resources.LoadStyles(true);
+                }
                 this.drawGUI();
             }
         }
@@ -306,6 +306,10 @@ namespace HaystackReContinued
             get { return false; }
         }
 
+        internal bool IsVisible()
+        {
+            return IsGuiDisplay;
+        }
         private bool isVesselHidden(Vessel vessel)
         {
             return this.HiddenVessels.Contains(vessel.id);
@@ -1070,20 +1074,20 @@ namespace HaystackReContinued
             private const float xBoxMargin = 2;
             GUIStyle buttonStyle;
             bool initted = false;
- 
+
             internal void Draw(ref Rect winRect)
             {
                 if (!initted)
                 {
                     buttonStyle = new GUIStyle(GUI.skin.box);
                     buttonStyle.padding = new RectOffset(5, 5, 3, 3);
-                    buttonStyle.margin = new RectOffset(2,2,2,2);
+                    buttonStyle.margin = new RectOffset(2, 2, 2, 2);
                     buttonStyle.stretchWidth = false;
                     buttonStyle.stretchHeight = false;
                     buttonStyle.normal.textColor = buttonStyle.focused.textColor = Color.red;
-                    
+
                     buttonStyle.fontSize = 14;
-                    
+
 
                     initted = true;
                 }
@@ -1100,9 +1104,9 @@ namespace HaystackReContinued
                     resizer.Contains(Event.current.mousePosition))
                 {
                     HaystackResourceLoader.instance.appLauncherButton_OnTrue();
-                }           
+                }
             }
-       }
+        }
 
         private class ResizeHandle
         {

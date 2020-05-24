@@ -37,7 +37,7 @@ namespace HaystackReContinued
             this.displayButtonClick(new EventArgs());
         }
 
-        private void appLauncherButton_OnFalse()
+        internal void appLauncherButton_OnFalse()
         {
             this.displayButtonClick(new EventArgs());
         }

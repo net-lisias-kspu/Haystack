@@ -44,10 +44,24 @@ namespace HaystackReContinued
 
 
         public static Vessel SelectedVessel { get; internal set; }
+
+        public static bool IsVisible()
+        {
+            if (HaystackContinued.fetch != null)
+            {
+                return HaystackContinued.fetch.IsVisible();
+            }
+            return false;
+        }
         public static void ButtonClick()
         {
-            if (HaystackResourceLoader.fetch != null && !HaystackContinued.fetch.WinVisible)
-                HaystackResourceLoader.fetch.appLauncherButton_OnTrue();
+            if (HaystackResourceLoader.fetch != null)
+            {
+                if (!HaystackContinued.fetch.WinVisible)
+                    HaystackResourceLoader.fetch.appLauncherButton_OnTrue();
+                else
+                    HaystackResourceLoader.fetch.appLauncherButton_OnFalse();
+            }
           }
         public static void SetVisibility(VesselType vt, bool visible)
         {
