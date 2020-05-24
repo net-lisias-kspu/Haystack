@@ -228,29 +228,29 @@ namespace Haystack
         /// </summary>
         public void OnGUI()
         {
-            if (!this.isGUISetup)
-            {
-                altSkin = HighLogic.CurrentGame.Parameters.CustomParams<HS>().useAltSkin;
-                Resources.LoadStyles();
-
-                //TODO: eliminate
-                this.groupedScrollerView.GUISetup(this.bottomButtons);
-                this.defaultScrollerView.GUISetup(this.bottomButtons);
-                this.bottomButtons.GUISetup(this.groupedScrollerView, this.defaultScrollerView);
-
-                this.bottomButtons.OnSwitchVessel += vessel => this.StartCoroutine(SwitchToVessel(vessel));
-
-                this.vesselListController.FetchVesselList();
-
-                this.isGUISetup = true;
-            }
-            if (altSkin != HighLogic.CurrentGame.Parameters.CustomParams<HS>().useAltSkin)
-            {
-                altSkin = HighLogic.CurrentGame.Parameters.CustomParams<HS>().useAltSkin;
-                Resources.LoadStyles(true);
-            }
             if (this.IsGuiDisplay)
             {
+                if (!this.isGUISetup)
+                {
+                    altSkin = HighLogic.CurrentGame.Parameters.CustomParams<HS>().useAltSkin;
+                    Resources.LoadStyles();
+
+                    //TODO: eliminate
+                    this.groupedScrollerView.GUISetup(this.bottomButtons);
+                    this.defaultScrollerView.GUISetup(this.bottomButtons);
+                    this.bottomButtons.GUISetup(this.groupedScrollerView, this.defaultScrollerView);
+
+                    this.bottomButtons.OnSwitchVessel += vessel => this.StartCoroutine(SwitchToVessel(vessel));
+
+                    this.vesselListController.FetchVesselList();
+
+                    this.isGUISetup = true;
+                }
+                if (altSkin != HighLogic.CurrentGame.Parameters.CustomParams<HS>().useAltSkin)
+                {
+                    altSkin = HighLogic.CurrentGame.Parameters.CustomParams<HS>().useAltSkin;
+                    Resources.LoadStyles(true);
+                }
                 this.drawGUI();
             }
         }
@@ -306,6 +306,10 @@ namespace Haystack
             get { return false; }
         }
 
+        internal bool IsVisible()
+        {
+            return IsGuiDisplay;
+        }
         private bool isVesselHidden(Vessel vessel)
         {
             return this.HiddenVessels.Contains(vessel.id);
