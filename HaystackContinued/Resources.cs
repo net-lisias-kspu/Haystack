@@ -17,7 +17,7 @@ namespace HaystackReContinued
         public static string PathPlugin = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)
             .Replace("\\", "/");
 
-//        public static string PathImages = String.Format("../{0}/icons", PathPlugin);
+        //        public static string PathImages = String.Format("../{0}/icons", PathPlugin);
         public static string PathImages = String.Format("{0}/icons", "GameData/HaystackContinued");
 
         public static readonly string BODIES = "Bodies";
@@ -92,7 +92,7 @@ namespace HaystackReContinued
         public static Texture2D btnFlatNormalBackground = new Texture2D(12, 12, TextureFormat.ARGB32, false);
         public static Texture2D btnFlatPressedBackground = new Texture2D(12, 12, TextureFormat.ARGB32, false);
 
-       // public static Texture2D btnFlatNormalBackground = new Texture2D(12, 12, TextureFormat.ARGB32, false);
+        // public static Texture2D btnFlatNormalBackground = new Texture2D(12, 12, TextureFormat.ARGB32, false);
         public static Texture2D btnFlatHoverBackground = new Texture2D(12, 12, TextureFormat.ARGB32, false);
 
         public static Texture2D btnTerminateNormalBackground = new Texture2D(16, 14, TextureFormat.ARGB32, false);
@@ -110,7 +110,7 @@ namespace HaystackReContinued
         {
             try
             {
-               // LoadImage(ref appLauncherIcon, appLauncherIconPath);
+                // LoadImage(ref appLauncherIcon, appLauncherIconPath);
 
                 LoadImage(ref btnGo, btnGoFilePath);
                 LoadImage(ref btnGoHover, btnGoHoverFilePath);
@@ -182,7 +182,7 @@ namespace HaystackReContinued
         /// </summary>
         public static void PopulateVesselTypes(ref List<HSVesselType> list)
         {
-            foreach (string type in Enum.GetNames(typeof (VesselType)))
+            foreach (string type in Enum.GetNames(typeof(VesselType)))
             {
                 // Kinda dirty and superfluous method...
                 byte sort;
@@ -212,10 +212,17 @@ namespace HaystackReContinued
                     Debug.LogException(e);
                 }
                 string type1 = type;
-                if (type == "DeployedScienceController")
-                    type1 = "Deployed Science Controller";
-                if (type == "DeployedSciencePart")
-                    type1 = "Deployed Science Part";
+                switch (type)
+                {
+                    case "DeployedScienceController": type1 = "Deployed Science Controller"; break;
+                    case "DeployedSciencePart": type1 = "Deployed Science Part"; break;
+                    case "DeployedGroundPart": type1 = "Deployed Ground Part"; break;
+                    case "DroppedPart": type1 = "Dropped Part"; break;
+                    case "SpaceObject": type1 = "Space Object"; break;
+
+
+                    default: break;
+                }
                 list.Add(new HSVesselType(type1, sort, icon, true));
             }
 
@@ -266,7 +273,7 @@ namespace HaystackReContinued
         public static GUIStyle textExpandedVesselNameStyle;
 
         private static bool stylesLoaded;
-        
+
 
         /// <summary>
         /// Set up styles
@@ -348,7 +355,7 @@ namespace HaystackReContinued
             vesselInfoSelected.border = new RectOffset(2, 2, 3, 0);
             vesselInfoSelected.padding = new RectOffset(2, 2, 3, 0);
             vesselInfoSelected.margin = new RectOffset(3, 3, 6, 6);
-            
+
             // Hide window button
             buttonFoldStyle = new GUIStyle(GUI.skin.label);
             buttonFoldStyle.fixedWidth = 48;

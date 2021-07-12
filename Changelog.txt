@@ -1,5 +1,11 @@
 ChangeLog
 
+0.5.7.2
+	Added new icons:  button_vessel_droppedpart & button_vessel_deployedgroundpart
+	Added AssemblyFileVersion
+	Added translation of vessel type with two words combined to two words, english only
+	Updated KSP version to 1.12
+
 0.5.7.1
 	Renamed DLL for CKAN compatibility
 
