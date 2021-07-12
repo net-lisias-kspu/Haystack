@@ -209,10 +209,16 @@ namespace Haystack
                     Debug.LogException(e);
                 }
                 string type1 = type;
-                if (type == "DeployedScienceController")
-                    type1 = "Deployed Science Controller";
-                if (type == "DeployedSciencePart")
-                    type1 = "Deployed Science Part";
+                switch (type)
+                {
+                    case "DeployedScienceController": type1 = "Deployed Science Controller"; break;
+                    case "DeployedSciencePart": type1 = "Deployed Science Part"; break;
+                    case "DeployedGroundPart": type1 = "Deployed Ground Part"; break;
+                    case "DroppedPart": type1 = "Dropped Part"; break;
+                    case "SpaceObject": type1 = "Space Object"; break;
+
+                    default: break;
+                }
                 list.Add(new HSVesselType(type1, sort, icon, true));
             }
 
