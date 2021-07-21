@@ -1,5 +1,8 @@
 ChangeLog
 
+0.5.7.3
+	Fixed filtering of new vessel types
+
 0.5.7.2
 	Added new icons:  button_vessel_droppedpart & button_vessel_deployedgroundpart
 	Added AssemblyFileVersion
