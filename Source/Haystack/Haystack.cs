@@ -17,6 +17,8 @@ namespace Haystack
     public class HSVesselType
     {
         public string name; // Type name defined by KSP devs
+        public VesselType vesselType;
+
         public byte sort; // Sort order, lowest first
 
         // Icon texture, loaded from icons directory. File must be named 'button_vessel_TYPE.png'
@@ -24,8 +26,9 @@ namespace Haystack
 
         public bool visible; // Is this type shown in list
 
-        public HSVesselType(string name, byte sort, Texture2D icon, bool visible)
+        public HSVesselType(VesselType vesselType, string name, byte sort, Texture2D icon, bool visible)
         {
+            this.vesselType = vesselType;
             this.name = name;
             this.sort = sort;
             this.icon = icon;
@@ -669,9 +672,15 @@ namespace Haystack
             {
                 if (Resources.vesselTypesList != null)
                 {
-                    IEnumerable<string> invisibleTypes = Resources.vesselTypesList.FindAll(type => type.visible == false).Select(type => type.name);
+                    IEnumerable<VesselType> invisibleTypes = Resources.vesselTypesList.FindAll(type => type.visible == false).Select(type => type.vesselType);
 
-                    list.RemoveAll(vessel => invisibleTypes.Contains(vessel.vesselType.ToString()));
+                    list.RemoveAll(vessel => invisibleTypes.Contains(vessel.vesselType));
+
+                    foreach (VesselType i in invisibleTypes)
+                        Debug.Log("Haystack: invisibletype: " + i);
+
+                    foreach (Vessel l in list)
+                        Debug.Log("aystack: list vessel.vesselType: " + l.vesselType.ToString());
                 }
             }
 

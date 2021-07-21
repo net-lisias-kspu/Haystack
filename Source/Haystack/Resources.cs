@@ -179,8 +179,10 @@ namespace Haystack
         /// </summary>
         public static void PopulateVesselTypes(ref List<HSVesselType> list)
         {
-            foreach (string type in Enum.GetNames(typeof (VesselType)))
+            //foreach (string type in Enum.GetNames(typeof(VesselType)))
+            foreach (VesselType vesselType in Enum.GetValues(typeof(VesselType)))
             {
+                string type = vesselType.ToString();
                 // Kinda dirty and superfluous method...
                 byte sort;
                 switch (type.ToLower())
@@ -219,10 +221,10 @@ namespace Haystack
 
                     default: break;
                 }
-                list.Add(new HSVesselType(type1, sort, icon, true));
+                list.Add(new HSVesselType(vesselType, type1, sort, icon, true));
             }
 
-            list.Add(new HSVesselType(BODIES, 255, btnBodies, true));
+            list.Add(new HSVesselType(VesselType.Unknown, BODIES, 255, btnBodies, true));
         }
 
         public static GUIStyle winStyle;
