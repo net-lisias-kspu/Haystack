@@ -1,4 +1,4 @@
-namespace HaystackReContinued
+namespace Haystack
 {
     /// <summary>
     /// This class hooks into KSP to save data into the save game file. This is independant on the settings which is global for this install.

@@ -4,7 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using UnityEngine;
 
-namespace HaystackReContinued
+namespace Haystack
 {
     public static class Comparers
     {

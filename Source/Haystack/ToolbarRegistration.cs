@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using ToolbarControl_NS;
 
-namespace HaystackReContinued
+namespace Haystack
 {
     [KSPAddon(KSPAddon.Startup.MainMenu, true)]
     public class RegisterToolbar : MonoBehaviour

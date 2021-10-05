@@ -4,7 +4,7 @@ using KSP.UI.Screens;
 using UnityEngine;
 using ToolbarControl_NS;
 
-namespace HaystackReContinued
+namespace Haystack
 {
     [KSPAddon(KSPAddon.Startup.SpaceCentre, true)]
     public class HaystackResourceLoader : MonoBehaviour

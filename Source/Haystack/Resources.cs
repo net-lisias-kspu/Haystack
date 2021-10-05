@@ -5,7 +5,7 @@ using System.Reflection;
 using UnityEngine;
 using ToolbarControl_NS;
 
-namespace HaystackReContinued
+namespace Haystack
 {
     /// <summary>
     /// All plugin resources such as textures and styles are here

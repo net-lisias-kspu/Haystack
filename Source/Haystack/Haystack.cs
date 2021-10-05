@@ -8,7 +8,7 @@ using KSP.Localization;
 
 using ClickThroughFix;
 
-namespace HaystackReContinued
+namespace Haystack
 {
     /// <summary>
     /// Class to house vessel types along with icons and sort order for the plugin
