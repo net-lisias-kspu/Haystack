@@ -1,13 +1,13 @@
-# Haystack Unofficial
+# Haystack /L Unofficial
 
 Plugin for [Kerbal Space Program](http://www.kerbalspaceprogram.com/) which helps to easily switch vessels and targets. Unofficial fork by Lisias.
 
 
 ## In a Hurry
 
-* [Latest Release](https://github.com/net-lisias-kspu/HaystackContinued/releases)
-	+ [Binaries](https://github.com/net-lisias-kspu/HaystackContinued/tree/Archive)
-* [Source](https://github.com/net-lisias-kspu/HaystackContinued)
+* [Latest Release](https://github.com/net-lisias-kspu/Haystack/releases)
+	+ [Binaries](https://github.com/net-lisias-kspu/Haystack/tree/Archive)
+* [Source](https://github.com/net-lisias-kspu/Haystack)
 * [Change Log](./CHANGE_LOG.md)
 
 
@@ -15,10 +15,6 @@ Plugin for [Kerbal Space Program](http://www.kerbalspaceprogram.com/) which help
 
 This is a fork from Haystack written by hermes-jr, with additions for compatibility by enamelizer. This fork is to continue its development and maintence for KSP 0.24 and beyond.
 
-
-### Releases
-
-TODO: add in fourm links
 
 ### Building
 
@@ -48,7 +44,13 @@ If you wish to test and report errors with this plugin please make sure you have
 6. Please keep in mind that a bug / error is not the same as a feature request. 
 
 
+## Installation
+
+Detailed installation instructions are now on its own file (see the [In a Hurry](#in-a-hurry) section) and on the distribution
+file.
+
 ### Licence
+
 The source code is licensed under MIT Licence.
 
 All other materials is licensed under a [Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License](http://creativecommons.org/licenses/by-nc-sa/4.0/).
@@ -56,17 +58,18 @@ All other materials is licensed under a [Creative Commons Attribution-NonCommerc
 
 ## UPSTREAM
 
+* [hermes-jr](https://github.com/hermes-jr) Original Author
+	* Found no further data.
+* [enamelizer](https://forum.kerbalspaceprogram.com/index.php?/profile/90944-enamelizer/) ROOT
+	* [Forum](https://forum.kerbalspaceprogram.com/index.php?/topic/51275-022-haystack-is-back-v0022/)
+	* [GitHub](https://github.com/aarondemarre/KSP-Haystack-Plugin)
+* [Qberticus](https://forum.kerbalspaceprogram.com/index.php?/profile/115166-qberticus/) Previous Maintainer
+	* [Forum](https://forum.kerbalspaceprogram.com/index.php?/topic/81114-12-2016-10-28-haystack-continued-v0521/)
+	* [Imgur](https://imgur.com/a/myiY6)
+	* [SpaceDock](https://spacedock.info/mod/547/Haystack%20Continued)
+	* [GitHub](https://github.com/qberticus/HaystackContinued)
 * [linuxgurugamer](https://forum.kerbalspaceprogram.com/index.php?/profile/129964-linuxgurugamer/) CURRENT MAINTAINER
 	* [Forum](https://forum.kerbalspaceprogram.com/index.php?/topic/170111-141-haystack-recontinued/)
 	* [SpaceDock](https://spacedock.info/mod/1680/Haystack%20ReContinued?ga=%253CGame+3102+%2527Kerbal+Space+Program%2527%253E)
 	* [GitHub](https://github.com/linuxgurugamer/HaystackContinued)
-* [Qberticus](https://forum.kerbalspaceprogram.com/index.php?/profile/115166-qberticus/) PARENT
-	* [Forum](https://forum.kerbalspaceprogram.com/index.php?/topic/81114-12-2016-10-28-haystack-continued-v0521/)
-	* [SpaceDock](https://spacedock.info/mod/547/Haystack%20Continued)
-	* [GitHub](https://github.com/qberticus/HaystackContinued)
-* [enamelizer](https://forum.kerbalspaceprogram.com/index.php?/profile/90944-enamelizer/) GRAND PARENT
-	* [Forum](https://forum.kerbalspaceprogram.com/index.php?/topic/51275-022-haystack-is-back-v0022/)
-	* [GitHub](https://github.com/aarondemarre/KSP-Haystack-Plugin)
-* [hermes-jr](https://github.com/hermes-jr) ROOT
-	* Found no further data.
 
