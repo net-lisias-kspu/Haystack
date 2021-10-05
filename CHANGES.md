@@ -1,8 +1,29 @@
 # Haystack /L Unleashed :: Changes
 
-* 2018-0803: 0.5.4.4 (lisias) for KSP 1.4.1
-	+ Moving settings data file to <KSP_ROOT>/PluginsData . 
-* 2018-0428: 0.5.4.3 (linuxgurugamer) for KSP 1.4.1
-	+ Added ToolbarRegistration
-	+ Removed settings page
-	+ Updated version info
+* 2021-1028: 0.5.7.5 (lisias) for KSP >= 1.3.1
+	+ Updating code to the latest KSPe (2.4)
+	+ Catching up with the Upstream:
+		- 0.5.7.3
+			- Fixed filtering of new vessel types
+		- 0.5.7.2
+			- Added new icons:
+				- `button_vessel_droppedpart`
+				- `button_vessel_deployedgroundpart`
+			- Added AssemblyFileVersion
+			- Added translation of vessel type with two words combined to two words, english only
+			Updated KSP version to 1.12
+		- 0.5.7
+			- Added API to support ResourceMonitors
+		- 0.5.6.5
+			- Added Stock Settings page to control alternate skin use
+			- Added back normal stock skin
+		- 0.5.6.4
+			- Fixed localized vessel names
+			- Added API for AlertMonitors to access last selected vessel & open/move the window
+		- 0.5.6.1
+			- Added red X, upperleft to close window
+		- 0.5.6
+			- Added icons for two new vessel types:
+				- `Vesseltypes.DeployedScienceController`
+				- `VesselTypes.DeployedSciencePart`
+			- Added code to add spaces to the text names for the new vessel types
