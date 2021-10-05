@@ -1,5 +1,6 @@
-.vs
-bin
+/bin
+**/obj
+/*.user
 GameData
-HaystackContinued
-obj
+.vs
+Source
