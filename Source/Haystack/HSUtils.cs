@@ -33,9 +33,9 @@ namespace Haystack
 
         internal static void RequestCameraFocus(Vessel vessel)
         {
-            var spaceTracking = (SpaceTracking) Object.FindObjectOfType(typeof (SpaceTracking));
+            SpaceTracking spaceTracking = (SpaceTracking) Object.FindObjectOfType(typeof (SpaceTracking));
 
-            var method = spaceTracking.GetType()
+            MethodInfo method = spaceTracking.GetType()
                 .GetMethod("RequestVessel", BindingFlags.NonPublic | BindingFlags.Instance);
 
             method.Invoke(spaceTracking, new object[] {vessel});
@@ -54,9 +54,9 @@ namespace Haystack
 
         internal static void TrackingSwitchToVessel(Vessel vessel)
         {
-            var spaceTracking = (SpaceTracking) Object.FindObjectOfType(typeof (SpaceTracking));
+            SpaceTracking spaceTracking = (SpaceTracking) Object.FindObjectOfType(typeof (SpaceTracking));
 
-            var method = spaceTracking.GetType()
+            MethodInfo method = spaceTracking.GetType()
                 .GetMethod("FlyVessel", BindingFlags.NonPublic | BindingFlags.Instance);
 
             method.Invoke(spaceTracking, new object[] {vessel});
@@ -71,9 +71,9 @@ namespace Haystack
 
             Log.dbg("FocusMapObject(body)");
 
-            var cam = getPlanetariumCamera();
+            PlanetariumCamera cam = getPlanetariumCamera();
 
-            foreach (var mapObject in cam.targets)
+            foreach (MapObject mapObject in cam.targets)
             {
                 if (mapObject.celestialBody != null && mapObject.celestialBody.GetInstanceID() == body.GetInstanceID())
                 {
@@ -92,11 +92,11 @@ namespace Haystack
 
             Log.dbg("FocusMapObject(vessel)");
 
-            var cam = getPlanetariumCamera();
+            PlanetariumCamera cam = getPlanetariumCamera();
 
             if (IsTrackingCenterActive)
             {
-                foreach (var mapObject in cam.targets)
+                foreach (MapObject mapObject in cam.targets)
                 {
                     if (mapObject.vessel != null && mapObject.vessel.GetInstanceID() == vessel.GetInstanceID())
                     {
@@ -112,7 +112,7 @@ namespace Haystack
             // don't know why but will attempt to maintain that
             cam.targets.RemoveAll(mapObject => mapObject.vessel != null);
 
-            var activeVessel = FlightGlobals.ActiveVessel;
+            Vessel activeVessel = FlightGlobals.ActiveVessel;
             if (activeVessel != null && activeVessel.GetInstanceID() != vessel.GetInstanceID())
             {
                 cam.AddTarget(FlightGlobals.ActiveVessel.mapObject);
@@ -257,7 +257,7 @@ namespace Haystack
             {
                 if (distance < size.max)
                 {
-                    var unit = distance/size.divisor;
+                    double unit = distance/size.divisor;
                     return unit.ToString("N") + size.suffix;
                 }
             }
@@ -273,7 +273,7 @@ namespace Haystack
             int hours = 0;
             int minutes = 0;
 
-            var formatter = KSPUtil.dateTimeFormatter;
+            IDateTimeFormatter formatter = KSPUtil.dateTimeFormatter;
 
             years = (int) (secondsLeft/formatter.Year);
             secondsLeft -= ((double)years)*formatter.Year; // cast is to keep from int overflow
@@ -287,9 +287,9 @@ namespace Haystack
             minutes = (int) (secondsLeft/formatter.Minute);
             secondsLeft -= minutes*formatter.Minute;
 
-            var secondFormat = secondSigd > 0 ? string.Format("00.{0}", new string('#', secondSigd)) : "00";
+            string secondFormat = secondSigd > 0 ? string.Format("00.{0}", new string('#', secondSigd)) : "00";
 
-            var formatted = string.Format("{0}:{1}s", minutes.ToString("00"), secondsLeft.ToString(secondFormat));
+            string formatted = string.Format("{0}:{1}s", minutes.ToString("00"), secondsLeft.ToString(secondFormat));
 
             if (hours > 0)
             {
@@ -338,7 +338,7 @@ namespace Haystack
 
         public static Rect ToScreen(this Rect rect)
         {
-            var point = new Vector2(rect.x, rect.y);
+            Vector2 point = new Vector2(rect.x, rect.y);
             point = GUIUtility.GUIToScreenPoint(point);
             return new Rect(point.x, point.y, rect.width, rect.height);
         }

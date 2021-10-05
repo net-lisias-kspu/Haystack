@@ -51,48 +51,48 @@ namespace Haystack
 
             ConfigNode config = SETTINGS.Load().Node;
 
-            var nodeWindowPositions = config.GetNode(NODE_WINDOW_POSITIONS) ?? new ConfigNode();
+            ConfigNode nodeWindowPositions = config.GetNode(NODE_WINDOW_POSITIONS) ?? new ConfigNode();
 
-            var nodeWindowVisibility = config.GetNode(NODE_WINDOW_VISIBILITIES) ?? new ConfigNode();
+            ConfigNode nodeWindowVisibility = config.GetNode(NODE_WINDOW_VISIBILITIES) ?? new ConfigNode();
 
-            var bottomButtons = config.GetNode(BOTTOM_BUTTONS) ?? new ConfigNode();
+            ConfigNode bottomButtons = config.GetNode(BOTTOM_BUTTONS) ?? new ConfigNode();
 
-            var defaultPos = new Rect(0, 0, 0, 0);
-            foreach (var i in nodeWindowPositions.nodes)
+            Rect defaultPos = new Rect(0, 0, 0, 0);
+            foreach (object i in nodeWindowPositions.nodes)
             {
-                var node = (ConfigNode) i;
-                var name = node.name;
-                var position = node.FromNode(WINDOW_POSITION, defaultPos);
+                ConfigNode node = (ConfigNode) i;
+                string name = node.name;
+                Rect position = node.FromNode(WINDOW_POSITION, defaultPos);
 
                 Log.dbg("Settings#load name: {0} position: {1}", name, position);
 
                 this.windowPositions[name] = position;
             }
 
-            foreach (var n in nodeWindowVisibility.nodes)
+            foreach (object n in nodeWindowVisibility.nodes)
             {
-                var node = (ConfigNode) n;
-                var name = node.name;
-                var visible = node.FromNode(WINDOW_VISIBLE, false);
+                ConfigNode node = (ConfigNode) n;
+                string name = node.name;
+                bool visible = node.FromNode(WINDOW_VISIBLE, false);
 
                 Log.dbg("Settings#Load name: {0} visible: {1}", name, visible);
 
                 this.windowVisibilities[name] = visible;
             }
 
-            foreach (var n in bottomButtons.nodes)
+            foreach (object n in bottomButtons.nodes)
             {
-                var node = (ConfigNode) n;
-                var name = node.name;
-                var value = node.FromNode(BUTTON_STATE, false);
+                ConfigNode node = (ConfigNode) n;
+                string name = node.name;
+                bool value = node.FromNode(BUTTON_STATE, false);
 
                 Log.dbg("Settings#Load name: {0} value: {1}", name, value);
 
                 this.bottomButtons[name] = value;
             }
 
-            var nodeTypeVisibility = config.GetNode(NODE_VESSEL_TYPE_VISIBILITY) ?? new ConfigNode();
-            foreach (var i in Resources.vesselTypesList)
+            ConfigNode nodeTypeVisibility = config.GetNode(NODE_VESSEL_TYPE_VISIBILITY) ?? new ConfigNode();
+            foreach (HSVesselType i in Resources.vesselTypesList)
             {
                 i.visible = nodeTypeVisibility.GetBuiltinValue(i.name, true);
             }
@@ -139,9 +139,9 @@ namespace Haystack
 
             ConfigNode config = SETTINGS.Node;
 
-            var nodeWindowPositions = config.AddNode(NODE_WINDOW_POSITIONS);
-            var nodeVisibilities = config.AddNode(NODE_WINDOW_VISIBILITIES);
-            var nodeBottomButtons = config.AddNode(BOTTOM_BUTTONS);
+            ConfigNode nodeWindowPositions = config.AddNode(NODE_WINDOW_POSITIONS);
+            ConfigNode nodeVisibilities = config.AddNode(NODE_WINDOW_VISIBILITIES);
+            ConfigNode nodeBottomButtons = config.AddNode(BOTTOM_BUTTONS);
 
             saveDicValuesToNode(windowPositions, nodeWindowPositions, WINDOW_POSITION,
                 (node, position) => node.AddNode(position.ToNode()));
@@ -151,10 +151,10 @@ namespace Haystack
 
             saveDicValuesToNode(bottomButtons, nodeBottomButtons, BUTTON_STATE, (node, value) => node.AddValue(VALUE, value));
 
-            var nodeVesselTypeVisibility = config.AddNode(NODE_VESSEL_TYPE_VISIBILITY);
+            ConfigNode nodeVesselTypeVisibility = config.AddNode(NODE_VESSEL_TYPE_VISIBILITY);
 
-            var typeList = Resources.vesselTypesList;
-            foreach (var type in typeList)
+            List<HSVesselType> typeList = Resources.vesselTypesList;
+            foreach (HSVesselType type in typeList)
             {
                 nodeVesselTypeVisibility.AddValue(type.name, type.visible);
             }
@@ -165,10 +165,10 @@ namespace Haystack
         private static void saveDicValuesToNode<V>(Dictionary<string, V> dic, ConfigNode node, string configName,
             Action<ConfigNode, V> saveAction)
         {
-            foreach (var kv in dic)
+            foreach (KeyValuePair<string, V> kv in dic)
             {
-                var n = node.AddNode(kv.Key);
-                var saveTo = n.AddNode(configName);
+                ConfigNode n = node.AddNode(kv.Key);
+                ConfigNode saveTo = n.AddNode(configName);
                 saveAction(saveTo, kv.Value);
             }
         }
@@ -187,7 +187,7 @@ namespace Haystack
 
         public static ConfigNode ToNode(this Rect rect)
         {
-            var node = new ConfigNode("rect");
+            ConfigNode node = new ConfigNode("rect");
 
             node.AddValue("x", rect.x);
             node.AddValue("y", rect.y);
@@ -204,19 +204,19 @@ namespace Haystack
                 return defaultValue;
             }
 
-            var type = typeof (T);
-            var typeConveter = TypeDescriptor.GetConverter(type);
+            Type type = typeof (T);
+            TypeConverter typeConveter = TypeDescriptor.GetConverter(type);
 
-            var strValue = node.GetValue(name);
+            string strValue = node.GetValue(name);
 
             return (T) typeConveter.ConvertFromInvariantString(strValue);
         }
 
         public static T FromNode<T>(this ConfigNode node, T defaultValue) where T : class
         {
-            var method = converters[typeof (T)];
+            CFromNode method = converters[typeof (T)];
 
-            var value = (T) method.Invoke(node) ?? defaultValue;
+            T value = (T) method.Invoke(node) ?? defaultValue;
 
             return value;
         }
@@ -228,7 +228,7 @@ namespace Haystack
                 return defaultValue;
             }
 
-            var t = typeof(T);
+            Type t = typeof(T);
 
             if (t.IsPrimitive)
             {
@@ -236,14 +236,14 @@ namespace Haystack
             }
             else
             {
-                var method = converters[t];
+                CFromNode method = converters[t];
                 return (T) method.Invoke(node.GetNode(name));
             }
         }
 
         public static object RectFromNode(ConfigNode node)
         {
-            var n = node.GetNode("rect");
+            ConfigNode n = node.GetNode("rect");
             return new Rect
             {
                 x = n.GetBuiltinValue("x", 0f),

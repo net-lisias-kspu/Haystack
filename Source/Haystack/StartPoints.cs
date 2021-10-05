@@ -136,7 +136,7 @@ namespace Haystack
                 return;
             }
 
-            var appLauncher = ApplicationLauncher.Instance;
+                ApplicationLauncher appLauncher = ApplicationLauncher.Instance;
 
             if (appLauncher == null)
             {
@@ -159,7 +159,7 @@ namespace Haystack
 
         private void OnAppLauncherDestroyed()
         {
-            var appLauncher = ApplicationLauncher.Instance;
+                ApplicationLauncher appLauncher = ApplicationLauncher.Instance;
 
             if (appLauncher == null)
             {
@@ -295,8 +295,8 @@ namespace Haystack
             }
             else
             {
-                var missing = HaystackScenarioModule.Scenes.Except(protoScenarioModule.targetScenes);
-                foreach (var i in missing)
+                System.Collections.Generic.IEnumerable<GameScenes> missing = HaystackScenarioModule.Scenes.Except(protoScenarioModule.targetScenes);
+                foreach (GameScenes i in missing)
                 {
                     Log.dbg("missing scenario module scene: {0}", i);
                     protoScenarioModule.targetScenes.Add(i);

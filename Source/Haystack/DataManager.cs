@@ -68,7 +68,7 @@ namespace Haystack
 
             public void Load(ConfigNode node)
             {
-                var hiddenVessles = new HiddenVessels();
+                HiddenVessels hiddenVessles = new HiddenVessels();
                 hiddenVessles.Load(node);
 
                 this.parent.HiddenVessels = hiddenVessles;
@@ -111,11 +111,11 @@ namespace Haystack
 
         public void Save(ConfigNode node)
         {
-            var ns = new NodeSeralizer {hiddenVessels = this.hiddenVessels};
+            NodeSeralizer ns = new NodeSeralizer {hiddenVessels = this.hiddenVessels};
 
             try
             {
-                var saveNode = new ConfigNode(this.GetType().Name);
+                ConfigNode saveNode = new ConfigNode(this.GetType().Name);
                 ConfigNode nsNode = ConfigNode.CreateConfigFromObject(ns);
 
                 saveNode.AddNode(nsNode);
@@ -137,7 +137,7 @@ namespace Haystack
                 return;
             }
 
-            var ns = new NodeSeralizer();
+            NodeSeralizer ns = new NodeSeralizer();
 
             ConfigNode.LoadObjectFromConfig(ns, loadNode.GetNode(ns.GetType().FullName));
 

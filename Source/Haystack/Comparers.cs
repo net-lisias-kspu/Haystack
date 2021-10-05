@@ -54,8 +54,8 @@ namespace Haystack
         {
             public int Compare(IComparer<T> x, IComparer<T> y)
             {
-                var pX = x as IPriorityComparer<T>;
-                var pY = y as IPriorityComparer<T>;
+                IPriorityComparer<T> pX = x as IPriorityComparer<T>;
+                IPriorityComparer<T> pY = y as IPriorityComparer<T>;
 
                 if (pX == null && pY == null)
                 {
@@ -65,7 +65,7 @@ namespace Haystack
                 if (pX != null && pY != null)
                 {
                     // high priorty first
-                    var diff = pY.Priority - pX.Priority;
+                    int diff = pY.Priority - pX.Priority;
                     return Math.Sign(diff);
                 }
 
@@ -90,8 +90,8 @@ namespace Haystack
             
             public static CombinedComparer<V> Combine<V>(IComparer<V> one, IComparer<V> two)
             {
-                var first = one as CombinedComparer<V>;
-                var second = two as CombinedComparer<V>;
+                CombinedComparer<V> first = one as CombinedComparer<V>;
+                CombinedComparer<V> second = two as CombinedComparer<V>;
 
                 if (first != null && second != null)
                 {
@@ -113,7 +113,7 @@ namespace Haystack
 
             public static CombinedComparer<V> FromOne<V>(IComparer<V> comparer)
             {
-                var list = new List<IComparer<V>> { comparer };
+                List<IComparer<V>> list = new List<IComparer<V>> { comparer };
                 return new CombinedComparer<V>(list);
             }
 
@@ -142,7 +142,7 @@ namespace Haystack
 
             public CombinedComparer<T> Remove<V>() where V : IComparer<T>
             {
-                var removed = this.comparers.ToList();
+                List<IComparer<T>> removed = this.comparers.ToList();
                 removed.RemoveAll(c => c is V);
 
                 return new CombinedComparer<T>(removed);
@@ -155,9 +155,9 @@ namespace Haystack
 
             public int Compare(T x, T y)
             {
-                foreach (var comparer in comparers)
+                foreach (IComparer<T> comparer in comparers)
                 {
-                    var sign = Math.Sign(comparer.Compare(x, y));
+                    int sign = Math.Sign(comparer.Compare(x, y));
                     if (sign != 0)
                     {
                         return sign;
@@ -180,12 +180,12 @@ namespace Haystack
                 if (string.IsNullOrEmpty(x)) return -1;
                 if (string.IsNullOrEmpty(y)) return 1;
 
-                var xPos = x.IndexOf(this.filter, StringComparison.OrdinalIgnoreCase);
-                var yPos = y.IndexOf(this.filter, StringComparison.OrdinalIgnoreCase);
+                int xPos = x.IndexOf(this.filter, StringComparison.OrdinalIgnoreCase);
+                int yPos = y.IndexOf(this.filter, StringComparison.OrdinalIgnoreCase);
 
                 if (xPos >= 0 && yPos >= 0)
                 {
-                    var diff = xPos - yPos;
+                    int diff = xPos - yPos;
                     return Math.Sign(diff);
                 }
 
@@ -299,10 +299,10 @@ namespace Haystack
                 }
 
 
-                var distanceX = Vector3.Distance(compareVessel.transform.position, x.transform.position);
-                var distanceY = Vector3.Distance(compareVessel.transform.position, y.transform.position);
+                float distanceX = Vector3.Distance(compareVessel.transform.position, x.transform.position);
+                float distanceY = Vector3.Distance(compareVessel.transform.position, y.transform.position);
 
-                var diff = distanceX - distanceY;
+                float diff = distanceX - distanceY;
 
                 return Math.Abs(diff) <= 0.001f ? 0 : Math.Sign(diff);
             }
@@ -324,7 +324,7 @@ namespace Haystack
                     return 1;
                 }
 
-                var error = x.missionTime - y.missionTime;
+                double error = x.missionTime - y.missionTime;
 
                 return Math.Abs(error) <= 0.00001d ? 0 : Math.Sign(error);
             }

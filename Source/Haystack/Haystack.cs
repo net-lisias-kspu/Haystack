@@ -333,15 +333,15 @@ namespace Haystack
             GUILayout.FlexibleSpace();
 
             // Vessels
-            var typeCounts = this.vesselListController.VesselTypeCounts;
+            Dictionary<string, int> typeCounts = this.vesselListController.VesselTypeCounts;
             for (int i = 0; i < Resources.vesselTypesList.Count(); i++)
             {
-                var typeString = Resources.vesselTypesList[i].name;
+                string typeString = Resources.vesselTypesList[i].name;
 
                 if (typeCounts.ContainsKey(typeString))
                     typeString += string.Format(" ({0})", typeCounts[typeString]);
 
-                var previous = Resources.vesselTypesList[i].visible;
+                bool previous = Resources.vesselTypesList[i].visible;
 
                 Resources.vesselTypesList[i].visible = GUILayout.Toggle(Resources.vesselTypesList[i].visible,
                     new GUIContent(Resources.vesselTypesList[i].icon, typeString), Resources.buttonVesselTypeStyle);
@@ -391,9 +391,9 @@ namespace Haystack
             // handle tooltips here so it is on top
             if (GUI.tooltip != "")
             {
-                var mousePosition = Event.current.mousePosition;
-                var content = new GUIContent(GUI.tooltip);
-                var size = Resources.tooltipBoxStyle.CalcSize(content);
+                Vector2 mousePosition = Event.current.mousePosition;
+                GUIContent content = new GUIContent(GUI.tooltip);
+                Vector2 size = Resources.tooltipBoxStyle.CalcSize(content);
                 GUI.Box(new Rect(mousePosition.x - 30, mousePosition.y - 30, size.x + 12, 25).ClampToPosIn(this.WinRect), content, Resources.tooltipBoxStyle);
             }
 
@@ -507,7 +507,7 @@ namespace Haystack
                 get { return this.searchTerm; }
                 set
                 {
-                    var previous = this.searchTerm;
+                    string previous = this.searchTerm;
                     this.searchTerm = value;
 
                     if (string.IsNullOrEmpty(this.searchTerm))
@@ -544,9 +544,9 @@ namespace Haystack
 
                 // count vessel types
                 this.VesselTypeCounts.Clear();
-                foreach (var vessel in vesselList)
+                foreach (Vessel vessel in vesselList)
                 {
-                    var typeString = vessel.vesselType.ToString();
+                    string typeString = vessel.vesselType.ToString();
 
                     if (this.VesselTypeCounts.ContainsKey(typeString))
                         this.VesselTypeCounts[typeString]++;
@@ -565,7 +565,7 @@ namespace Haystack
                     return;
                 }
 
-                var current = FlightGlobals.ActiveVessel;
+                Vessel current = FlightGlobals.ActiveVessel;
 
                 if (current != this.activeVessel)
                 {
@@ -576,7 +576,7 @@ namespace Haystack
 
             private void updateNearbyComparer()
             {
-                var comparer = this.vesselComparer.Comparers.FirstOrDefault(c => c is Comparers.VesselNearbyComparer);
+                IComparer<Vessel> comparer = this.vesselComparer.Comparers.FirstOrDefault(c => c is Comparers.VesselNearbyComparer);
 
                 if (comparer == null)
                 {
@@ -629,9 +629,9 @@ namespace Haystack
                 {
                     this.GroupedByBodyVessels.Clear();
 
-                    foreach (var vessel in this.filteredVesselList)
+                    foreach (Vessel vessel in this.filteredVesselList)
                     {
-                        var body = vessel.orbit.referenceBody;
+                        CelestialBody body = vessel.orbit.referenceBody;
 
                         List<Vessel> list;
                         if (!this.GroupedByBodyVessels.TryGetValue(body, out list))
@@ -644,7 +644,7 @@ namespace Haystack
                     }
 
                     // sort groups
-                    foreach (var kv in this.groupedBodyVessel)
+                    foreach (KeyValuePair<CelestialBody, List<Vessel>> kv in this.groupedBodyVessel)
                     {
                         this.performSort(kv.Value);
                     }
@@ -655,7 +655,7 @@ namespace Haystack
             {
                 if (Resources.vesselTypesList != null)
                 {
-                    var invisibleTypes = Resources.vesselTypesList.FindAll(type => type.visible == false).Select(type => type.name);
+                    IEnumerable<string> invisibleTypes = Resources.vesselTypesList.FindAll(type => type.visible == false).Select(type => type.name);
 
                     list.RemoveAll(vessel => invisibleTypes.Contains(vessel.vesselType.ToString()));
                 }
@@ -672,7 +672,7 @@ namespace Haystack
                 {
                     return;
                 }
-                var localBody = FlightGlobals.ActiveVessel.orbit.referenceBody;
+                CelestialBody localBody = FlightGlobals.ActiveVessel.orbit.referenceBody;
 
                 list.RemoveAll(v => v.orbit.referenceBody != localBody);
             }
@@ -722,7 +722,7 @@ namespace Haystack
 
             internal void Draw()
             {
-                var displayVessels = this.vesselListController.DisplayVessels;
+                List<Vessel> displayVessels = this.vesselListController.DisplayVessels;
                 if (displayVessels == null || displayVessels.IsEmpty())
                 {
                     GUILayout.Label("No matched vessels found");
@@ -735,16 +735,16 @@ namespace Haystack
 
                 Vessel preSelectedVessel = null;
 
-                var clicked = false;
+                bool clicked = false;
 
                 GUILayout.BeginVertical();
 
-                foreach (var kv in this.vesselListController.GroupedByBodyVessels)
+                foreach (KeyValuePair<CelestialBody, List<Vessel>> kv in this.vesselListController.GroupedByBodyVessels)
                 {
-                    var body = kv.Key;
-                    var vessels = kv.Value;
+                    CelestialBody body = kv.Key;
+                    List<Vessel> vessels = kv.Value;
 
-                    var selected = body == selectedBody;
+                    bool selected = body == selectedBody;
 
                     selected = GUILayout.Toggle(selected, new GUIContent(body.name), Resources.buttonTextOnly);
 
@@ -761,8 +761,8 @@ namespace Haystack
                         continue;
                     }
 
-                    var activeVessel = HSUtils.IsInFlight ? FlightGlobals.ActiveVessel : null;
-                    foreach (var vessel in vessels)
+                    Vessel activeVessel = HSUtils.IsInFlight ? FlightGlobals.ActiveVessel : null;
+                    foreach (Vessel vessel in vessels)
                     {
                         //this typically happens when debris is going out of physics range and is deleted by the game
                         if (vessel == null)
@@ -785,7 +785,7 @@ namespace Haystack
                 GUILayout.EndVertical();
                 GUILayout.EndScrollView();
 
-                var checkInScroll = GUILayoutUtility.GetLastRect();
+                Rect checkInScroll = GUILayoutUtility.GetLastRect();
                 if (!clicked || !checkInScroll.Contains(Event.current.mousePosition))
                 {
                     return;
@@ -851,7 +851,7 @@ namespace Haystack
 
             protected virtual void fireOnSelectedItemClicked(GroupedScrollerView view)
             {
-                var handler = this.OnSelectedItemClicked;
+                OnSelectedItemClickedHandler handler = this.OnSelectedItemClicked;
                 if (handler != null) handler(view);
             }
         }
@@ -903,7 +903,7 @@ namespace Haystack
 
             internal void Draw()
             {
-                var displayVessels = this.vesselListController.DisplayVessels;
+                List<Vessel> displayVessels = this.vesselListController.DisplayVessels;
                 if ((displayVessels == null || displayVessels.IsEmpty()) && this.ShowCelestialBodies != true)
                 {
                     GUILayout.Label("No match found");
@@ -911,7 +911,7 @@ namespace Haystack
                     return;
                 }
 
-                var clicked = false;
+                bool clicked = false;
                 Vessel preSelectedVessel = null;
                 CelestialBody preSelecedBody = null;
 
@@ -919,9 +919,9 @@ namespace Haystack
 
                 GUILayout.BeginVertical();
 
-                var activeVessel = HSUtils.IsInFlight ? FlightGlobals.ActiveVessel : null;
+                Vessel activeVessel = HSUtils.IsInFlight ? FlightGlobals.ActiveVessel : null;
 
-                foreach (var vessel in displayVessels)
+                foreach (Vessel vessel in displayVessels)
                 {
                     //this typically happens when debris is going out of physics range and is deleted by the game
                     if (vessel == null)
@@ -943,8 +943,8 @@ namespace Haystack
                 // celestial bodies
                 if (this.ShowCelestialBodies)
                 {
-                    var displayBodies = this.vesselListController.DisplayBodyies;
-                    foreach (var body in displayBodies)
+                    List<CelestialBody> displayBodies = this.vesselListController.DisplayBodyies;
+                    foreach (CelestialBody body in displayBodies)
                     {
                         GUILayout.BeginVertical(body == this.SelectedBody
                             ? Resources.vesselInfoSelected
@@ -973,7 +973,7 @@ namespace Haystack
                 GUILayout.EndVertical();
                 GUILayout.EndScrollView();
 
-                var checkInScrollClick = GUILayoutUtility.GetLastRect();
+                Rect checkInScrollClick = GUILayoutUtility.GetLastRect();
 
                 //clicks to items in scroll view can happen outside of the scroll view
                 if (!clicked || Event.current == null || !checkInScrollClick.Contains(Event.current.mousePosition))
@@ -1041,7 +1041,7 @@ namespace Haystack
             internal event OnSelectedItemClickedHandler OnSelectedItemClicked;
             protected virtual void fireOnSelectedItemClicked(DefaultScrollerView scrollerView)
             {
-                var handler = this.OnSelectedItemClicked;
+                OnSelectedItemClickedHandler handler = this.OnSelectedItemClicked;
                 if (handler != null) handler(scrollerView);
             }
 
@@ -1061,7 +1061,7 @@ namespace Haystack
             internal void Draw(ref Rect winRect)
             {
 
-                var resizer = new Rect(winRect.width - resizeBoxSize - resizeBoxMargin, resizeBoxMargin, resizeBoxSize, resizeBoxSize);
+                Rect resizer = new Rect(winRect.width - resizeBoxSize - resizeBoxMargin, resizeBoxMargin, resizeBoxSize, resizeBoxSize);
                 GUI.Box(resizer, "//", Resources.resizeBoxStyle);
 
                 if (!Event.current.isMouse)
@@ -1089,8 +1089,8 @@ namespace Haystack
 
                 if (Input.GetMouseButton(0))
                 {
-                    var deltaX = Input.mousePosition.x - this.lastPosition.x;
-                    var deltaY = Input.mousePosition.y - this.lastPosition.y;
+                    float deltaX = Input.mousePosition.x - this.lastPosition.x;
+                    float deltaY = Input.mousePosition.y - this.lastPosition.y;
 
                     //Event.current.delta does not make resizing very smooth.
 
@@ -1156,7 +1156,7 @@ namespace Haystack
             private void groupByButton()
             {
                 //group by toggle
-                var previous = this.GroupByOrbitingBody;
+                bool previous = this.GroupByOrbitingBody;
                 this.GroupByOrbitingBody = GUILayout.Toggle(this.GroupByOrbitingBody,
                     groupByOrbitContent,
                     GUI.skin.button, GUILayout.Width(32f), GUILayout.Height(32f));
@@ -1169,7 +1169,7 @@ namespace Haystack
 
             private void nearbyButton()
             {
-                var previous = this.IsNearbyOnly;
+                bool previous = this.IsNearbyOnly;
                 this.IsNearbyOnly = GUILayout.Toggle(this.IsNearbyOnly,
                     nearbyButtonContent, GUI.skin.button, GUILayout.Width(32f),
                     GUILayout.Height(32f));
@@ -1182,7 +1182,7 @@ namespace Haystack
 
             private void hiddenVesselsButton()
             {
-                var previous = this.IsHiddenVesselsToggled;
+                bool previous = this.IsHiddenVesselsToggled;
                 this.IsHiddenVesselsToggled = GUILayout.Toggle(this.IsHiddenVesselsToggled,
                     hiddenVesselsButtonContent, GUI.skin.button,
                     GUILayout.Width(32f), GUILayout.Height(32f));
@@ -1195,20 +1195,20 @@ namespace Haystack
 
             private void sortOrderButtons()
             {
-                var previous = this.IsAscendingSortOrder;
+                bool previous = this.IsAscendingSortOrder;
 
-                var ascPrev = this.IsAscendingSortOrder;
-                var descPrev = !this.IsAscendingSortOrder;
+                bool ascPrev = this.IsAscendingSortOrder;
+                bool descPrev = !this.IsAscendingSortOrder;
 
-                var ascendingButton = GUILayout.Toggle(ascPrev,
+                bool ascendingButton = GUILayout.Toggle(ascPrev,
                     ascendingButtonContent, GUI.skin.button, GUILayout.Width(32f),
                     GUILayout.Height(32f));
 
-                var descendingButton = GUILayout.Toggle(descPrev, descendingButtonContent, GUI.skin.button,
+                bool descendingButton = GUILayout.Toggle(descPrev, descendingButtonContent, GUI.skin.button,
                     GUILayout.Width(32f), GUILayout.Height(32f));
 
 
-                var next = previous;
+                bool next = previous;
                 if (previous && ascPrev == ascendingButton && descendingButton != descPrev)
                 {
                     next = !previous;
@@ -1321,7 +1321,7 @@ namespace Haystack
 
             private bool isFlyButtonDisabled()
             {
-                var vessel = this.GroupByOrbitingBody
+                Vessel vessel = this.GroupByOrbitingBody
                     ? this.groupedScrollerView.SelectedVessel
                     : this.defaultScrollerView.SelectedVessel;
 
@@ -1341,7 +1341,7 @@ namespace Haystack
 
             protected virtual void fireOnGroupByChanged(BottomButtons view)
             {
-                var handler = this.OnGroupByChanged;
+                OnGroupByChangedHandler handler = this.OnGroupByChanged;
                 if (handler != null) handler(view);
             }
 
@@ -1351,7 +1351,7 @@ namespace Haystack
 
             private void fireOnHiddenVesselsChanged(BottomButtons bottomButtons)
             {
-                var handler = this.OnHiddenVesselsChanged;
+                OnHiddenVesselsChangedHandler handler = this.OnHiddenVesselsChanged;
                 if (handler != null) handler(bottomButtons);
             }
 
@@ -1362,7 +1362,7 @@ namespace Haystack
 
             protected virtual void fireOnSwitchVessel(Vessel vessel)
             {
-                var handler = this.OnSwitchVessel;
+                OnSwitchVesselHandler handler = this.OnSwitchVessel;
                 if (handler != null) handler(vessel);
             }
 
@@ -1372,7 +1372,7 @@ namespace Haystack
 
             protected virtual void fireOnNearbyChanged(BottomButtons view)
             {
-                var handler = this.OnNearbyChanged;
+                OnNearbyChangedHandler handler = this.OnNearbyChanged;
                 if (handler != null) handler(view);
             }
 
@@ -1382,7 +1382,7 @@ namespace Haystack
 
             protected virtual void fireOnSortOrderChanged(BottomButtons view)
             {
-                var handler = this.OnSortOrderChanged;
+                OnSortOrderChangedHandler handler = this.OnSortOrderChanged;
                 if (handler != null) handler(view);
             }
 
@@ -1429,11 +1429,11 @@ namespace Haystack
                 {
                     GUILayout.BeginHorizontal();
 
-                    var hidden = this.haystackContinued.isVesselHidden(vessel);
+                    bool hidden = this.haystackContinued.isVesselHidden(vessel);
 
-                    var tooltip = hidden ? "Show vessel" : "Hide vessel";
+                    string tooltip = hidden ? "Show vessel" : "Hide vessel";
 
-                    var change = GUILayout.Toggle(hidden, new GUIContent(Resources.btnHiddenIcon, tooltip),
+                    bool change = GUILayout.Toggle(hidden, new GUIContent(Resources.btnHiddenIcon, tooltip),
                         GUI.skin.button, GUILayout.Height(24f), GUILayout.Height(24f));
                     if (hidden != change)
                     {
@@ -1453,7 +1453,7 @@ namespace Haystack
 
                 GUILayout.EndVertical();
 
-                var check = GUILayoutUtility.GetLastRect();
+                Rect check = GUILayoutUtility.GetLastRect();
 
                 if (this.bottomButtons.IsHiddenVesselsToggled &&
                     !global::Haystack.HiddenVessels.ExcludedTypes.Contains(vessel.vesselType))
@@ -1476,7 +1476,7 @@ namespace Haystack
 
                 if (HSUtils.IsInFlight && vessel != activeVessel && vessel != null && activeVessel != null)
                 {
-                    var calcDistance = Vector3.Distance(activeVessel.transform.position, vessel.transform.position);
+                    float calcDistance = Vector3.Distance(activeVessel.transform.position, vessel.transform.position);
                     distance = HSUtils.ToSI(calcDistance) + "m";
                 }
 
@@ -1538,10 +1538,10 @@ namespace Haystack
                     return;
                 }
 
-                var enabled = vessel == this.expandedVessel;
-                var icon = enabled ? Resources.btnDownArrow : Resources.btnUpArrow;
+                bool enabled = vessel == this.expandedVessel;
+                Texture2D icon = enabled ? Resources.btnDownArrow : Resources.btnUpArrow;
 
-                var result = GUILayout.Toggle(enabled, new GUIContent(icon, "Show Docking Ports"),
+                bool result = GUILayout.Toggle(enabled, new GUIContent(icon, "Show Docking Ports"),
                     Resources.buttonExpandStyle);
 
                 if (result != enabled)
@@ -1646,10 +1646,10 @@ namespace Haystack
             {
                 this.portList.Clear();
 
-                var targetables = this.currentVessel.FindPartModulesImplementing<ITargetable>();
-                foreach (var targetable in targetables)
+                List<ITargetable> targetables = this.currentVessel.FindPartModulesImplementing<ITargetable>();
+                foreach (ITargetable targetable in targetables)
                 {
-                    var port = targetable as ModuleDockingNode;
+                    ModuleDockingNode port = targetable as ModuleDockingNode;
                     if (port == null)
                     {
                         continue;
@@ -1661,13 +1661,13 @@ namespace Haystack
                     }
 
                     // don't display docking ports that have all their attach nodes used.
-                    var usedNodeCount = port.part.attachNodes.Count(node => node.attachedPart != null);
+                    int usedNodeCount = port.part.attachNodes.Count(node => node.attachedPart != null);
                     if (usedNodeCount == port.part.attachNodes.Count)
                     {
                         continue;
                     }
 
-                    var info = new PortInfo
+                    PortInfo info = new PortInfo
                     {
                         Name = getPortName(port),
                         PortNode = port,
@@ -1691,7 +1691,7 @@ namespace Haystack
                 PartModule found = null;
                 for (int i = 0; i < port.part.Modules.Count; i++)
                 {
-                    var module = port.part.Modules[i];
+                    PartModule module = port.part.Modules[i];
                     if (module.GetType() == moduleDockingNodeNamedType)
                     {
                         found = module;
@@ -1705,7 +1705,7 @@ namespace Haystack
                     return port.part.partInfo.title;
                 }
 
-                var portName = (string)modulePortName.GetValue(found);
+                string portName = (string)modulePortName.GetValue(found);
 
                 Log.dbg("DockingPortListView#getPortName: found name: {0}", portName);
 
@@ -1740,7 +1740,7 @@ namespace Haystack
 
                 GUILayout.Label("Docking Ports", Resources.textDockingPortHeaderStyle);
 
-                foreach (var i in portList)
+                foreach (PortInfo i in portList)
                 {
                     GUILayout.Box((Texture)null, Resources.hrSepLineStyle, GUILayout.ExpandWidth(true),
                         GUILayout.ExpandHeight(false));
@@ -1752,7 +1752,7 @@ namespace Haystack
 
                     if (FlightGlobals.ActiveVessel != this.currentVessel)
                     {
-                        var distance = this.getDistanceText(i.PortNode);
+                        string distance = this.getDistanceText(i.PortNode);
                         GUILayout.Label(distance, Resources.textDockingPortDistanceStyle, GUILayout.ExpandHeight(true));
                         GUILayout.Space(10f);
                         if (GUILayout.Button(Resources.btnTargetAlpha, Resources.buttonDockingPortTarget,
@@ -1773,7 +1773,7 @@ namespace Haystack
 
             private void setDockingPortTarget(ModuleDockingNode portNode)
             {
-                var vessel = portNode.GetVessel();
+                Vessel vessel = portNode.GetVessel();
 
                 //can't set target if the vessel is not loaded or is the active vessel
                 if (!vessel.loaded || vessel.isActiveVessel)
@@ -1786,8 +1786,8 @@ namespace Haystack
 
             private string getDistanceText(ModuleDockingNode port)
             {
-                var activeVessel = FlightGlobals.ActiveVessel;
-                var distance = Vector3.Distance(activeVessel.transform.position, port.GetTransform().position);
+                Vessel activeVessel = FlightGlobals.ActiveVessel;
+                float distance = Vector3.Distance(activeVessel.transform.position, port.GetTransform().position);
 
                 return string.Format("{0}m", HSUtils.ToSI(distance));
             }
@@ -1916,10 +1916,10 @@ namespace Haystack
             }
             private void updateBodyData()
             {
-                var body = this.currentBody;
-                var same = body.bodyName.GetHashCode() == this.bodyData.Id;
+                CelestialBody body = this.currentBody;
+                bool same = body.bodyName.GetHashCode() == this.bodyData.Id;
 
-                var newBodyData = new BodyData
+                BodyData newBodyData = new BodyData
                 {
                     Id = body.bodyName.GetHashCode(),
                     OrbitData = body.orbit != null ? OrbitData.FromOrbit(body.orbit) : new OrbitData(),
@@ -1940,14 +1940,14 @@ namespace Haystack
 
             private List<DisplayItem> getSciData(CelestialBody body)
             {
-                var items = new List<DisplayItem>();
-                var sci = body.scienceValues;
+                List<DisplayItem> items = new List<DisplayItem>();
+                CelestialBodyScienceParams sci = body.scienceValues;
 
-                var spaceHigh = DisplayItem.Create("Space High Alt: ", sci.spaceAltitudeThreshold.ToString("N0") + "m");
+                DisplayItem spaceHigh = DisplayItem.Create("Space High Alt: ", sci.spaceAltitudeThreshold.ToString("N0") + "m");
                 items.Add(spaceHigh);
                 if (body.atmosphere)
                 {
-                    var flyingHigh = DisplayItem.Create("Flying High Alt: ",
+                    DisplayItem flyingHigh = DisplayItem.Create("Flying High Alt: ",
                         sci.flyingAltitudeThreshold.ToString("N0") + "m");
                     items.Add(flyingHigh);
                 }
@@ -1957,25 +1957,25 @@ namespace Haystack
 
             private List<DisplayItem> getAtmData(CelestialBody body)
             {
-                var items = new List<DisplayItem>();
+                List<DisplayItem> items = new List<DisplayItem>();
 
                 if (!body.atmosphere)
                 {
                     return items;
                 }
 
-                var maxHeight = DisplayItem.Create("Atmopshere Ends: ", body.atmosphereDepth.ToString("N0") + "m");
+                DisplayItem maxHeight = DisplayItem.Create("Atmopshere Ends: ", body.atmosphereDepth.ToString("N0") + "m");
                 items.Add(maxHeight);
-                var oxygen = DisplayItem.Create("Oxygen?: ", body.atmosphereContainsOxygen ? "Yes" : "No");
+                DisplayItem oxygen = DisplayItem.Create("Oxygen?: ", body.atmosphereContainsOxygen ? "Yes" : "No");
                 items.Add(oxygen);
 
-                var kPAASL = body.GetPressure(0d);
-                var atmASL = kPAASL * PhysicsGlobals.KpaToAtmospheres;
-                var aslDisplay = string.Format("{0}kPa ({1}atm)", kPAASL.ToString("F2"), atmASL.ToString("F2"));
-                var aslPressure = DisplayItem.Create("Atm. ASL: ", aslDisplay);
+                double kPAASL = body.GetPressure(0d);
+                double atmASL = kPAASL * PhysicsGlobals.KpaToAtmospheres;
+                string aslDisplay = string.Format("{0}kPa ({1}atm)", kPAASL.ToString("F2"), atmASL.ToString("F2"));
+                DisplayItem aslPressure = DisplayItem.Create("Atm. ASL: ", aslDisplay);
                 items.Add(aslPressure);
 
-                var surfaceTemp = DisplayItem.Create("Surface Temp: ", body.GetTemperature(0.0).ToString("0.##") + "K");
+                DisplayItem surfaceTemp = DisplayItem.Create("Surface Temp: ", body.GetTemperature(0.0).ToString("0.##") + "K");
                 items.Add(surfaceTemp);
 
                 return items;
@@ -1983,25 +1983,25 @@ namespace Haystack
 
             private List<DisplayItem> getPhysicalData(CelestialBody body)
             {
-                var radius = DisplayItem.Create("Radius: ", (body.Radius / 1000d).ToString("N0") + "km");
-                var mass = DisplayItem.Create("Mass: ", body.Mass.ToString("0.###E+0") + "kg");
-                var gm = DisplayItem.Create("GM: ", body.gravParameter.ToString("0.###E+0"));
-                var gravity = DisplayItem.Create("Surface Gravity: ", body.GeeASL.ToString("0.####") + "g");
+                DisplayItem radius = DisplayItem.Create("Radius: ", (body.Radius / 1000d).ToString("N0") + "km");
+                DisplayItem mass = DisplayItem.Create("Mass: ", body.Mass.ToString("0.###E+0") + "kg");
+                DisplayItem gm = DisplayItem.Create("GM: ", body.gravParameter.ToString("0.###E+0"));
+                DisplayItem gravity = DisplayItem.Create("Surface Gravity: ", body.GeeASL.ToString("0.####") + "g");
 
-                var escape = 2d * body.gravParameter / body.Radius;
+                double escape = 2d * body.gravParameter / body.Radius;
                 escape = Math.Sqrt(escape);
 
-                var escapeVelocity = DisplayItem.Create("Escape Velocity: ", escape.ToString("0.0") + "m/s");
+                DisplayItem escapeVelocity = DisplayItem.Create("Escape Velocity: ", escape.ToString("0.0") + "m/s");
 
                 double alt = body.atmosphere ? body.atmosphereDepth + 20000 : 15000;
-                var orbitVelocity = Math.Sqrt(body.gravParameter / (body.Radius + alt));
+                double orbitVelocity = Math.Sqrt(body.gravParameter / (body.Radius + alt));
 
-                var standardOrbitVelocity = DisplayItem.Create("Std Orbit Velocity: ",
+                DisplayItem standardOrbitVelocity = DisplayItem.Create("Std Orbit Velocity: ",
                     orbitVelocity.ToString("0.0") + "m/s @ " + Converters.Distance(alt));
 
-                var rotationalPeriod = DisplayItem.Create("Rotational Period: ", Converters.Duration(body.rotationPeriod));
-                var tidalLocked = DisplayItem.Create("Tidally Locked: ", body.tidallyLocked ? "Yes" : "No");
-                var soiSize = DisplayItem.Create("SOI Size: ", (body.sphereOfInfluence / 1000d).ToString("N0") + "km");
+                DisplayItem rotationalPeriod = DisplayItem.Create("Rotational Period: ", Converters.Duration(body.rotationPeriod));
+                DisplayItem tidalLocked = DisplayItem.Create("Tidally Locked: ", body.tidallyLocked ? "Yes" : "No");
+                DisplayItem soiSize = DisplayItem.Create("SOI Size: ", (body.sphereOfInfluence / 1000d).ToString("N0") + "km");
 
                 return new List<DisplayItem>
                 {
@@ -2019,16 +2019,16 @@ namespace Haystack
 
             private void updateVesselData()
             {
-                var vessel = this.currentVessel;
+                Vessel vessel = this.currentVessel;
 
                 bool hasNextNode = false;
 
-                var nextNodeTime = Vessel.GetNextManeuverTime(vessel, out hasNextNode);
+                double nextNodeTime = Vessel.GetNextManeuverTime(vessel, out hasNextNode);
 
                 // some stuff doesn't need to be updated if it's not changing
-                var shouldUpdate = vessel.isActiveVessel || vessel.loaded || !this.vesselData.Id.Equals(vessel.id);
+                bool shouldUpdate = vessel.isActiveVessel || vessel.loaded || !this.vesselData.Id.Equals(vessel.id);
 
-                var vesselData = new VesselData
+                VesselData vesselData = new VesselData
                 {
                     Id = vessel.id,
                     OrbitData = OrbitData.FromOrbit(vessel.orbit),
@@ -2046,7 +2046,7 @@ namespace Haystack
 
             private CrewData updateVesselCrewData(Vessel vessel)
             {
-                var crewData = new CrewData();
+                CrewData crewData = new CrewData();
 
                 if (vessel.isEVA)
                 {
@@ -2081,9 +2081,9 @@ namespace Haystack
 
             private string formatCrewDisplay(string partName, ProtoCrewMember crew)
             {
-                var profession = crew.experienceTrait.Title.Substring(0, 1);
-                var name = crew.name;
-                var experiance = crew.experienceLevel;
+                string profession = crew.experienceTrait.Title.Substring(0, 1);
+                string name = crew.name;
+                int experiance = crew.experienceLevel;
 
                 return string.Format("{0} ({1}:{2}) - {3}", name, profession, experiance, partName);
             }
@@ -2166,7 +2166,7 @@ namespace Haystack
                 this.windowRect.x = this.haystack.WinRect.xMax;
                 this.windowRect.y = this.haystack.WinRect.y;
                 this.windowRect.height = this.haystack.WinRect.height;
-                var rect = GUILayout.Window(this.windowId, this.windowRect, this.drawExpanded, "Vessel Infomation", Resources.winStyle, new[] { GUILayout.MaxWidth(600), GUILayout.MinHeight(this.haystack.winRect.height), GUILayout.ExpandWidth(true), GUILayout.ExpandHeight(false) });
+                Rect rect = GUILayout.Window(this.windowId, this.windowRect, this.drawExpanded, "Vessel Infomation", Resources.winStyle, new[] { GUILayout.MaxWidth(600), GUILayout.MinHeight(this.haystack.winRect.height), GUILayout.ExpandWidth(true), GUILayout.ExpandHeight(false) });
                 this.windowRect.width = rect.width;
             }
 
@@ -2195,9 +2195,9 @@ namespace Haystack
 
                 if (GUI.tooltip != "")
                 {
-                    var mousePosition = Event.current.mousePosition;
-                    var content = new GUIContent(GUI.tooltip);
-                    var size = Resources.tooltipBoxStyle.CalcSize(content);
+                    Vector2 mousePosition = Event.current.mousePosition;
+                    GUIContent content = new GUIContent(GUI.tooltip);
+                    Vector2 size = Resources.tooltipBoxStyle.CalcSize(content);
                     GUI.Box(new Rect(mousePosition.x - 30, mousePosition.y - 30, size.x + 12, 25).ClampToPosIn(this.windowRect), content, Resources.tooltipBoxStyle);
                 }
             }
@@ -2338,12 +2338,12 @@ namespace Haystack
                 {
                     return;
                 }
-                var crewData = this.vesselData.CrewData;
+                CrewData crewData = this.vesselData.CrewData;
 
-                var crewDisplay = string.Format("Crew ({0} / {1}):", crewData.TotalCrew, crewData.MaxCrew);
+                string crewDisplay = string.Format("Crew ({0} / {1}):", crewData.TotalCrew, crewData.MaxCrew);
                 GUILayout.Label(crewDisplay, Resources.textListHeaderStyle);
 
-                foreach (var crew in crewData.Crew)
+                foreach (string crew in crewData.Crew)
                 {
                     GUILayout.Label(crew, Resources.textVesselExpandedInfoItem);
                 }
@@ -2360,7 +2360,7 @@ namespace Haystack
 
                 GUILayout.Label("Resources:", Resources.textListHeaderStyle);
 
-                foreach (var resourceDisplay in this.vesselData.Resources)
+                foreach (string resourceDisplay in this.vesselData.Resources)
                 {
                     GUILayout.Label(resourceDisplay, Resources.textVesselExpandedInfoItem);
                 }
@@ -2371,7 +2371,7 @@ namespace Haystack
             private void drawItemList(string header, IEnumerable<DisplayItem> items)
             {
                 GUILayout.Label(header, Resources.textListHeaderStyle);
-                foreach (var item in items)
+                foreach (DisplayItem item in items)
                 {
                     GUILayout.Label(string.Format("{0} {1}", item.Label, item.Value), Resources.textVesselExpandedInfoItem);
                 }
