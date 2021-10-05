@@ -15,10 +15,10 @@ namespace Haystack
 
     public class HS : GameParameters.CustomParameterNode
     {
-        public override string Title { get { return "Haystack ReContinued"; } }
+        public override string Title { get { return "Haystack /L"; } }
         public override GameParameters.GameMode GameMode { get { return GameParameters.GameMode.ANY; } }
-        public override string Section { get { return "Haystack ReContinued"; } }
-        public override string DisplaySection { get { return "Haystack ReContinued"; } }
+        public override string Section { get { return "Haystack"; } }
+        public override string DisplaySection { get { return "Haystack"; } }
         public override int SectionOrder { get { return 3; } }
         public override bool HasPresets { get { return false; } }
 

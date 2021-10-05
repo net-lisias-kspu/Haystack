@@ -13,7 +13,7 @@ namespace Haystack
     {
         internal static HaystackResourceLoader fetch = null;
 
-        private static string toolbarButtonId = "haystackContinuedButton";
+        private static string toolbarButtonId = "haystackButton";
 
         public Settings Settings { get; private set; }
         internal static HaystackResourceLoader instance;
@@ -186,8 +186,8 @@ namespace Haystack
 
 
         }
-        internal const string MODID = "HaystackReContinued_NS";
-        internal const string MODNAME = "Haystack ReContinued";
+        internal const string MODID = "Haystack_NS";
+        internal const string MODNAME = "Haystack";
         public void Start()
         {
             Log.dbg("Start");
