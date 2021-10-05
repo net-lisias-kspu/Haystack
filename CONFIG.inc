@@ -1,6 +1,6 @@
 source ../CONFIG.inc
 
-PACKAGE=HaystackContinued
+PACKAGE=Haystack
 TARGETDIR="$PACKAGE"
 TARGETBINDIR="$TARGETDIR/Plugins"
 PROJECTSDIR="$PACKAGE/"
