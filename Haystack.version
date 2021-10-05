@@ -1,27 +1,18 @@
 {
-	"NAME"		: "Haystack Unofficial",
-	"URL"		: "https://raw.githubusercontent.com/net-lisias-kspu/HaystackContinued/master/NavUtilities.version",
-	"DOWNLOAD"	: "https://github.com/net-lisias-kspu/HaystackContinued/releases",
-	"CHANGE_LOG"	: "https://raw.githubusercontent.com/net-lisias-kspu/HaystackContinued/CHANGE_LOG.md",
-	"CHANGE_LOG_URL": "https://raw.githubusercontent.com/net-lisias-kspu/HaystackContinued/CHANGES.md",
+	"NAME"		: "Haystack /L",
+	"URL"		: "https://raw.githubusercontent.com/net-lisias-kspu/Haystack/master/NavUtilities.version",
+	"DOWNLOAD"	: "https://github.com/net-lisias-kspu/Haystack/releases",
+	"CHANGE_LOG"	: "https://raw.githubusercontent.com/net-lisias-kspu/Haystack/CHANGE_LOG.md",
+	"CHANGE_LOG_URL": "https://raw.githubusercontent.com/net-lisias-kspu/Haystack/CHANGES.md",
 	"VERSION":{
 		"MAJOR":0,
 		"MINOR":5,
 		"PATCH":4,
 		"BUILD":4
 		},
-	"KSP_VERSION":{
-		"MAJOR":1,
-		"MINOR":4
-		},
 	"KSP_VERSION_MIN":{
 		"MAJOR":1,
 		"MINOR":4,
 		"PATCH":1
-		},
-	"KSP_VERSION_MAX":{
-		"MAJOR":1,
-		"MINOR":4,
-		"PATCH":99
 		}
 }

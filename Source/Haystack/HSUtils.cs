@@ -31,32 +31,6 @@ namespace Haystack
             }
         }
 
-        /// <summary>
-        /// Standard debug log with plugin name attached
-        /// </summary>
-        /// <param name="message">Message to be logged</param>
-        public static void Log(string message)
-        {
-            Debug.Log(string.Format("HaystackContinued: {0}", message));
-        }
-
-        public static void Log(string format, params object[] objects)
-        {
-            Log(string.Format(format, objects));
-        }
-
-        [System.Diagnostics.Conditional("DEBUG")]
-        public static void DebugLog(string message)
-        {
-            Debug.Log(string.Format("HaystackContinued: {0}", message));
-        }
-
-        [System.Diagnostics.Conditional("DEBUG")]
-        public static void DebugLog(string format, params object[] objects)
-        {
-            DebugLog(string.Format(format, objects));
-        }
-
         internal static void RequestCameraFocus(Vessel vessel)
         {
             var spaceTracking = (SpaceTracking) Object.FindObjectOfType(typeof (SpaceTracking));
@@ -95,7 +69,7 @@ namespace Haystack
                 return;
             }
 
-            HSUtils.DebugLog("FocusMapObject(body)");
+            Log.dbg("FocusMapObject(body)");
 
             var cam = getPlanetariumCamera();
 
@@ -116,7 +90,7 @@ namespace Haystack
                 return;
             }
 
-            HSUtils.DebugLog("FocusMapObject(vessel)");
+            Log.dbg("FocusMapObject(vessel)");
 
             var cam = getPlanetariumCamera();
 
@@ -171,7 +145,7 @@ namespace Haystack
         /// <param name="instanceID"></param>
         //internal static void FocusMapObject(int instanceID)
         //{
-        //    HSUtils.DebugLog("FocusMapObject: {0}", instanceID);
+        //    Log.dbg("FocusMapObject: {0}", instanceID);
         //    // focus on the object
         //    PlanetariumCamera cam;
         //    if (IsTrackingCenterActive)

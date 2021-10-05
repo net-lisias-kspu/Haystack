@@ -6,7 +6,8 @@ using System.Reflection;
 using UnityEngine;
 using KSP.Localization;
 
-using ClickThroughFix;
+using GUI = KSPe.UI.GUI;
+using GUILayout = KSPe.UI.GUILayout;
 
 namespace Haystack
 {
@@ -54,7 +55,7 @@ namespace Haystack
 
         public void Awake()
         {
-            HSUtils.DebugLog("HaystackContinued#Awake");
+            Log.dbg("HaystackContinued#Awake");
 
             this.bottomButtons = new BottomButtons();
             this.bottomButtons.LoadSettings();
@@ -78,7 +79,7 @@ namespace Haystack
 
         public void OnEnable()
         {
-            HSUtils.DebugLog("HaystackContinued#OnEnable");
+            Log.dbg("HaystackContinued#OnEnable");
 
             GameEvents.onPlanetariumTargetChanged.Add(this.onMapTargetChange);
 
@@ -96,7 +97,7 @@ namespace Haystack
 
         public void OnDisable()
         {
-            HSUtils.DebugLog("HaystackContinued#OnDisable");
+            Log.dbg("HaystackContinued#OnDisable");
             CancelInvoke();
 
             GameEvents.onPlanetariumTargetChanged.Remove(this.onMapTargetChange);
@@ -159,7 +160,7 @@ namespace Haystack
 
         public void OnDestory()
         {
-            HSUtils.DebugLog("HaystackContinued#OnDestroy");
+            Log.dbg("HaystackContinued#OnDestroy");
 
             GameEvents.onHideUI.Remove(this.onHideUI);
             GameEvents.onShowUI.Remove(this.onShowUI);
@@ -278,8 +279,8 @@ namespace Haystack
             this.winRect = this.winRect.ClampToScreen();
 
 
-            this.winRect = ClickThruBlocker.GUILayoutWindow(windowId, this.winRect, this.mainWindowConstructor,
-                string.Format("Haystack ReContinued {0}", Settings.version), Resources.winStyle, GUILayout.MinWidth(120),
+            this.winRect = GUILayout.Window(windowId, this.winRect, this.mainWindowConstructor,
+                string.Format("Haystack {0}", Version.Text), Resources.winStyle, GUILayout.MinWidth(120),
                 GUILayout.MinHeight(300));
 
             this.expandedVesselInfo.DrawExpandedWindow();
@@ -303,7 +304,7 @@ namespace Haystack
 
         private void markVesselHidden(Vessel vessel, bool mark)
         {
-            HSUtils.DebugLog("HaystackContinued#markVesselHidden: {0} {1}", vessel.name, mark);
+            Log.dbg("HaystackContinued#markVesselHidden: {0} {1}", vessel.name, mark);
             if (mark)
             {
                 DataManager.Instance.HiddenVessels.AddVessel(vessel);
@@ -535,7 +536,7 @@ namespace Haystack
 
                 if (this.vesselList == null)
                 {
-                    HSUtils.DebugLog("vessel list is null");
+                    Log.dbg("vessel list is null");
                     this.vesselList = new List<Vessel>();
                 }
 
@@ -1424,7 +1425,7 @@ namespace Haystack
                 this.selected = selected;
 
                 if (this.bottomButtons.IsHiddenVesselsToggled &&
-                    !global::HaystackReContinued.HiddenVessels.ExcludedTypes.Contains(vessel.vesselType))
+                    !global::Haystack.HiddenVessels.ExcludedTypes.Contains(vessel.vesselType))
                 {
                     GUILayout.BeginHorizontal();
 
@@ -1455,7 +1456,7 @@ namespace Haystack
                 var check = GUILayoutUtility.GetLastRect();
 
                 if (this.bottomButtons.IsHiddenVesselsToggled &&
-                    !global::HaystackReContinued.HiddenVessels.ExcludedTypes.Contains(vessel.vesselType))
+                    !global::Haystack.HiddenVessels.ExcludedTypes.Contains(vessel.vesselType))
                 {
                     GUILayout.EndHorizontal();
                 }
@@ -1584,21 +1585,20 @@ namespace Haystack
                 {
                     moduleDockingNodeNamedType = null;
                     modulePortName = null;
-                    HSUtils.DebugLog("exception getting docking port alignment indicator type");
-                    HSUtils.DebugLog("{0}", e.Message);
+                    Log.err("exception getting docking port alignment indicator type");
+                    Log.ex(typeof(DockingPortListView), e);
                 }
 
                 if (moduleDockingNodeNamedType != null && modulePortName != null)
                 {
                     namedDockingPortSupport = true;
 
-                    HSUtils.Log("Docking Port Alignment Indicator mod detected: using named docking node support.");
-                    HSUtils.DebugLog("{0} {1}", moduleDockingNodeNamedType.FullName,
-                        moduleDockingNodeNamedType.AssemblyQualifiedName);
+                    Log.detail("Docking Port Alignment Indicator mod detected: using named docking node support.");
+                    Log.dbg("{0} {1}", moduleDockingNodeNamedType.FullName, moduleDockingNodeNamedType.AssemblyQualifiedName);
                 }
                 else
                 {
-                    HSUtils.DebugLog("Docking Port Alignment Indicator mod was not detected");
+                    Log.dbg("Docking Port Alignment Indicator mod was not detected");
                 }
             }
 
@@ -1681,7 +1681,7 @@ namespace Haystack
 
             private string getPortName(ModuleDockingNode port)
             {
-                HSUtils.DebugLog("DockingPortListView#getPortName: start");
+                Log.dbg("DockingPortListView#getPortName: start");
 
                 if (!namedDockingPortSupport)
                 {
@@ -1701,14 +1701,13 @@ namespace Haystack
 
                 if (found == null)
                 {
-                    HSUtils.DebugLog(
-                        "DockingPortListView#getPortName: named docking port support enabled but could not find the part module");
+                    Log.dbg("DockingPortListView#getPortName: named docking port support enabled but could not find the part module");
                     return port.part.partInfo.title;
                 }
 
                 var portName = (string)modulePortName.GetValue(found);
 
-                HSUtils.DebugLog("DockingPortListView#getPortName: found name: {0}", portName);
+                Log.dbg("DockingPortListView#getPortName: found name: {0}", portName);
 
                 return portName;
             }
@@ -2167,7 +2166,7 @@ namespace Haystack
                 this.windowRect.x = this.haystack.WinRect.xMax;
                 this.windowRect.y = this.haystack.WinRect.y;
                 this.windowRect.height = this.haystack.WinRect.height;
-                var rect = ClickThruBlocker.GUILayoutWindow(this.windowId, this.windowRect, this.drawExpanded, "Vessel Infomation", Resources.winStyle, new[] { GUILayout.MaxWidth(600), GUILayout.MinHeight(this.haystack.winRect.height), GUILayout.ExpandWidth(true), GUILayout.ExpandHeight(false) });
+                var rect = GUILayout.Window(this.windowId, this.windowRect, this.drawExpanded, "Vessel Infomation", Resources.winStyle, new[] { GUILayout.MaxWidth(600), GUILayout.MinHeight(this.haystack.winRect.height), GUILayout.ExpandWidth(true), GUILayout.ExpandHeight(false) });
                 this.windowRect.width = rect.width;
             }
 

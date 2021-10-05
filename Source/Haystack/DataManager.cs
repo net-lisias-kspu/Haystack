@@ -123,7 +123,8 @@ namespace Haystack
             }
             catch (Exception e)
             {
-                HSUtils.Log("HiddenVessles#Save: exception: " + e.Message);
+                Log.err("HiddenVessles#Save: exception: {0}", e.Message);
+                Log.ex(this, e);
             }
         }
 
@@ -132,7 +133,7 @@ namespace Haystack
             ConfigNode loadNode = node.GetNode(this.GetType().Name);
             if (loadNode == null)
             {
-                HSUtils.DebugLog("HiddenVessles#Load: node is null");
+                Log.dbg("HiddenVessles#Load: node is null");
                 return;
             }
 

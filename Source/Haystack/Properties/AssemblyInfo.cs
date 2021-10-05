@@ -6,13 +6,13 @@ using System.Resources;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Haystack Unofficial")]
+[assembly: AssemblyTitle("Haystack /L")]
 [assembly: AssemblyDescription("Plugin for Kerbal Space Program")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("Haystack Unofficial")]
-[assembly: AssemblyCopyright("")]
-[assembly: AssemblyTrademark("")]
+[assembly: AssemblyCompany(Haystack.LegalMamboJambo.Company)]
+[assembly: AssemblyProduct(Haystack.LegalMamboJambo.Product)]
+[assembly: AssemblyCopyright(Haystack.LegalMamboJambo.Copyright)]
+[assembly: AssemblyTrademark(Haystack.LegalMamboJambo.Trademark)]
 [assembly: AssemblyCulture("")]
 
 // Setting ComVisible to false makes the types in this assembly not visible 
@@ -30,8 +30,8 @@ using System.Resources;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion(HaystackContinued.Version.Number)]
-[assembly: AssemblyFileVersion(HaystackContinued.Version.Number)]
+[assembly: AssemblyVersion(Haystack.Version.Number)]
+[assembly: AssemblyFileVersion(Haystack.Version.Number)]
 [assembly: NeutralResourcesLanguageAttribute("en")]
 
 [assembly: KSPAssemblyDependency("ClickThroughBlocker", 1, 0)]

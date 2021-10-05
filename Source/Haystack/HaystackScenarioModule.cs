@@ -10,13 +10,13 @@ namespace Haystack
 
         public override void OnSave(ConfigNode node)
         {
-            HSUtils.DebugLog("HaystackScenarioModule#OnSave: {0}", HighLogic.LoadedScene);
+            Log.dbg("HaystackScenarioModule#OnSave: {0}", HighLogic.LoadedScene);
             DataManager.Instance.Save(node);
         }
 
         public override void OnLoad(ConfigNode node)
         {
-            HSUtils.DebugLog("HaystackScenarioModule#OnLoad: {0}", HighLogic.LoadedScene);
+            Log.dbg("HaystackScenarioModule#OnLoad: {0}", HighLogic.LoadedScene);
             DataManager.Instance.Load(node);
         }
     }

@@ -1,18 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.IO;
 using UnityEngine;
+
+using ASSET = KSPe.IO.Asset<Haystack.Settings>;
+using DATA = KSPe.IO.Data<Haystack.Settings>;
 
 namespace Haystack
 {
     public class Settings
     {
-        public static string version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
-
-		private static readonly string PluginDataDir = Path.Combine(Resources.PathPlugin,"PluginData");
-		private static readonly string SettingsDir = Path.Combine(KSPUtil.ApplicationRootPath, "PluginData/Haystack");
-		private static readonly string SettingsFile = Path.Combine(SettingsDir, "settings.cfg");
+		private static readonly string SettingsFile = "settings";
 
         private const string NODE_SETTINGS = "settings";
         private const string NODE_WINDOW_POSITIONS = "window_positions";
@@ -28,6 +26,9 @@ namespace Haystack
         private readonly Dictionary<string, bool> windowVisibilities = new Dictionary<string, bool>();
         private readonly Dictionary<string, bool> bottomButtons = new Dictionary<string, bool>();
 
+        private static readonly ASSET.ConfigNode DEFAULT = ASSET.ConfigNode.For(NODE_SETTINGS, SettingsFile);
+        private static readonly DATA.ConfigNode SETTINGS = DATA.ConfigNode.For(NODE_SETTINGS, SettingsFile);
+
         public Settings()
         {
             this.WindowPositions = new GenericIndexer<Rect>(windowPositions, () => new Rect(0, 0, 0, 0),
@@ -36,54 +37,21 @@ namespace Haystack
                 "settings: window WindowVisibility: {0} {1}");
             this.BottomButtons = new GenericIndexer<bool>(bottomButtons, () => false, "settings: bottom buttons: {0} {1}");
             
-            this.Convert();
             this.Load();
-        }
-
-        private void Convert()
-        {
-           this.convertToNewDirectory();
-        }
-
-        private void convertToNewDirectory()
-        {
-            var oldSettingsFile = Resources.PathPlugin + Path.DirectorySeparatorChar + "settings.cfg";
-
-            var oldSettingsExists = File.Exists(oldSettingsFile);
-            var newSettingsExists = File.Exists(SettingsFile);
-
-            if (!Directory.Exists(PluginDataDir))
-            {
-                HSUtils.Log("Creating missing PluginData directory.");
-                Directory.CreateDirectory(PluginDataDir);
-            }
-
-            if (oldSettingsExists && !newSettingsExists)
-            {
-                HSUtils.Log("Moving settings file to new location.");
-                
-                File.Move(oldSettingsFile, SettingsFile);
-            } else if (oldSettingsExists)
-            {   HSUtils.Log("Deleting old settings file.");
-
-                File.Delete(oldSettingsFile);
-            }
         }
 
         private void Load()
         {
-            HSUtils.Log("loading settings");
-            HSUtils.DebugLog("Settings#Load: start");
+            Log.detail("loading settings");
+            Log.dbg("Settings#Load: start");
 
-            var load = ConfigNode.Load(SettingsFile) ?? new ConfigNode();
-
-            if (!load.HasNode(NODE_SETTINGS))
+            if (!SETTINGS.IsLoadable)
             {
-                HSUtils.DebugLog("Settings#Load: no settings node");
-                return;
+                DEFAULT.Load();
+                SETTINGS.Save(DEFAULT.Node);
             }
 
-            var config = load.GetNode(NODE_SETTINGS);
+            ConfigNode config = SETTINGS.Load().Node;
 
             var nodeWindowPositions = config.GetNode(NODE_WINDOW_POSITIONS) ?? new ConfigNode();
 
@@ -98,7 +66,7 @@ namespace Haystack
                 var name = node.name;
                 var position = node.FromNode(WINDOW_POSITION, defaultPos);
 
-                HSUtils.DebugLog("Settings#load name: {0} position: {1}", name, position);
+                Log.dbg("Settings#load name: {0} position: {1}", name, position);
 
                 this.windowPositions[name] = position;
             }
@@ -109,7 +77,7 @@ namespace Haystack
                 var name = node.name;
                 var visible = node.FromNode(WINDOW_VISIBLE, false);
 
-                HSUtils.DebugLog("Settings#Load name: {0} visible: {1}", name, visible);
+                Log.dbg("Settings#Load name: {0} visible: {1}", name, visible);
 
                 this.windowVisibilities[name] = visible;
             }
@@ -120,7 +88,7 @@ namespace Haystack
                 var name = node.name;
                 var value = node.FromNode(BUTTON_STATE, false);
 
-                HSUtils.DebugLog("Settings#Load name: {0} value: {1}", name, value);
+                Log.dbg("Settings#Load name: {0} value: {1}", name, value);
 
                 this.bottomButtons[name] = value;
             }
@@ -161,7 +129,7 @@ namespace Haystack
 
                 set
                 {
-                    HSUtils.DebugLog(setDebugMessage, name, value);
+                    Log.dbg(setDebugMessage, name, value);
                     this.index[name] = value;
                 }
             }
@@ -169,10 +137,9 @@ namespace Haystack
 
         public void Save()
         {
-            HSUtils.DebugLog("saving settings");
+            Log.detail("saving settings");
 
-            var t = new ConfigNode();
-            var config = t.AddNode(NODE_SETTINGS);
+            ConfigNode config = SETTINGS.Node;
 
             var nodeWindowPositions = config.AddNode(NODE_WINDOW_POSITIONS);
             var nodeVisibilities = config.AddNode(NODE_WINDOW_VISIBILITIES);
@@ -194,8 +161,7 @@ namespace Haystack
                 nodeVesselTypeVisibility.AddValue(type.name, type.visible);
             }
 
-			if (!Directory.Exists(SettingsDir)) Directory.CreateDirectory(SettingsDir);
-			t.Save(SettingsFile);
+			SETTINGS.Save();
         }
 
         private static void saveDicValuesToNode<V>(Dictionary<string, V> dic, ConfigNode node, string configName,

@@ -34,7 +34,7 @@ namespace Haystack
         //blizzy toolbar
         private void setupToolbar()
         {
-            HSUtils.DebugLog("HaystackResourceLoader#setupToolbar: toolbar detected, using it.");
+            Log.dbg("HaystackResourceLoader#setupToolbar: toolbar detected, using it.");
 
             this.toolbarButton = ToolbarManager.Instance.add("HaystackContinued", toolbarButtonId);
             this.toolbarButton.Visibility = new GameScenesVisibility(GameScenes.FLIGHT, GameScenes.TRACKSTATION, GameScenes.SPACECENTER);
@@ -67,12 +67,12 @@ namespace Haystack
         {
             add
             {
-                HSUtils.DebugLog("DisplayButtonOnClick add");
+                Log.dbg("DisplayButtonOnClick add");
                 this.displayButtonClick += value;
             }
             remove
             {
-                HSUtils.DebugLog("DisplayButtonOnClick remove");
+                Log.dbg("DisplayButtonOnClick remove");
                 this.displayButtonClick -= value;
             }
         }
@@ -130,7 +130,7 @@ namespace Haystack
         {
             if (this.appLauncherButton != null)
             {
-                HSUtils.DebugLog("application launcher button already exists");
+                Log.dbg("application launcher button already exists");
                 return;
             }
 
@@ -138,7 +138,7 @@ namespace Haystack
 
             if (appLauncher == null)
             {
-                HSUtils.DebugLog("application launcher instance is null");
+                Log.dbg("application launcher instance is null");
                 //maybe run a coroutine to try again.
                 return;
             }
@@ -161,13 +161,13 @@ namespace Haystack
 
             if (appLauncher == null)
             {
-                HSUtils.DebugLog("OnApplicationLauncherDestroyed: application launcher instance is null.");
+                Log.dbg("OnApplicationLauncherDestroyed: application launcher instance is null.");
                 return;
             }
 
             if (this.appLauncherButton == null)
             {
-                HSUtils.DebugLog("app launcher button is null.");
+                Log.dbg("app launcher button is null.");
                 return;
             }
 
@@ -286,7 +286,7 @@ namespace Haystack
                 HighLogic.CurrentGame.scenarios.FirstOrDefault(i => i.moduleName == typeof (HaystackScenarioModule).Name);
             if (protoScenarioModule == null)
             {
-                HSUtils.DebugLog("adding scenario module");
+                Log.dbg("adding scenario module");
                 HighLogic.CurrentGame.AddProtoScenarioModule(typeof (HaystackScenarioModule),
                     HaystackScenarioModule.Scenes);
             }
@@ -295,7 +295,7 @@ namespace Haystack
                 var missing = HaystackScenarioModule.Scenes.Except(protoScenarioModule.targetScenes);
                 foreach (var i in missing)
                 {
-                    HSUtils.DebugLog("missing scenario module scene: {0}", i);
+                    Log.dbg("missing scenario module scene: {0}", i);
                     protoScenarioModule.targetScenes.Add(i);
                 }
             }

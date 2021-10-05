@@ -14,53 +14,46 @@ namespace Haystack
     {
         public static System.Random rnd = new System.Random();
 
-        public static string PathPlugin = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location).Replace("\\", "/");
-
-//        public static string PathImages = String.Format("../{0}/icons", PathPlugin);
-        public static string PathImages = String.Format("{0}/PluginData/icons", "GameData/HaystackContinued");
 
         public static readonly string BODIES = "Bodies";
 
-        //toolbar expects to begin in the "gamedata" directory as the root of the provided path
-        //so we're going use a relative path starting at our plugin's folder in the "gamedata" directory
-        //        public static string ToolbarIconPath = PathImages.Substring(PathImages.ToLower().IndexOf("/gamedata/") + 10);
-        public static string ToolbarIconPath = String.Format("{0}/PluginData/icons", "HaystackContinued");
-        //for the toolbar do not append the extension
-        public static string ToolbarIcon = String.Format("{0}/toolbar_icon", ToolbarIconPath);
+        public static string PathImages = "icons";
+        public static string ToolbarIconPath = PathImages;
 
+        public static string ToolbarIcon = String.Format("{0}/toolbar_icon", ToolbarIconPath);
         public static string appLauncherIconPath = String.Format("{0}/applauncher_icon", ToolbarIconPath);
 
-        private static string btnGoFilePath = String.Format("{0}/button_go.png", PathImages);
-        private static string btnGoHoverFilePath = String.Format("{0}/button_go_hover.png", PathImages);
-        private static string btnGoTargFilePath = String.Format("{0}/button_targ.png", PathImages);
-        private static string btnGoTargHoverFilePth = String.Format("{0}/button_targ.png", PathImages);
-        private static string btnFoldFilePath = String.Format("{0}/button_fold.png", PathImages);
-        private static string btnFoldHoverFilePath = String.Format("{0}/button_fold_hover.png", PathImages);
-        private static string btnBodiesFilePath = String.Format("{0}/button_bodies.png", PathImages);
-        private static string btnDownArrowFilePath = String.Format("{0}/down_arrow.png", PathImages);
-        private static string btnUpArrowFilePath = String.Format("{0}/up_arrow.png", PathImages);
-        private static string btnTargetAlphaFilePath = string.Format("{0}/button_targ_alpha.png", PathImages);
-        private static string btnAscendingFilePath = string.Format("{0}/button_ascending.png", PathImages);
-        private static string btnDescendingFilePath = string.Format("{0}/button_descending.png", PathImages);
-        private static string btnExtendedHoverFilePath = string.Format("{0}/button_extended_background_hover.png", PathImages);
-        private static string btnExtendedPressedFilePath = string.Format("{0}/button_extended_background_pressed.png", PathImages);
-        private static string imgLineFilePath = String.Format("{0}/line.png", PathImages);
-        private static string imgOutlineFilePath = String.Format("{0}/outline.png", PathImages);
-        private static string imgVesselInfoNormalFilePath = string.Format("{0}/vessel_info_normal.png", PathImages);
-        private static string imgVesselInfoPressedFilePath = string.Format("{0}/vessel_info_pressed.png", PathImages);
-        private static string imgVesselInfoHoverFilePath = string.Format("{0}/vessel_info_hover.png", PathImages);
-        private static string imgVesselInfoSelectedFilePath = string.Format("{0}/vessel_info_selected.png", PathImages);
-        private static string imgDockingPortButtonPressedFilePath = String.Format("{0}/docking_port_button_pressed.png", PathImages);
-        private static string btnOrbitIconFilePath = string.Format("{0}/orbit_icon.png", PathImages);
-        private static string btnHiddenIconFilePath = string.Format("{0}/hidden_icon.png", PathImages);
-        private static string btnExtendedIconOpenFilePath = string.Format("{0}/button_extended_icon_open.png", PathImages);
-        private static string btnExtendedIconCloseFilePath = string.Format("{0}/button_extended_icon_close.png", PathImages);
-        private static string btnFlatNormalFilePath = string.Format("{0}/button_flat_normal.png", PathImages);
-        private static string btnFlatHoverFilePath = string.Format("{0}/button_flat_hover.png", PathImages);
-        private static string btnFlatPressedFilePath = string.Format("{0}/button_flat_pressed.png", PathImages);
+        private static string btnGoFilePath = String.Format("{0}/button_go", PathImages);
+        private static string btnGoHoverFilePath = String.Format("{0}/button_go_hover", PathImages);
+        private static string btnGoTargFilePath = String.Format("{0}/button_targ", PathImages);
+        private static string btnGoTargHoverFilePth = String.Format("{0}/button_targ", PathImages);
+        private static string btnFoldFilePath = String.Format("{0}/button_fold", PathImages);
+        private static string btnFoldHoverFilePath = String.Format("{0}/button_fold_hover", PathImages);
+        private static string btnBodiesFilePath = String.Format("{0}/button_bodies", PathImages);
+        private static string btnDownArrowFilePath = String.Format("{0}/down_arrow", PathImages);
+        private static string btnUpArrowFilePath = String.Format("{0}/up_arrow", PathImages);
+        private static string btnTargetAlphaFilePath = string.Format("{0}/button_targ_alpha", PathImages);
+        private static string btnAscendingFilePath = string.Format("{0}/button_ascending", PathImages);
+        private static string btnDescendingFilePath = string.Format("{0}/button_descending", PathImages);
+        private static string btnExtendedHoverFilePath = string.Format("{0}/button_extended_background_hover", PathImages);
+        private static string btnExtendedPressedFilePath = string.Format("{0}/button_extended_background_pressed", PathImages);
+        private static string imgLineFilePath = String.Format("{0}/line", PathImages);
+        private static string imgOutlineFilePath = String.Format("{0}/outline", PathImages);
+        private static string imgVesselInfoNormalFilePath = string.Format("{0}/vessel_info_normal", PathImages);
+        private static string imgVesselInfoPressedFilePath = string.Format("{0}/vessel_info_pressed", PathImages);
+        private static string imgVesselInfoHoverFilePath = string.Format("{0}/vessel_info_hover", PathImages);
+        private static string imgVesselInfoSelectedFilePath = string.Format("{0}/vessel_info_selected", PathImages);
+        private static string imgDockingPortButtonPressedFilePath = String.Format("{0}/docking_port_button_pressed", PathImages);
+        private static string btnOrbitIconFilePath = string.Format("{0}/orbit_icon", PathImages);
+        private static string btnHiddenIconFilePath = string.Format("{0}/hidden_icon", PathImages);
+        private static string btnExtendedIconOpenFilePath = string.Format("{0}/button_extended_icon_open", PathImages);
+        private static string btnExtendedIconCloseFilePath = string.Format("{0}/button_extended_icon_close", PathImages);
+        private static string btnFlatNormalFilePath = string.Format("{0}/button_flat_normal", PathImages);
+        private static string btnFlatHoverFilePath = string.Format("{0}/button_flat_hover", PathImages);
+        private static string btnFlatPressedFilePath = string.Format("{0}/button_flat_pressed", PathImages);
 
-        private static string btnTerminateFlatFilePath = String.Format("{0}/button_terminate.png", PathImages);
-        private static string btnTerminateHoverFilePath = String.Format("{0}/button_terminate_hover.png", PathImages);
+        private static string btnTerminateFlatFilePath = String.Format("{0}/button_terminate", PathImages);
+        private static string btnTerminateHoverFilePath = String.Format("{0}/button_terminate_hover", PathImages);
 
         //public static Texture2D appLauncherIcon = new Texture2D(38, 38, TextureFormat.ARGB32, false);
         public static Texture2D btnGo = new Texture2D(32, 32, TextureFormat.ARGB32, false);
@@ -115,7 +108,7 @@ namespace Haystack
                 LoadImage(ref btnGoHover, btnGoHoverFilePath);
                 LoadImage(ref btnTarg, btnGoTargFilePath);
                 LoadImage(ref btnTargHover, btnGoTargHoverFilePth);
-                //LoadImage(ref btnTargHover, "button_targ_hover.png"); // TODO: Create hover image, it is missing
+                //LoadImage(ref btnTargHover, "button_targ_hover"); // TODO: Create hover image, it is missing
                 LoadImage(ref btnFold, btnFoldFilePath);
                 LoadImage(ref btnFoldHover, btnFoldHoverFilePath);
                 LoadImage(ref btnBodies, btnBodiesFilePath); // handled separate from vessels
@@ -153,9 +146,14 @@ namespace Haystack
             }
             catch (Exception e)
             {
-                Debug.LogException(e);
-                HSUtils.Log("Exception caught, probably failed to load file");
+                Log.err("Exception caught, probably failed to load file");
+                Log.ex(typeof(Resources), e);
             }
+        }
+
+        private static void LoadImage(ref Texture2D btnGo, string btnGoFilePath)
+        {
+            btnGo = KSPe.IO.Asset<Startup>.Texture2D.LoadFromFile(btnGoFilePath);
         }
 
         private static List<CelestialBody> celestialBodies = new List<CelestialBody>();
@@ -204,7 +202,7 @@ namespace Haystack
                 Texture2D icon = new Texture2D(32, 32, TextureFormat.ARGB32, false);
                 try
                 {
-                    LoadImage(ref icon, String.Format("{0}/button_vessel_{1}.png", PathImages, type.ToLower()));
+                    LoadImage(ref icon, String.Format("{0}/button_vessel_{1}", PathImages, type.ToLower()));
                 }
                 catch (Exception e)
                 {
@@ -215,29 +213,6 @@ namespace Haystack
             }
 
             list.Add(new HSVesselType(BODIES, 255, btnBodies, true));
-        }
-
-        /// <summary>
-        /// Load image from file
-        /// </summary>
-        /// <param name="targ"></param>
-        /// <param name="filename">File name in images directory. Path is hardcoded: PluginData/HrmHaystack/images/</param>
-        private static void LoadImage(ref Texture2D targ, string filename)
-        {
-#if false
-            Debug.Log("LoadImage: " + filename);
-            if (!File.Exists(filename))
-            {
-                Debug.Log("Missing file: " + filename);
-                return;
-            }
-            targ.LoadImage(File.ReadAllBytes(filename));
-#endif
-            if (!ToolbarControl.LoadImageFromFile(ref targ, filename))
-            {
-                Debug.Log("Missing file: " + filename);
-                return;
-            }
         }
 
         public static GUIStyle winStyle;
