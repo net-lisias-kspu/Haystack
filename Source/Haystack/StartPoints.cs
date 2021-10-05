@@ -60,7 +60,7 @@ namespace Haystack
 
         internal void appLauncherButton_OnTrue()
         {
-            Debug.Log("Haystack.appLauncherButton_OnTrue");
+            Log.dbg("Haystack.appLauncherButton_OnTrue");
             this.displayButtonClick(new EventArgs());
         }
 
@@ -190,11 +190,11 @@ namespace Haystack
         internal const string MODNAME = "Haystack ReContinued";
         public void Start()
         {
-            Debug.Log("HaystackContinued.Start");
+            Log.dbg("Start");
             toolbarControl = gameObject.AddComponent<ToolbarControl>();
-            //Debug.Log("HaystackContinued, useBlizzy: " + HighLogic.CurrentGame.Parameters.CustomParams<HS>().useBlizzy);
-            Debug.Log("HaystackContinued, Resources.appLauncherIconPath: " + Resources.appLauncherIconPath);
-            Debug.Log("HaystackContinued, Resources.ToolbarIcon: " + Resources.ToolbarIcon);
+            //Log.dbg("useBlizzy: " + HighLogic.CurrentGame.Parameters.CustomParams<HS>().useBlizzy);
+            Log.dbg("Resources.appLauncherIconPath: {0}",  Resources.appLauncherIconPath);
+            Log.dbg("Resources.ToolbarIcon: {0}", Resources.ToolbarIcon);
 
             //toolbarControl.UseBlizzy(HighLogic.CurrentGame.Parameters.CustomParams<HS>().useBlizzy);
             toolbarControl.AddToAllToolbars(

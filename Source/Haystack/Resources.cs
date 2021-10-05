@@ -208,7 +208,7 @@ namespace Haystack
                 }
                 catch (Exception e)
                 {
-                    Debug.LogException(e);
+                    Log.ex(typeof(Resources), e);
                 }
                 string type1 = type;
                 switch (type)

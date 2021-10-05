@@ -59,7 +59,7 @@ namespace Haystack
 
         public void Awake()
         {
-            Log.dbg("HaystackContinued#Awake");
+            Log.dbg("Awake");
 
             fetch = this;
             this.bottomButtons = new BottomButtons();
@@ -84,7 +84,7 @@ namespace Haystack
 
         public void OnEnable()
         {
-            Log.dbg("HaystackContinued#OnEnable");
+            Log.dbg("OnEnable");
 
             GameEvents.onPlanetariumTargetChanged.Add(this.onMapTargetChange);
 
@@ -102,7 +102,7 @@ namespace Haystack
 
         public void OnDisable()
         {
-            Log.dbg("HaystackContinued#OnDisable");
+            Log.dbg("OnDisable");
             CancelInvoke();
 
             GameEvents.onPlanetariumTargetChanged.Remove(this.onMapTargetChange);
@@ -165,7 +165,7 @@ namespace Haystack
 
         public void OnDestory()
         {
-            Log.dbg("HaystackContinued#OnDestroy");
+            Log.dbg("OnDestroy");
 
             GameEvents.onHideUI.Remove(this.onHideUI);
             GameEvents.onShowUI.Remove(this.onShowUI);
@@ -320,7 +320,7 @@ namespace Haystack
 
         private void markVesselHidden(Vessel vessel, bool mark)
         {
-            Log.dbg("HaystackContinued#markVesselHidden: {0} {1}", vessel.name, mark);
+            Log.dbg("markVesselHidden: {0} {1}", vessel.name, mark);
             if (mark)
             {
                 DataManager.Instance.HiddenVessels.AddVessel(vessel);
@@ -676,11 +676,13 @@ namespace Haystack
 
                     list.RemoveAll(vessel => invisibleTypes.Contains(vessel.vesselType));
 
+                #if DEBUG
                     foreach (VesselType i in invisibleTypes)
-                        Debug.Log("Haystack: invisibletype: " + i);
+                        Log.dbg("invisibletype: {0}", i);
 
                     foreach (Vessel l in list)
-                        Debug.Log("aystack: list vessel.vesselType: " + l.vesselType.ToString());
+                        Log.dbg("list vessel.vesselType: {0}", l.vesselType);
+                #endif
                 }
             }
 
@@ -1111,9 +1113,9 @@ namespace Haystack
                 if (Event.current.type == EventType.MouseDown && Event.current.button == 0 &&
                     resizer.Contains(Event.current.mousePosition))
                 {
-                    Debug.Log("Close Event");
+                    Log.dbg("Close Event");
                     HaystackResourceLoader.instance.appLauncherButton_OnTrue();
-                }           
+                }
             }
        }
 
@@ -2315,7 +2317,7 @@ namespace Haystack
                 for (int i = 0; i < count; i++)
                 {
                     ProtoCrewMember protoCrewMember = vesselCrew[i];
-                    UnityEngine.Debug.Log("Crewmember " + protoCrewMember.name + " is lost.");
+                    Log.dbg("Crewmember {0} is lost.", protoCrewMember.name);
                     protoCrewMember.StartRespawnPeriod(-1.0);
                 }
                 UnityEngine.Object.DestroyImmediate(vessel.gameObject);
