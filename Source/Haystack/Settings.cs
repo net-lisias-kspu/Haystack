@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using UnityEngine;
 
-using ASSET = KSPe.IO.Asset<Haystack.Settings>;
 using DATA = KSPe.IO.Data<Haystack.Settings>;
 
 namespace Haystack
@@ -26,7 +25,6 @@ namespace Haystack
         private readonly Dictionary<string, bool> windowVisibilities = new Dictionary<string, bool>();
         private readonly Dictionary<string, bool> bottomButtons = new Dictionary<string, bool>();
 
-        private static readonly ASSET.ConfigNode DEFAULT = ASSET.ConfigNode.For(NODE_SETTINGS, SettingsFile);
         private static readonly DATA.ConfigNode SETTINGS = DATA.ConfigNode.For(NODE_SETTINGS, SettingsFile);
 
         public Settings()
@@ -47,8 +45,8 @@ namespace Haystack
 
             if (!SETTINGS.IsLoadable)
             {
-                DEFAULT.Load();
-                SETTINGS.Save(DEFAULT.Node);
+                SETTINGS.Clear();
+                SETTINGS.Save();
             }
 
             ConfigNode config = SETTINGS.Load().Node;

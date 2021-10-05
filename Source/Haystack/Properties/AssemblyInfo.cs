@@ -34,5 +34,6 @@ using System.Resources;
 [assembly: AssemblyFileVersion(Haystack.Version.Number)]
 [assembly: NeutralResourcesLanguageAttribute("en")]
 
-[assembly: KSPAssemblyDependency("ClickThroughBlocker", 1, 0)]
+[assembly: KSPAssemblyDependency("KSPe", 2, 4)]
+[assembly: KSPAssemblyDependency("KSPe.UI", 2, 4)]
 [assembly: KSPAssemblyDependency("ToolbarController", 1, 0)]

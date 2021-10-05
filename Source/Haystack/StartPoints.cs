@@ -2,7 +2,9 @@
 using System.Linq;
 using KSP.UI.Screens;
 using UnityEngine;
+
 using ToolbarControl_NS;
+using FILE = KSPe.IO.File<Haystack.Startup>;
 
 namespace Haystack
 {
@@ -190,14 +192,15 @@ namespace Haystack
             Debug.Log("HaystackContinued, Resources.ToolbarIcon: " + Resources.ToolbarIcon);
 
             //toolbarControl.UseBlizzy(HighLogic.CurrentGame.Parameters.CustomParams<HS>().useBlizzy);
-            toolbarControl.AddToAllToolbars(appLauncherButton_OnTrue, appLauncherButton_OnFalse,
-                      scenes,
-                      MODID,
-                      toolbarButtonId,
-                      Resources.appLauncherIconPath,
-                      Resources.ToolbarIcon,
-                      MODNAME
-              );
+            toolbarControl.AddToAllToolbars(
+                        appLauncherButton_OnTrue, appLauncherButton_OnFalse,
+                        scenes,
+                        MODID,
+                        toolbarButtonId,
+                        FILE.Asset.Solve(Resources.appLauncherIconPath),
+                        FILE.Asset.Solve(Resources.ToolbarIcon),
+                        MODNAME
+                    );
         }
 
         public void OnDestroy()
