@@ -2,8 +2,9 @@
 
 namespace Haystack
 {
+    [KSPAddon(KSPAddon.Startup.Instantly, true)]
     internal class Startup : MonoBehaviour
-	{
+    {
         private void Start()
         {
             Log.force("Version {0}", Version.Text);
@@ -19,5 +20,5 @@ namespace Haystack
                 KSPe.Common.Dialogs.ShowStopperAlertBox.Show(e);
             }
         }
-	}
+    }
 }

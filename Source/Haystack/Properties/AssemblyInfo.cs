@@ -34,6 +34,7 @@ using System.Resources;
 [assembly: AssemblyFileVersion(Haystack.Version.Number)]
 [assembly: NeutralResourcesLanguageAttribute("en")]
 
+[assembly: KSPAssembly("Haystack", Haystack.Version.major, Haystack.Version.minor)]
 [assembly: KSPAssemblyDependency("KSPe", 2, 4)]
 [assembly: KSPAssemblyDependency("KSPe.UI", 2, 4)]
 [assembly: KSPAssemblyDependency("ToolbarController", 1, 0)]
