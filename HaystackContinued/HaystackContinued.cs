@@ -676,12 +676,13 @@ namespace HaystackReContinued
 
                     list.RemoveAll(vessel => invisibleTypes.Contains(vessel.vesselType));
 
+#if false
                     foreach (var i in invisibleTypes)
                         Debug.Log("Haystack: invisibletype: " + i);
 
                     foreach (var l in list)
-                        Debug.Log("aystack: list vessel.vesselType: " + l.vesselType.ToString());
-
+                        Debug.Log("Haystack: list vessel.vesselType: " + l.vesselType.ToString());
+#endif
                 }
             }
 
