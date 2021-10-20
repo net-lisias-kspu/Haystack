@@ -32,7 +32,6 @@ using System.Reflection;
 using UnityEngine;
 
 using KSP.Localization;
-using Toolbar = KSPe.UI.Toolbar;
 
 using GUI = KSPe.UI.GUI;
 using GUILayout = KSPe.UI.GUILayout;
@@ -124,7 +123,7 @@ namespace Haystack
             InvokeRepeating("IRFetchVesselList", 5.0F, 5.0F);
             InvokeRepeating("RefreshDataSaveSettings", 0, 30.0F);
 
-            //HaystackResourceLoader.Instance.FixApplicationLauncherButtonDisplay(this.WinVisible);
+            HaystackResourceLoader.Instance.clickHandlers.Add(this.displayButtonClicked);
         }
 
         public void OnDisable()
@@ -132,6 +131,7 @@ namespace Haystack
             Log.dbg("OnDisable");
             CancelInvoke();
 
+            HaystackResourceLoader.Instance.clickHandlers.Remove(this.displayButtonClicked);
             GameEvents.onPlanetariumTargetChanged.Remove(this.onMapTargetChange);
 
             HaystackResourceLoader.Instance.Settings.WindowPositions[this.SettingsName] = this.WinRect;
@@ -146,7 +146,6 @@ namespace Haystack
             this.WinVisible = !this.WinVisible;
         }
 
-        private KSPe.UI.Toolbar.Button button;
         public void Start()
         {
             // not an anonymous functions because we need to remove them in #OnDestroy
@@ -158,22 +157,6 @@ namespace Haystack
 
             this.vesselListController.FetchVesselList();
             DataManager.Instance.OnDataLoaded += this.onDataLoadedHandler;
-
-			{
-				button = Toolbar.Button.Create(this
-						 , ApplicationLauncher.AppScenes.FLIGHT | ApplicationLauncher.AppScenes.TRACKSTATION | ApplicationLauncher.AppScenes.MAPVIEW | ApplicationLauncher.AppScenes.SPACECENTER
-						 , Resources.appLauncherIcon, Resources.toolbarIcon
-					 )
-				 ;
-
-				button.Toolbar
-							.Add(Toolbar.Button.ToolbarEvents.Kind.Active,
-								new Toolbar.Button.Event(this.displayButtonClicked, this.displayButtonClicked)
-							);
-				;
-
-				ToolbarController.Instance.Add(button);
-			}
 		}
 
 		private void onVesselRenamed(GameEvents.HostedFromToAction<Vessel, string> data)
@@ -1177,7 +1160,7 @@ namespace Haystack
             internal void Draw(ref Rect winRect)
             {
 
-                Rect resizer = new Rect(winRect.width - resizeBoxSize - resizeBoxMargin, resizeBoxMargin, resizeBoxSize, resizeBoxSize);
+                Rect resizer = new Rect(winRect.width - resizeBoxSize - resizeBoxMargin, winRect.height - resizeBoxMargin - resizeBoxSize, resizeBoxSize, resizeBoxSize);
                 GUI.Box(resizer, "//", Resources.resizeBoxStyle);
 
                 if (!Event.current.isMouse)
@@ -1214,7 +1197,7 @@ namespace Haystack
                     this.lastPosition.y = Input.mousePosition.y;
 
                     winRect.xMax += deltaX;
-                    winRect.yMin -= deltaY;
+                    winRect.yMax -= deltaY;
 
                     if (Event.current.isMouse)
                     {
@@ -1706,8 +1689,7 @@ namespace Haystack
                 {
                     moduleDockingNodeNamedType = null;
                     modulePortName = null;
-                    Log.err("exception getting docking port alignment indicator type");
-                    Log.ex(typeof(DockingPortListView), e);
+                    Log.err("exception getting docking port alignment indicator type : {0}", e.Message);
                 }
 
                 if (moduleDockingNodeNamedType != null && modulePortName != null)

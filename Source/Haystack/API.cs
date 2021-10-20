@@ -39,7 +39,7 @@ namespace Haystack
         {
             //set up the hookable object
 
-            fetch = HaystackResourceLoader.fetch;
+            fetch = HaystackResourceLoader.Instance;
 
             //set up any events we need from the core code
 
