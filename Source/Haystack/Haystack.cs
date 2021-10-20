@@ -65,9 +65,9 @@ namespace Haystack
         }
     };
 
-    public abstract class HaystackContinued : MonoBehaviour
+    public abstract class Haystack : MonoBehaviour
     {
-        public static HaystackContinued fetch = null;
+        public static Haystack fetch = null;
         // window vars
         private int windowId;
         internal bool WinVisible = false;
@@ -100,7 +100,7 @@ namespace Haystack
             this.expandedVesselInfo = new ExpandedVesselInfo(this, this.bottomButtons, this.defaultScrollerView,
                 this.groupedScrollerView);
             this.resizeHandle = new ResizeHandle();
-            this.closeHandle = new CloseHandle();
+            this.closeHandle = new CloseHandle(() => this.WinVisible = false);
 
             windowId = Resources.rnd.Next(1000, 2000000);
         }
@@ -121,8 +121,6 @@ namespace Haystack
             this.WinVisible = HaystackResourceLoader.Instance.Settings.WindowVisibilities[this.SettingsName];
             this.bottomButtons.LoadSettings();
 
-            HaystackResourceLoader.Instance.DisplayButtonOnClick += this.displayButtonClicked;
-
             InvokeRepeating("IRFetchVesselList", 5.0F, 5.0F);
             InvokeRepeating("RefreshDataSaveSettings", 0, 30.0F);
 
@@ -136,8 +134,6 @@ namespace Haystack
 
             GameEvents.onPlanetariumTargetChanged.Remove(this.onMapTargetChange);
 
-            HaystackResourceLoader.Instance.DisplayButtonOnClick -= this.displayButtonClicked;
-
             HaystackResourceLoader.Instance.Settings.WindowPositions[this.SettingsName] = this.WinRect;
             HaystackResourceLoader.Instance.Settings.WindowVisibilities[this.SettingsName] = this.WinVisible;
             this.bottomButtons.SaveSettings();
@@ -145,11 +141,12 @@ namespace Haystack
             HaystackResourceLoader.Instance.Settings.Save();
         }
 
-        private void displayButtonClicked(EventArgs e)
+        private void displayButtonClicked()
         {
             this.WinVisible = !this.WinVisible;
         }
 
+        private KSPe.UI.Toolbar.Button button;
         public void Start()
         {
             // not an anonymous functions because we need to remove them in #OnDestroy
@@ -161,9 +158,25 @@ namespace Haystack
 
             this.vesselListController.FetchVesselList();
             DataManager.Instance.OnDataLoaded += this.onDataLoadedHandler;
-        }
 
-        private void onVesselRenamed(GameEvents.HostedFromToAction<Vessel, string> data)
+			{
+				button = Toolbar.Button.Create(this
+						 , ApplicationLauncher.AppScenes.FLIGHT | ApplicationLauncher.AppScenes.TRACKSTATION | ApplicationLauncher.AppScenes.MAPVIEW | ApplicationLauncher.AppScenes.SPACECENTER
+						 , Resources.appLauncherIcon, Resources.toolbarIcon
+					 )
+				 ;
+
+				button.Toolbar
+							.Add(Toolbar.Button.ToolbarEvents.Kind.Active,
+								new Toolbar.Button.Event(this.displayButtonClicked, this.displayButtonClicked)
+							);
+				;
+
+				ToolbarController.Instance.Add(button);
+			}
+		}
+
+		private void onVesselRenamed(GameEvents.HostedFromToAction<Vessel, string> data)
         {
             this.vesselListController.FetchVesselList();
         }
@@ -463,7 +476,7 @@ namespace Haystack
 
         private class VesselListController
         {
-            private HaystackContinued haystack;
+            private Haystack haystack;
 
             // number of vessles per type
             private Dictionary<string, int> vesselTypeCounts = new Dictionary<string, int>();
@@ -483,7 +496,7 @@ namespace Haystack
             private bool listIsAscending;
             private Vessel activeVessel;
 
-            internal VesselListController(HaystackContinued haystack, BottomButtons bottomButtons)
+            internal VesselListController(Haystack haystack, BottomButtons bottomButtons)
             {
                 this.haystack = haystack;
                 bottomButtons.OnNearbyChanged += onNearbyChanged;
@@ -764,9 +777,9 @@ namespace Haystack
             private VesselListController vesselListController;
 
 
-            internal GroupedScrollerView(HaystackContinued haystackContinued, VesselListController vesselListController)
+            internal GroupedScrollerView(Haystack haystack, VesselListController vesselListController)
             {
-                this.vesselInfoView = new VesselInfoView(haystackContinued);
+                this.vesselInfoView = new VesselInfoView(haystack);
                 this.vesselListController = vesselListController;
             }
 
@@ -923,9 +936,9 @@ namespace Haystack
 
             public bool ShowCelestialBodies { get; set; }
 
-            internal DefaultScrollerView(HaystackContinued haystackContinued, VesselListController vesselListController)
+            internal DefaultScrollerView(Haystack haystack, VesselListController vesselListController)
             {
-                this.vesselInfoView = new VesselInfoView(haystackContinued);
+                this.vesselInfoView = new VesselInfoView(haystack);
                 this.vesselListController = vesselListController;
             }
 
@@ -1113,7 +1126,13 @@ namespace Haystack
             private const float xBoxMargin = 2;
             GUIStyle buttonStyle;
             bool initted = false;
- 
+            private readonly Func<bool> closeCallback;
+
+            public CloseHandle(Func<bool> closeCallback)
+            {
+                this.closeCallback = closeCallback;
+            }
+
             internal void Draw(ref Rect winRect)
             {
                 if (!initted)
@@ -1143,7 +1162,7 @@ namespace Haystack
                     resizer.Contains(Event.current.mousePosition))
                 {
                     Log.dbg("Close Event");
-                    HaystackResourceLoader.instance.appLauncherButton_OnTrue();
+                    this.closeCallback();
                 }
             }
        }
@@ -1181,7 +1200,7 @@ namespace Haystack
             {
                 if (!this.resizing)
                 {
-                    return;
+                    return; 
                 }
 
                 if (Input.GetMouseButton(0))
@@ -1498,14 +1517,14 @@ namespace Haystack
             private bool selected;
             private DockingPortListView dockingPortListView;
 
-            private HaystackContinued haystackContinued;
+            private Haystack haystack;
             private BottomButtons bottomButtons;
 
-            internal VesselInfoView(HaystackContinued haystackContinued)
+            internal VesselInfoView(Haystack haystack)
             {
-                this.haystackContinued = haystackContinued;
-                this.bottomButtons = this.haystackContinued.bottomButtons;
-                this.dockingPortListView = new DockingPortListView(haystackContinued);
+                this.haystack = haystack;
+                this.bottomButtons = this.haystack.bottomButtons;
+                this.dockingPortListView = new DockingPortListView(haystack);
             }
 
             internal void Reset()
@@ -1526,7 +1545,7 @@ namespace Haystack
                 {
                     GUILayout.BeginHorizontal();
 
-                    bool hidden = this.haystackContinued.isVesselHidden(vessel);
+                    bool hidden = this.haystack.isVesselHidden(vessel);
 
                     string tooltip = hidden ? "Show vessel" : "Hide vessel";
 
@@ -1534,7 +1553,7 @@ namespace Haystack
                         GUI.skin.button, GUILayout.Height(24f), GUILayout.Height(24f));
                     if (hidden != change)
                     {
-                        this.haystackContinued.markVesselHidden(vessel, change);
+                        this.haystack.markVesselHidden(vessel, change);
                     }
                 }
 
@@ -1658,7 +1677,7 @@ namespace Haystack
         {
             private Vessel currentVessel;
             private readonly List<PortInfo> portList = new List<PortInfo>();
-            private readonly HaystackContinued haystackContinued;
+            private readonly Haystack haystack;
             private bool runUpdate;
 
             private static readonly Type moduleDockingNodeNamedType;
@@ -1700,13 +1719,13 @@ namespace Haystack
                 }
                 else
                 {
-                    Log.dbg("Docking Port Alignment Indicator mod was not detected");
+                    Log.warn("Docking Port Alignment Indicator mod was not detected");
                 }
             }
 
-            internal DockingPortListView(HaystackContinued haystackContinued)
+            internal DockingPortListView(Haystack haystack)
             {
-                this.haystackContinued = haystackContinued;
+                this.haystack = haystack;
             }
 
             internal Vessel CurrentVessel
@@ -1729,7 +1748,7 @@ namespace Haystack
                 }
 
                 this.runUpdate = true;
-                this.haystackContinued.StartCoroutine(this.updatePortListCoroutine());
+                this.haystack.StartCoroutine(this.updatePortListCoroutine());
             }
 
             public IEnumerator updatePortListCoroutine()
@@ -1903,7 +1922,7 @@ namespace Haystack
 
         private class ExpandedVesselInfo : IDisposable
         {
-            private HaystackContinued haystack;
+            private Haystack haystack;
             private DefaultScrollerView defaultScrollerView;
             private GroupedScrollerView groupedScrollerView;
             private BottomButtons bottomButtons;
@@ -1920,7 +1939,7 @@ namespace Haystack
             private GUIContent terminateContent = new GUIContent(Resources.btnTerminateNormalBackground, "Terminate vessel");
             //btnTerminateFilePath
 
-            internal ExpandedVesselInfo(HaystackContinued haystack, BottomButtons bottomButtons, DefaultScrollerView defaultScrollerView,
+            internal ExpandedVesselInfo(Haystack haystack, BottomButtons bottomButtons, DefaultScrollerView defaultScrollerView,
                 GroupedScrollerView groupedScrollerView)
             {
                 this.haystack = haystack;
@@ -2569,5 +2588,5 @@ namespace Haystack
                 }
             }
         }
-    } // HaystackContinued
+    } // Haystack
 }

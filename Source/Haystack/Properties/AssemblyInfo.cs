@@ -36,4 +36,3 @@ using System.Resources;
 
 [assembly: KSPAssemblyDependency("KSPe", 2, 4)]
 [assembly: KSPAssemblyDependency("KSPe.UI", 2, 4)]
-[assembly: KSPAssemblyDependency("ToolbarController", 1, 0)]

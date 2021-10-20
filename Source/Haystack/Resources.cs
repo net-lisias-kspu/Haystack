@@ -39,14 +39,13 @@ namespace Haystack
     {
         public static System.Random rnd = new System.Random();
 
-
         public static readonly string BODIES = "Bodies";
 
         public static string PathImages = "icons";
         public static string ToolbarIconPath = PathImages;
 
-        public static string ToolbarIcon = String.Format("{0}/toolbar_icon", ToolbarIconPath);
-        public static string appLauncherIconPath = String.Format("{0}/applauncher_icon", ToolbarIconPath);
+        private static string toolbarIconFilePath = String.Format("{0}/toolbar_icon", ToolbarIconPath);
+        private static string appLauncherIconFilePath = String.Format("{0}/applauncher_icon", ToolbarIconPath);
 
         private static string btnGoFilePath = String.Format("{0}/button_go", PathImages);
         private static string btnGoHoverFilePath = String.Format("{0}/button_go_hover", PathImages);
@@ -80,7 +79,9 @@ namespace Haystack
         private static string btnTerminateFlatFilePath = String.Format("{0}/button_terminate", PathImages);
         private static string btnTerminateHoverFilePath = String.Format("{0}/button_terminate_hover", PathImages);
 
-        //public static Texture2D appLauncherIcon = new Texture2D(38, 38, TextureFormat.ARGB32, false);
+        public static Texture2D appLauncherIcon = new Texture2D(38, 38, TextureFormat.ARGB32, false);
+        public static Texture2D toolbarIcon = new Texture2D(24, 24, TextureFormat.ARGB32, false);
+
         public static Texture2D btnGo = new Texture2D(32, 32, TextureFormat.ARGB32, false);
         public static Texture2D btnGoHover = new Texture2D(32, 32, TextureFormat.ARGB32, false);
         public static Texture2D btnTarg = new Texture2D(32, 32, TextureFormat.ARGB32, false);
@@ -127,13 +128,13 @@ namespace Haystack
         {
             try
             {
-               // LoadImage(ref appLauncherIcon, appLauncherIconPath);
+                LoadImage(ref appLauncherIcon, appLauncherIconFilePath);
+                LoadImage(ref toolbarIcon, toolbarIconFilePath);
 
                 LoadImage(ref btnGo, btnGoFilePath);
                 LoadImage(ref btnGoHover, btnGoHoverFilePath);
                 LoadImage(ref btnTarg, btnGoTargFilePath);
                 LoadImage(ref btnTargHover, btnGoTargHoverFilePth);
-                //LoadImage(ref btnTargHover, "button_targ_hover"); // TODO: Create hover image, it is missing
                 LoadImage(ref btnFold, btnFoldFilePath);
                 LoadImage(ref btnFoldHover, btnFoldHoverFilePath);
                 LoadImage(ref btnBodies, btnBodiesFilePath); // handled separate from vessels

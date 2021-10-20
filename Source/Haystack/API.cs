@@ -66,22 +66,13 @@ namespace Haystack
 
         public static bool IsVisible()
         {
-            if (HaystackContinued.fetch != null)
+            if (Haystack.fetch != null)
             {
-                return HaystackContinued.fetch.IsVisible();
+                return Haystack.fetch.IsVisible();
             }
             return false;
         }
-        public static void ButtonClick()
-        {
-            if (HaystackResourceLoader.fetch != null)
-            {
-                if (!HaystackContinued.fetch.WinVisible)
-                    HaystackResourceLoader.fetch.appLauncherButton_OnTrue();
-                else
-                    HaystackResourceLoader.fetch.appLauncherButton_OnFalse();
-            }
-          }
+
         public static void SetVisibility(VesselType vt, bool visible)
         {
             string vtName = vt.ToString();
@@ -94,8 +85,8 @@ namespace Haystack
 
         public static void SetPosition(float x, float y)
         {
-            HaystackContinued.fetch.winRect.x = x;
-            HaystackContinued.fetch.winRect.y = y;
+            Haystack.fetch.winRect.x = x;
+            Haystack.fetch.winRect.y = y;
         }
     }
 }

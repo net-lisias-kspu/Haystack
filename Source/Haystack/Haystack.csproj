@@ -48,7 +48,6 @@
     <Compile Include="StartPoints.cs" />
     <Compile Include="DataManager.cs" />
     <Compile Include="StockSettings.cs" />
-    <Compile Include="ToolbarRegistration.cs" />
     <Compile Include="Properties\Version.cs">
       <DependentUpon>Version.tt</DependentUpon>
     </Compile>
@@ -69,10 +68,6 @@
     </Reference>
     <Reference Include="KSPe">
       <HintPath>..\..\..\..\..\..\LIB\plugins\KSPe.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="ToolbarControl">
-      <HintPath>..\..\..\..\..\..\LIB\plugins\ToolbarControl.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Assembly-CSharp">
