@@ -1,4 +1,4 @@
-# Haystack :: Changes
+# Haystack /L Unleashed :: Changes
 
 * 2018-0803: 0.5.4.4 (lisias) for KSP 1.4.1
 	+ Moving settings data file to <KSP_ROOT>/PluginsData . 

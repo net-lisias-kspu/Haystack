@@ -1,3 +1,21 @@
+/*
+	This file is part of Haystack /L Unleashed
+		© 2018-2021 LisiasT
+		© 2018 linuxgurugamer
+		© 2016-2018 Qberticus
+		© 2013-2016 hermes-jr, enamelizer
+
+	THIS FILE is licensed to you under:
+
+	* WTFPL - http://www.wtfpl.net
+		* Everyone is permitted to copy and distribute verbatim or modified
+			copies of this license document, and changing it is allowed as long
+			as the name is changed.
+
+	THIS FILE is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+*/
 using UnityEngine;
 
 using Logger = KSPe.Util.Log.Logger;

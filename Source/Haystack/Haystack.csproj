@@ -55,6 +55,8 @@
     <Compile Include="Properties\LegalMamboJambo.cs" />
     <Compile Include="Startup.cs" />
     <Compile Include="Log.cs" />
+    <Compile Include="ToolbarSupport.cs" />
+    <Compile Include="ModuleManagerSupport.cs" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />

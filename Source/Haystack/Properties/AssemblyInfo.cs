@@ -6,8 +6,8 @@ using System.Resources;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Haystack /L")]
-[assembly: AssemblyDescription("Plugin for Kerbal Space Program")]
+[assembly: AssemblyTitle("Haystack /L Unleashed")]
+[assembly: AssemblyDescription("Plugin for Kerbal Space Program which helps to easily switch vessels and targets.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany(Haystack.LegalMamboJambo.Company)]
 [assembly: AssemblyProduct(Haystack.LegalMamboJambo.Product)]

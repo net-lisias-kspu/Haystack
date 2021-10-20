@@ -24,26 +24,16 @@
 	along with Haystack /L Unleashed.
 	If not, see <https://www.gnu.org/licenses/>.
 */
-using UnityEngine;
+using System.Collections.Generic;
 
 namespace Haystack
 {
-    internal class Startup : MonoBehaviour
+	public static class ModuleManagerSupport
 	{
-        private void Start()
-        {
-            Log.force("Version {0}", Version.Text);
-
-            try
-            {
-                //KSPe.Util.Compatibility.Check<Startup>(typeof(Version), typeof(Configuration));
-                KSPe.Util.Installation.Check<Startup>(typeof(Version));
-            }
-            catch (KSPe.Util.InstallmentException e)
-            {
-                Log.ex(this, e);
-                KSPe.Common.Dialogs.ShowStopperAlertBox.Show(e);
-            }
-        }
+		public static IEnumerable<string> ModuleManagerAddToModList()
+		{
+			string[] r = { typeof(ModuleManagerSupport).Namespace };
+			return r;
+		}
 	}
 }
