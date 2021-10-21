@@ -177,9 +177,16 @@ namespace Haystack
             }
         }
 
-        private static void LoadImage(ref Texture2D btnGo, string btnGoFilePath)
+        private static void LoadImage(ref Texture2D tex, string path)
         {
-            btnGo = KSPe.IO.Asset<Startup>.Texture2D.LoadFromFile(btnGoFilePath);
+            try
+            { 
+                tex = KSPe.IO.Asset<Startup>.Texture2D.LoadFromFile(path);
+            }
+            catch (Exception e)
+            {
+                Log.err("Image [{0}] got a [{1}] on loading!", path, e.Message);
+            }
         }
 
         private static List<CelestialBody> celestialBodies = new List<CelestialBody>();
