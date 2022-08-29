@@ -1,10 +1,9 @@
 D:\Users\jbb\github\HaystackContinued\HaystackContinued\bin\Debug\HaystackReContinued.dll
 D:\Users\jbb\github\HaystackContinued\HaystackContinued\bin\Debug\HaystackReContinued.pdb
-D:\Users\jbb\github\HaystackContinued\HaystackContinued\bin\Debug\HaystackReContinued.dll.CodeAnalysisLog.xml
-D:\Users\jbb\github\HaystackContinued\HaystackContinued\bin\Debug\HaystackReContinued.dll.lastcodeanalysissucceeded
 D:\Users\jbb\github\HaystackContinued\HaystackContinued\bin\Debug\ClickThroughBlocker.dll
 D:\Users\jbb\github\HaystackContinued\HaystackContinued\bin\Debug\ToolbarControl.dll
 D:\Users\jbb\github\HaystackContinued\HaystackContinued\obj\Debug\HaystackContinued.csproj.CoreCompileInputs.cache
 D:\Users\jbb\github\HaystackContinued\HaystackContinued\obj\Debug\HaystackContinued.csproj.CopyComplete
 D:\Users\jbb\github\HaystackContinued\HaystackContinued\obj\Debug\HaystackReContinued.dll
 D:\Users\jbb\github\HaystackContinued\HaystackContinued\obj\Debug\HaystackReContinued.pdb
+D:\Users\jbb\github\HaystackContinued\HaystackContinued\bin\Debug\ClickThroughBlocker.pdb

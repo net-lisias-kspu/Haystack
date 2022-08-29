@@ -161,7 +161,7 @@ namespace HaystackReContinued
 
         protected bool UIHide { get; set; }
 
-        public void OnDestory()
+        public void OnDestroy()
         {
             HSUtils.DebugLog("HaystackContinued#OnDestroy");
 
@@ -869,8 +869,8 @@ namespace HaystackReContinued
             internal event OnSelectionChangedHandler OnSelectionChanged;
             protected virtual void fireOnSelectionChanged(GroupedScrollerView view)
             {
-                OnSelectionChangedHandler handler = this.OnSelectionChanged;
-                if (handler != null) handler(view);
+                //OnSelectionChangedHandler handler = this.OnSelectionChanged;
+                if (this.OnSelectionChanged != null) OnSelectionChanged(view);
             }
 
             internal delegate void OnSelectedItemClickedHandler(GroupedScrollerView view);
@@ -879,8 +879,8 @@ namespace HaystackReContinued
 
             protected virtual void fireOnSelectedItemClicked(GroupedScrollerView view)
             {
-                var handler = this.OnSelectedItemClicked;
-                if (handler != null) handler(view);
+                //var handler = this.OnSelectedItemClicked;
+                if (this.OnSelectedItemClicked != null) OnSelectedItemClicked(view);
             }
         }
 
@@ -1061,21 +1061,21 @@ namespace HaystackReContinued
             internal event OnSelectionChangedHandler OnSelectionChanged;
             protected virtual void fireOnSelectionChanged(DefaultScrollerView scrollerview)
             {
-                OnSelectionChangedHandler handler = this.OnSelectionChanged;
-                if (handler != null) handler(scrollerview);
+                // OnSelectionChangedHandler handler = this.OnSelectionChanged;
+                if (this.OnSelectionChanged != null) OnSelectionChanged(scrollerview);
             }
 
             internal delegate void OnSelectedItemClickedHandler(DefaultScrollerView scrollerView);
             internal event OnSelectedItemClickedHandler OnSelectedItemClicked;
             protected virtual void fireOnSelectedItemClicked(DefaultScrollerView scrollerView)
             {
-                var handler = this.OnSelectedItemClicked;
-                if (handler != null) handler(scrollerView);
+                //var handler = this.OnSelectedItemClicked;
+                if (this.OnSelectedItemClicked != null) OnSelectedItemClicked(scrollerView);
             }
 
             internal void GUISetup(BottomButtons bottomButtons)
             {
-                bottomButtons.OnGroupByChanged += view => this.reset();
+                bottomButtons.OnGroupByChanged += view => reset();
             }
         }
 
@@ -1409,8 +1409,8 @@ namespace HaystackReContinued
 
             protected virtual void fireOnGroupByChanged(BottomButtons view)
             {
-                var handler = this.OnGroupByChanged;
-                if (handler != null) handler(view);
+                //var handler = this.OnGroupByChanged;
+                if (this.OnGroupByChanged != null) OnGroupByChanged(view);
             }
 
             internal delegate void OnHiddenVesselsChangedHandler(BottomButtons view);
@@ -1419,8 +1419,8 @@ namespace HaystackReContinued
 
             private void fireOnHiddenVesselsChanged(BottomButtons bottomButtons)
             {
-                var handler = this.OnHiddenVesselsChanged;
-                if (handler != null) handler(bottomButtons);
+                //var handler = this.OnHiddenVesselsChanged;
+                if (this.OnHiddenVesselsChanged != null) OnHiddenVesselsChanged(bottomButtons);
             }
 
 
@@ -1430,8 +1430,8 @@ namespace HaystackReContinued
 
             protected virtual void fireOnSwitchVessel(Vessel vessel)
             {
-                var handler = this.OnSwitchVessel;
-                if (handler != null) handler(vessel);
+                //var handler = this.OnSwitchVessel;
+                if (this.OnSwitchVessel != null) OnSwitchVessel(vessel);
             }
 
             internal delegate void OnNearbyChangedHandler(BottomButtons view);
@@ -1440,8 +1440,8 @@ namespace HaystackReContinued
 
             protected virtual void fireOnNearbyChanged(BottomButtons view)
             {
-                var handler = this.OnNearbyChanged;
-                if (handler != null) handler(view);
+                //var handler = this.OnNearbyChanged;
+                if (this.OnNearbyChanged != null) OnNearbyChanged(view);
             }
 
             internal delegate void OnSortOrderChangedHandler(BottomButtons view);
@@ -1450,8 +1450,8 @@ namespace HaystackReContinued
 
             protected virtual void fireOnSortOrderChanged(BottomButtons view)
             {
-                var handler = this.OnSortOrderChanged;
-                if (handler != null) handler(view);
+                //var handler = this.OnSortOrderChanged;
+                if (this.OnSortOrderChanged != null) OnSortOrderChanged(view);
             }
 
 

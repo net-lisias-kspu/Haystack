@@ -1,5 +1,9 @@
 ChangeLog
 
+0.5.7.5
+	Fixed memory leak caused by a typo in the OnDestroy method name, which prevented GameEvent callbacks from being removed
+	Some minor cleanup
+
 0.5.7.4
 	Removed some log spam
 
