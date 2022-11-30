@@ -1,5 +1,8 @@
 ChangeLog
 
+0.5.7.6
+	Fixed path for loading images (broken by new launcher)
+
 0.5.7.5
 	Fixed memory leak caused by a typo in the OnDestroy method name, which prevented GameEvent callbacks from being removed
 	Some minor cleanup

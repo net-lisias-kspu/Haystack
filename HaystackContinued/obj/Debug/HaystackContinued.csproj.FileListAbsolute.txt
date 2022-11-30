@@ -7,3 +7,5 @@ D:\Users\jbb\github\HaystackContinued\HaystackContinued\obj\Debug\HaystackContin
 D:\Users\jbb\github\HaystackContinued\HaystackContinued\obj\Debug\HaystackReContinued.dll
 D:\Users\jbb\github\HaystackContinued\HaystackContinued\obj\Debug\HaystackReContinued.pdb
 D:\Users\jbb\github\HaystackContinued\HaystackContinued\bin\Debug\ClickThroughBlocker.pdb
+D:\Users\jbb\github\HaystackContinued\HaystackContinued\bin\Debug\ToolbarControl.pdb
+D:\Users\jbb\github\HaystackContinued\HaystackContinued\obj\Debug\HaystackContinued.csproj.AssemblyReference.cache

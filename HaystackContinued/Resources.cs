@@ -239,7 +239,7 @@ namespace HaystackReContinued
         /// <param name="filename">File name in images directory. Path is hardcoded: HrmHaystack/images/</param>
         private static void LoadImage(ref Texture2D targ, string filename)
         {
-            if (!ToolbarControl.LoadImageFromFile(ref targ, filename))
+            if (!ToolbarControl.LoadImageFromFile(ref targ, KSPUtil.ApplicationRootPath + filename))
             {
                 Debug.Log("Missing file: " + filename);
                 return;
