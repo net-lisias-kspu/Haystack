@@ -1,5 +1,9 @@
 # Haystack /L Unleashed :: Changes
 
+* 2023-0709: 0.5.7.6 (lisias) for KSP >= 1.3.1
+	+ Updating code to the latest KSPe (2.5)
+	+ Fixes a stupid mishap on the Module Manager support.
+	+ Fixes another one on the spelling of an important Unity Callback.
 * 2021-1028: 0.5.7.5 (lisias) for KSP >= 1.3.1
 	+ Updating code to the latest KSPe (2.4)
 	+ Catching up with the Upstream:
