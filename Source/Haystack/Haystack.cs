@@ -188,7 +188,7 @@ namespace Haystack
 
         protected bool UIHide { get; set; }
 
-        public void OnDestory()
+        public void OnDestroy()
         {
             Log.dbg("OnDestroy");
 
