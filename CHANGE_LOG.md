@@ -1,5 +1,9 @@
 # Haystack /L Unleashed :: Change Log
 
+* 2023-0709: 0.5.7.6 (lisias) for KSP >= 1.3.1
+	+ Updating code to the latest KSPe (2.5)
+	+ Fixes a stupid mishap on the Module Manager support.
+	+ Fixes another one on the spelling of an important Unity Callback.
 * 2021-1028: 0.5.7.5 (lisias) for KSP >= 1.3.1
 	+ Updating code to the latest KSPe (2.4)
 	+ Catching up with the Upstream:
@@ -11,7 +15,7 @@
 				- `button_vessel_deployedgroundpart`
 			- Added AssemblyFileVersion
 			- Added translation of vessel type with two words combined to two words, english only
-			Updated KSP version to 1.12
+			- Updated KSP version to 1.12
 		- 0.5.7
 			- Added API to support ResourceMonitors
 		- 0.5.6.5
