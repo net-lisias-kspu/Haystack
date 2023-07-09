@@ -28,7 +28,7 @@ using System.Collections.Generic;
 
 namespace Haystack
 {
-	public static class ModuleManagerSupport
+	public class ModuleManagerSupport : UnityEngine.MonoBehaviour
 	{
 		public static IEnumerable<string> ModuleManagerAddToModList()
 		{
